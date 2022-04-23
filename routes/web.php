@@ -37,6 +37,10 @@ Route::get('/fedex/GroundDayCloseForm', 'FedexController@GroundDayCloseForm');
 Route::post('/fedex/GroundDayCloseRequest', 'FedexController@GroundDayCloseRequest');
 Route::post('/fedex/ReprintDayCloseRequest', 'FedexController@reprintDayCloseRequest');
 //API Open Ship
+// Service Availability API
+Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
+Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailabilityRequest');
+Route::post('/fedex/RetriveServicePackagingOpt', 'FedexController@retriveServicePackagingOptRequest');
 
 
 //Route::post('/test', 'TestController@index');
