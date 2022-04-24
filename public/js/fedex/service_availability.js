@@ -119,4 +119,52 @@ $(document).ready(function(){
             }
         });
     });
+
+    
+    $('#retrieve-services-packaging-options-fedex-form').on('submit', function(event){
+      $url = $(this).attr('data-action');
+      $input = JSON.stringify({
+          'accountNumber':$('input[name="accountNumber"]').val(),
+          'closeReqType':$('select[name="closeReqType"]').val(),
+          'closeDate':$('input[name="closeDate"]').val(),
+          'groundServiceCategory':$('select[name="groundServiceCategory"]').val(),
+      });
+      $.ajax({
+          type:'POST',
+          url:$url + '/RetriveServicePackagingOpt',
+          data: {
+              service_availability: $input,
+              _token: $('input[name="_token"]').val(), 
+          },
+          success:function(data) {
+              //window.confirm(data.validateAddressJson.errors[0].code + " " +JSON.stringify(data.cookie))
+              switch(data.statusCode){
+                  case 200:
+                      console.log("SMN " + data.statusCode);
+                      console.log(JSON.stringify(data));
+                      if (window.confirm(JSON.stringify(data))){
+                          //window.location = $url;
+                      }
+                  break;
+                  case 400:
+                  case 401:
+                  case 403:
+                  case 404:
+                  case 500:
+                  case 503:
+                      console.log("NEL " + data.statusCode);
+                      window.confirm(data.statusCode + " " + JSON.stringify(data))
+                      console.log(JSON.stringify(data));
+                  break;
+                  default:
+                      console.log("Def " + data.statusCode);
+                      console.log(JSON.stringify(data));
+                      window.confirm(data.validateAddressJson.errors[0].code + " " +JSON.stringify(data.cookie))
+              }
+          },
+          error:function(data){
+              alert(JSON.stringify(data));
+          }
+      });
+  });
 });
