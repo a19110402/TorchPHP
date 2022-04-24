@@ -37,12 +37,16 @@ Route::get('/fedex/GroundDayCloseForm', 'FedexController@GroundDayCloseForm');
 Route::post('/fedex/GroundDayCloseRequest', 'FedexController@GroundDayCloseRequest');
 Route::post('/fedex/ReprintDayCloseRequest', 'FedexController@reprintDayCloseRequest');
 //API Open Ship
-Route::get('/fedex/openShip', 'FedexController@openShip');
-Route::post('/fedex/openShip', 'FedexController@createOpenShipmentRequest');
-// Route::post('/fedex/createOpenShipmentRequest', 'FedexController@createOpenShipmentRequest');
 // Service Availability API
 Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
 Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailabilityRequest');
 
 
 //Route::post('/test', 'TestController@index');
+
+//Login
+Route::get('/login', 'LoginControler@login');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

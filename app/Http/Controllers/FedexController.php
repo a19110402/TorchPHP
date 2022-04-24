@@ -38,12 +38,389 @@ class FedexController extends Controller
         return view('fedex.serviceAvailability');
     }
 
-    public function openShip(Request $request){
-        $countryCode = $this->getCountryCode(); 
-        $serviceType = $this->getServiceType();
-        $packageType = $this->getPackageType();
-        $pickupType = $this->getPickupType();
-        return view('fedex.openShip', compact('countryCode','serviceType', 'packageType', 'pickupType'));
+    public function serviceAvailabilityRequest(Request $request)
+    {
+        $requestJson = json_decode($request->get('service_availability'));
+        $body = [
+            "requestedShipment" => [
+                "shipper" => [
+                    "address" => [
+                        "city"=> "Collierville",
+                        "stateOrProvinceCode"=> "TN",
+                        "postalCode"=> "38127",
+                        "countryCode"=> "US",
+                        "residential"=> false,
+                    ],
+                ],
+                "recipient"=> array(
+                    [
+                        "address"=> [
+                            "city"=> "Collierville",
+                            "stateOrProvinceCode"=> "TN",
+                            "postalCode"=> "38127",
+                            "countryCode"=> "US",
+                            "residential"=> false,
+                        ],
+                    ],
+                ),
+                "serviceType"=> "FEDEX_GROUND",
+                "shipDatestamp"=> "2021-06-16",
+                "pickupType"=> "DROPOFF_AT_FEDEX_LOCATION",
+                "shippingChargesPayment" => [
+                    "payor" => [
+                        "responsibleParty"=> [
+                            "address"=> [
+                                "city"=> "Collierville",
+                                "stateOrProvinceCode"=> "TN",
+                                "postalCode"=> "38127",
+                                "countryCode"=> "US",
+                                "residential"=> false,
+                            ],
+                            "accountNumber"=> [
+                                "value"=>  "60xxxxxx2",
+                            ],
+                        ],
+                    ],
+                    "paymentType"=> "COLLECT",
+                ],
+                "requestedPackageLineItems"=> array(
+                    [
+                        "declaredValue"=> [
+                            "amount"=> 12,
+                            "currency"=> "USD",
+                        ],
+                        "weight"=> [
+                            "units"=> "LB",
+                            "value"=> 10,
+                        ],
+                        "dimensions"=> [
+                            "length"=> 100,
+                            "width"=> 50,
+                            "height"=> 30,
+                            "units"=> "CM",
+                        ],
+                        "packageSpecialServices"=> [
+                            "specialServiceTypes"=> [
+                                "DANGEROUS_GOODS",
+                                "COD"
+                            ],
+                            "codDetail"=> [
+                                "codCollectionAmount"=> [
+                                    "amount" => 12.45,
+                                    "currency" => "USD",
+                                ],
+                            ],
+                            "dryIceWeight"=> [
+                                "units" => "LB",
+                                "value" => 10,
+                            ],
+                            "dangerousGoodsDetail"=> [
+                                "accessibility" => "ACCESSIBLE",
+                                "options"=> [
+                                    "BATTERY",
+                                ],
+                            ],
+                            "alcoholDetail"=> [
+                                "alcoholRecipientType" => "LICENSEE",
+                                "shipperAgreementType" => "retailer",
+                            ],
+                            "pieceCountVerificationBoxCount"=> 2,
+                            "batteryDetails"=> [
+                                "batteryMaterialType" => "LITHIUM_METAL",
+                                "batteryPackingType" => "CONTAINED_IN_EQUIPMENT",
+                                "batteryRegulatoryType" => "IATA_SECTION_II",
+                            ],
+                        ],
+                    ],
+                ),
+                "shipmentSpecialServices"=> [
+                    "specialServiceTypes"=> array(
+                        "BROKER_SELECT_OPTION"
+                    ),
+                    "codDetail"=> [
+                        "codCollectionAmount"=> [
+                            "amount"=> 12.45,
+                            "currency"=> "USD"
+                        ],
+                        "codCollectionType"=> "PERSONAL_CHECK",
+                    ],
+                    "internationalControlledExportDetail"=> [
+                        "type"=> "DSP_LICENSE_AGREEMENT",
+                    ],
+                    "homeDeliveryPremiumDetail"=> [
+                        "homedeliveryPremiumType"=> "EVENING",
+                    ],
+                    "holdAtLocationDetail"=> [
+                        "locationId" => "YBZA",
+                        "locationType" => "FEDEX_ONSITE",
+                        "locationContactAndAddress"=> [
+                            "contact"=> [
+                                "personName"=> "John Taylor",
+                                "emailAddress"=> "sample@company.com",
+                                "phoneNumber"=> "1234567890",
+                                "phoneExtension"=> "1234",
+                                "faxNumber"=> "1234567890",
+                                "companyName"=> "Fedex",
+                                "parsedPersonName"=> [
+                                    "firstName"=> "firstName",
+                                    "lastName"=> "lastName",
+                                    "middleName"=> "middleName",
+                                    "suffix"=> "suffix",
+                                ],
+                            ],
+                            "address"=> [
+                                "city"=> "Collierville",
+                                "stateOrProvinceCode"=> "TN",
+                                "postalCode"=> "38127",
+                                "countryCode"=> "US",
+                                "residential"=> false,
+                            ],
+                        ],
+                    ],
+                    "shipmentDryIceDetail"=> [
+                        "totalWeight"=> [
+                            "units"=> "LB",
+                            "value"=> 10,
+                        ],
+                        "packageCount" => 12,
+                    ],
+                ],
+                "customsClearanceDetail"=> [
+                    "commodities"=> array(
+                        [
+                            "description"=> "DOCUMENTS",
+                            "quantity"=> 1,
+                            "unitPrice"=> [
+                                "amount"=>  12.45,
+                                "currency"=> "USD",
+                            ],
+                            "weight"=> [
+                                "units"=> "LB",
+                                "value"=>  10,
+                            ],
+                            "customsValue"=> [
+                                "amount"=>  12.45,
+                                "currency"=> "USD",
+                            ],
+                            "numberOfPieces"=> 1,
+                            "countryOfManufacture"=> "US",
+                            "quantityUnits"=> "PCS",
+                            "name"=> "DOCUMENTS",
+                            "harmonizedCode"=> "080211",
+                            "partNumber"=> "P1",
+                        ]
+                    ),
+                ],
+            ],
+            "carrierCodes"=> array(
+                "FDXG"
+            ),
+        ];
+        $response = $this->makeFedexJsonPostRequest(
+            env('RETRIEVE_SERVICE_TRANSIT_TEST_URL'),
+            env('RETRIEVE_SERVICE_TRANSIT_PRODUCTION_URL'),
+            $body
+        ); 
+        return response()->json([
+            'validateAddressJson' => $response->json(),
+            'statusCode' => $response->status(),
+            'cookie' => $body,
+        ]);
+    }
+
+    public function createOpenShipmentRequest(Request $request){
+        $requestJson = json_decode($request->get('open_shipment'));
+        $body = [
+            "index"=> "Test1234",
+            "requestedShipment" => [
+                "shipper" => [
+                    "contact" => [
+                        "personName"=> "SENDER NAME",
+                        "phoneNumber"=> "901xxx8595",
+                    ],
+                    "address" => [
+                        "streetLines" => array(
+                            [ "SENDER ADDRESS 1", ]
+                        ),
+                        "city"=> "MEMPHIS",
+                        "stateOrProvinceCode"=> "TN",
+                        "postalCode"=> "38116",
+                        "countryCode"=> "US",
+                    ],
+                ],
+                "recipients"=> array(
+                    [
+                        "contact"=> [
+                            "personName"=> "RECIPIENT NAME",
+                            "phoneNumber"=> "901xxx8595",
+                        ],
+                        "address"=> [
+                            "streetLines" => array(
+                                [ "SENDER ADDRESS 1", ]
+                            ),
+                            "city"=> "MEMPHIS",
+                            "stateOrProvinceCode"=> "TN",
+                            "postalCode"=> "38116",
+                            "countryCode"=> "US",
+                        ],
+                    ],
+                ),
+                "serviceType"=> "STANDARD_OVERNIGHT",
+                "packagingType"=> "YOUR_PACKAGING",
+                "pickupType"=> "DROPOFF_AT_FEDEX_LOCATION",
+                "shippingChargesPayment" => [
+                    "paymentType"=> "SENDER",
+                ],
+                "requestedPackageLineItems"=> array(
+                    [
+                        "weight"=> [
+                            "units"=> "LB",
+                            "value"=> "20",
+                        ],
+                    ],
+                ),
+            ],
+            "accountNumber" => [
+                "value"=> "value"
+            ],
+        ];
+        $response = $this->makeFedexJsonPostRequest(
+            env('CREATE_OPEN_SHIP_TEST_URL'),
+            env('CREATE_OPEN_SHIP_PRODUCTION_URL'),
+            $body
+        ); 
+        return response()->json([
+            'validateAddressJson' => $response->json(),
+            'statusCode' => $response->status(),
+            'cookie' => $body,
+        ]);
+    }
+    
+    public function modifyOpenShipmentRequest(Request $request){
+        $requestJson = json_decode($request->get('open_shipment'));
+        $body = [
+            "accountNumber"=> [
+                "value"=> "your account number",
+            ],
+            "index"=> "Test1234",
+            "labelResponseOptions"=> "URL_ONLY",
+            "labelSpecification" => [
+                "shipper" => [
+                    "labelStockType"=> "PAPER_85X11_TOP_HALF_LABEL",
+                    "imageType"=> "PDF",
+                ],
+            ],
+        ];
+        $response = $this->makeFedexJsonPutRequest(
+            env('ALTER_OPEN_SHIP_TEST_URL'),
+            env('ALTER_OPEN_SHIP_PRODUCTION_URL'),
+            $body
+        ); 
+        return response()->json([
+            'validateAddressJson' => $response->json(),
+            'statusCode' => $response->status(),
+            'cookie' => $body,
+        ]);
+    }
+    
+    public function confirmOpenShipmentRequest(Request $request){
+        $requestJson = json_decode($request->get('open_shipment'));
+        $body = [
+            "accountNumber"=> [
+                "value"=> "your account number",
+            ],
+            "index"=> "Test1234",
+            "labelResponseOptions"=> "URL_ONLY",
+            "labelSpecification" => [
+                "shipper" => [
+                    "labelStockType"=> "PAPER_85X11_TOP_HALF_LABEL",
+                    "imageType"=> "PDF",
+                ],
+            ],
+        ];
+        $response = $this->makeFedexJsonPostRequest(
+            env('ALTER_OPEN_SHIP_TEST_URL'),
+            env('ALTER_OPEN_SHIP_PRODUCTION_URL'),
+            $body
+        ); 
+        return response()->json([
+            'validateAddressJson' => $response->json(),
+            'statusCode' => $response->status(),
+            'cookie' => $body,
+        ]);
+    }
+    
+    public function modifyOpenShipmentPackagesRequest(Request $request){
+        # code...
+    }
+    
+    public function addOpenShipmentPackagesRequest(Request $request){
+        # code...
+    }
+    
+    public function deleteOpenShipmentPackagesRequest(Request $request){
+        # code...
+    }
+    
+    public function retriveOpenShipmentPackagesRequest(Request $request){
+        # code...
+    }
+    
+    public function openShipmentDeleteV1Request(Request $request){
+        # code...
+    }
+    
+    public function retriveOpenShipmentRequest(Request $request){
+        # code...
+    }
+    
+    public function getOpenShipmentResultsRequest(Request $request){
+        # code...
+    }
+
+    public function reprintDayCloseRequest(Request $request){
+        $requestJson = json_decode($request->get('reprint_day_close'));
+        $body = [
+            "closeReqType"=> "GCDR",//$requestJson->{'closeReqType'}, //=> "GCDR",
+            "reprintOption"=> "BY_SHIP_DATE",//$requestJson->{'closeReqType'}, //=> "GCDR",
+            "groundServiceCategory"=> "GROUND",//$requestJson->{'groundServiceCategory'}, //=> "GROUND",
+            "accountNumber" => [
+                "value"=> "510051408"//$requestJson->{'accountNumber'},//=>"510051408",
+            ],
+            //"closeDate" => "2022-04-16",//$requestJson->{'closeDate'},//=> "2022-04-16",
+        ];
+        $response = $this->makeFedexJsonPostRequest(
+            env('GROUND_DAY_CLOSE_TEST_URL'),
+            env('GROUND_DAY_CLOSE_PRODUCTION_URL'),
+            $body
+        ); 
+        return response()->json([
+            'validateAddressJson' => $response->json(),
+            'statusCode' => $response->status(),
+            'cookie' => $body,
+        ]);
+    }
+
+    public function GroundDayCloseRequest(Request $request){
+        $requestJson = json_decode($request->get('ground_day_close'));
+        $body = [
+            "accountNumber" => [
+                "value"=>$requestJson->{'accountNumber'},//=>"510051408",
+            ],
+            "closeReqType"=> $requestJson->{'closeReqType'}, //=> "GCDR",
+            "closeDate" => $requestJson->{'closeDate'},//=> "2022-04-16",
+            "groundServiceCategory"=> $requestJson->{'groundServiceCategory'}, //=> "GROUND",
+        ];
+        $response = $this->makeFedexJsonPutRequest(
+            env('GROUND_DAY_CLOSE_TEST_URL'),
+            env('GROUND_DAY_CLOSE_PRODUCTION_URL'),
+            $body
+        ); 
+        return response()->json([
+            'validateAddressJson' => $response->json(),
+            'statusCode' => $response->status(),
+            'cookie' => $body,
+        ]);
     }
 
     public function postToken(Request $request){
@@ -478,480 +855,4 @@ class FedexController extends Controller
         ]; 
     }
 
-    private function getServiceType(){
-        return [
-            "FedEx 2Day�"=>"FEDEX_2_DAY", 
-            "FedEx 2Day� A.M."=>"FEDEX_2_DAY_AM", 
-            "FedEx Custom Critical Air"=>"FEDEX_CUSTOM_CRITICAL_CHARTER_AIR", 
-            "FedEx Custom Critical Air Expedite"=>"FEDEX_CUSTOM_CRITICAL_AIR_EXPEDITE", 
-            "FedEx Custom Critical Air Expedite Exclusive Use"=>"FEDEX_CUSTOM_CRITICAL_AIR_EXPEDITE_EXCLUSIVE_USE", 
-            "FedEx Custom Critical Air Expedite Network"=>"FEDEX_CUSTOM_CRITICAL_AIR_EXPEDITE_NETWORK", 
-            "FedEx Custom Critical Point To Point"=>"FEDEX_CUSTOM_CRITICAL_POINT_TO_POINT", 
-            "FedEx Custom Critical Surface Expedite"=>"FEDEX_CUSTOM_CRITICAL_SURFACE_EXPEDITE", 
-            "FedEx Custom Critical Surface Expedite Exclusive Use"=>"FEDEX_CUSTOM_CRITICAL_SURFACE_EXPEDITE_EXCLUSIVE_USE", 
-            "FedEx Distance Deferred"=>"FEDEX_DISTANCE_DEFERRED", 
-            "FedEx Europe First"=>"EUROPE_FIRST_INTERNATIONAL_PRIORITY", 
-            "FedEx Express Saver�"=>"FEDEX_EXPRESS_SAVER", 
-            "FedEx First Overnight�"=>"FIRST_OVERNIGHT", 
-            "FedEx First Overnight� EH"=>"FEDEX_FIRST_OVERNIGHT_EXTRA_HOURS", 
-            "FedEx Ground"=>"FEDEX_GROUND", 
-            "FedEx Home Delivery�"=>"GROUND_HOME_DELIVERY", 
-            "FedEx International Airport-to-Airport"=>"FEDEX_CARGO_AIRPORT_TO_AIRPORT", 
-            "FedEx International Connect Plus�"=>"FEDEX_INTERNATIONAL_CONNECT_PLUS", 
-            "FedEx International Economy"=>"INTERNATIONAL_ECONOMY", 
-            "FedEx International Economy DirectDistributionSM"=>"INTERNATIONAL_ECONOMY_DISTRIBUTION", 
-            "FedEx International First�"=>"INTERNATIONAL_FIRST", 
-            "FedEx International MailService"=>"FEDEX_CARGO_MAIL", 
-            "FedEx International Premium�"=>"FEDEX_CARGO_INTERNATIONAL_PREMIUM", 
-            "FedEx International Priority DirectDistribution�"=>"INTERNATIONAL_PRIORITY_DISTRIBUTION", 
-            "FedEx International Priority� Express"=>"FEDEX_INTERNATIONAL_PRIORITY_EXPRESS", 
-            "FedEx International Priority� (New IP Service)"=>"FEDEX_INTERNATIONAL_PRIORITY", 
-            "FedEx International Priority Plus�"=>"FEDEX_INTERNATIONAL_PRIORITY_PLUS", 
-            "FedEx Priority Overnight�"=>"PRIORITY_OVERNIGHT", 
-            "FedEx Priority Overnight� EH"=>"PRIORITY_OVERNIGHT_EXTRA_HOURS", 
-            "FedEx SameDay�"=>"SAME_DAY", 
-            "FedEx SameDay� City"=>"SAME_DAY_CITY", 
-            "FedEx SmartPost�"=>"SMART_POST", 
-            "FedEx Standard Overnight� EH"=>"FEDEX_STANDARD_OVERNIGHT_EXTRA_HOURS", 
-            "FedEx Standard Overnight�"=>"STANDARD_OVERNIGHT", 
-            "FedEx Transborder Distribution"=>"TRANSBORDER_DISTRIBUTION_CONSOLIDATION", 
-            "Temp-Assure Air�"=>"FEDEX_CUSTOM_CRITICAL_TEMP_ASSURE_AIR", 
-            "Temp-Assure Validated Air�"=>"FEDEX_CUSTOM_CRITICAL_TEMP_ASSURE_VALIDATED_AIR", 
-            "White Glove Services�"=>"FEDEX_CUSTOM_CRITICAL_WHITE_GLOVE_SERVICES", 
-            "FedEx Regional Economy"=>"FEDEX_REGIONAL_ECONOMY", 
-            "FedEx Regional Economy Freight"=>"FEDEX_REGIONAL_ECONOMY_FREIGHT", 
-            "FedEx International Priority (Old IP Service)"=>"INTERNATIONAL_PRIORITY", 
-            "FedEx 1 Day Freight"=>"FEDEX_1_DAY_FREIGHT", 
-            "FedEx 2 Day Freight"=>"FEDEX_2_DAY_FREIGHT", 
-            "FedEx 3 Day Freight"=>"FEDEX_3_DAY_FREIGHT", 
-            "FedEx First Overnight Freight"=>"FIRST_OVERNIGHT_FREIGHT", 
-            "FedEx Next Day Afternoon"=>"FEDEX_NEXT_DAY_AFTERNOON", 
-            "FedEx Next Day Morning"=>"FEDEX_NEXT_DAY_EARLY_MORNING", 
-            "FedEx Next Day End of Day"=>"FEDEX_NEXT_DAY_END_OF_DAY", 
-            "FedEx Next Day Mid Morning"=>"FEDEX_NEXT_DAY_MID_MORNING", 
-            "International Economy Freight"=>"INTERNATIONAL_ECONOMY_FREIGHT", 
-            "International Priority Freight"=>"INTERNATIONAL_PRIORITY_FREIGHT"
-        ];
-}
-
-    private function getPackageType(){
-        return [
-            "Customer Packaging, FedEx Express Services" =>"YOUR_PACKAGING",
-            "Customer Packaging, FedEx SmartPost Services" =>"YOUR_PACKAGING",
-            "FedEx Letters" =>"FEDEX_ENVELOPE",
-            "FedEx Box" =>"FEDEX_BOX",
-            "FedEx Small Box" =>"FEDEX_SMALL_BOX",
-            "FedEx Medium Box" =>"FEDEX_MEDIUM_BOX",
-            "FedEx Large Box" =>"FEDEX_LARGE_BOX",
-            "FedEx Extra Large Box" =>"FEDEX_EXTRA_LARGE_BOX",
-            "FedEx 10kg Box" =>"FEDEX_10KG_BOX",
-            "FedEx 25kg Box" =>"FEDEX_25KG_BOX",
-            "FedEx Pak" =>"FEDEX_PAK",
-            "FedEx Tube" =>"FEDEX_TUBE"
-        ];
-    }
-    private function getPickupType(){
-        return[
-            "Indicates FedEx will be contacted to request a pickup." =>"CONTACT_FEDEX_TO_SCHEDULE",
-            "Indicates Shipment will be dropped off at a FedEx Location." =>"DROPOFF_AT_FEDEX_LOCATION",
-            "Indicates Shipment will be picked up as part of a regular scheduled pickup." =>"USE_SCHEDULED_PICKUP",
-            "Indicates the pickup will be scheduled by calling FedEx." =>"ON_CALL",
-            "Indicates the pickup by FedEx Ground Package Returns Program." =>"PACKAGE_RETURN_PROGRAM",
-            "Indicates the pickup at the regular pickup schedule." =>"REGULAR_STOP",
-            "Indicates the pickup specific to an Express tag or Ground call tag pickup request." =>"TAG",
-        ];
-    }
-
-    public function retriveServicePackagingOptRequest(Request $request){
-        $requestJson = json_decode($request->get('service_availability'));
-        $body = [
-            "requestedShipment" => [
-                "shipper" => [
-                    "address" => [
-                        "postalCode" => "75063",
-                        "countryCode" => "US",
-                    ],
-                ],
-                "recipients" => array([
-                    "address" => [
-                        "postalCode" => "38017",
-                        "countryCode" => "US",
-                    ],
-                ]),
-                "requestedPackageLineItems"=> array(
-                    [
-                        "weight"=> [
-                            "units"=> "LB",
-                            "value"=> 10,
-                        ],
-                        "packageSpecialServices"=> [
-                            "codDetail"=> [
-                                "codCollectionAmount"=> [
-                                    "amount" => 12.45,
-                                    "currency" => "USD",
-                                ],
-                            ],
-                            "alcoholDetail"=> [
-                                "alcoholRecipientType" => "CONSUMER",
-                                "shipperAgreementType" => "retailer",
-                            ],
-                            "dryIceWeight"=> [
-                                "units" => "LB",
-                                "value" => 10,
-                            ],
-                        ],
-                    ],
-                ),
-            ],
-            "carrierCodes" => array(
-                "FDXE",
-                "FDXG"
-            ),
-        ];
-        $response = $this->makeFedexJsonPostRequest(
-            env('RETRIEVE_SERVICE_PACKAGING_OPT_TEST_URL'),
-            env('RETRIEVE_SERVICE_PACKAGING_OPT_PRODUCTION_URL'),
-            $body
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body,
-        ]);
-    }
-
-    // Se queda por el momento en veremos
-    public function serviceAvailabilityRequest(Request $request)
-    {
-        $requestJson = json_decode($request->get('service_availability'));
-        $body = [
-            "requestedShipment" => [
-                "shipper" => [
-                    "address" => [
-                        "city"=> "Collierville",
-                        "stateOrProvinceCode"=> "TN",
-                        "postalCode"=> "38127",
-                        "countryCode"=> "US",
-                        "residential"=> false,
-                    ],
-                ],
-                "recipient"=> array(
-                    [
-                        "address"=> [
-                            "city"=> "Collierville",
-                            "stateOrProvinceCode"=> "TN",
-                            "postalCode"=> "38127",
-                            "countryCode"=> "US",
-                            "residential"=> false,
-                        ],
-                    ],
-                ),
-                "serviceType"=> "FEDEX_GROUND",
-                "shipDatestamp"=> "2021-06-16",
-                "pickupType"=> "DROPOFF_AT_FEDEX_LOCATION",
-                "shippingChargesPayment" => [
-                    "payor" => [
-                        "responsibleParty"=> [
-                            "address"=> [
-                                "city"=> "Collierville",
-                                "stateOrProvinceCode"=> "TN",
-                                "postalCode"=> "38127",
-                                "countryCode"=> "US",
-                                "residential"=> false,
-                            ],
-                            "accountNumber"=> [
-                                "value"=>  "60xxxxxx2",
-                            ],
-                        ],
-                    ],
-                    "paymentType"=> "COLLECT",
-                ],
-                "requestedPackageLineItems"=> array(
-                    [
-                        "declaredValue"=> [
-                            "amount"=> 12,
-                            "currency"=> "USD",
-                        ],
-                        "weight"=> [
-                            "units"=> "LB",
-                            "value"=> 10,
-                        ],
-                        "dimensions"=> [
-                            "length"=> 100,
-                            "width"=> 50,
-                            "height"=> 30,
-                            "units"=> "CM",
-                        ],
-                        "packageSpecialServices"=> [
-                            "specialServiceTypes"=> [
-                                "DANGEROUS_GOODS",
-                                "COD"
-                            ],
-                            "codDetail"=> [
-                                "codCollectionAmount"=> [
-                                    "amount" => 12.45,
-                                    "currency" => "USD",
-                                ],
-                            ],
-                            "dryIceWeight"=> [
-                                "units" => "LB",
-                                "value" => 10,
-                            ],
-                            "dangerousGoodsDetail"=> [
-                                "accessibility" => "ACCESSIBLE",
-                                "options"=> [
-                                    "BATTERY",
-                                ],
-                            ],
-                            "alcoholDetail"=> [
-                                "alcoholRecipientType" => "LICENSEE",
-                                "shipperAgreementType" => "retailer",
-                            ],
-                            "pieceCountVerificationBoxCount"=> 2,
-                            "batteryDetails"=> [
-                                "batteryMaterialType" => "LITHIUM_METAL",
-                                "batteryPackingType" => "CONTAINED_IN_EQUIPMENT",
-                                "batteryRegulatoryType" => "IATA_SECTION_II",
-                            ],
-                        ],
-                    ],
-                ),
-                "shipmentSpecialServices"=> [
-                    "specialServiceTypes"=> array(
-                        "BROKER_SELECT_OPTION"
-                    ),
-                    "codDetail"=> [
-                        "codCollectionAmount"=> [
-                            "amount"=> 12.45,
-                            "currency"=> "USD"
-                        ],
-                        "codCollectionType"=> "PERSONAL_CHECK",
-                    ],
-                    "internationalControlledExportDetail"=> [
-                        "type"=> "DSP_LICENSE_AGREEMENT",
-                    ],
-                    "homeDeliveryPremiumDetail"=> [
-                        "homedeliveryPremiumType"=> "EVENING",
-                    ],
-                    "holdAtLocationDetail"=> [
-                        "locationId" => "YBZA",
-                        "locationType" => "FEDEX_ONSITE",
-                        "locationContactAndAddress"=> [
-                            "contact"=> [
-                                "personName"=> "John Taylor",
-                                "emailAddress"=> "sample@company.com",
-                                "phoneNumber"=> "1234567890",
-                                "phoneExtension"=> "1234",
-                                "faxNumber"=> "1234567890",
-                                "companyName"=> "Fedex",
-                                "parsedPersonName"=> [
-                                    "firstName"=> "firstName",
-                                    "lastName"=> "lastName",
-                                    "middleName"=> "middleName",
-                                    "suffix"=> "suffix",
-                                ],
-                            ],
-                            "address"=> [
-                                "city"=> "Collierville",
-                                "stateOrProvinceCode"=> "TN",
-                                "postalCode"=> "38127",
-                                "countryCode"=> "US",
-                                "residential"=> false,
-                            ],
-                        ],
-                    ],
-                    "shipmentDryIceDetail"=> [
-                        "totalWeight"=> [
-                            "units"=> "LB",
-                            "value"=> 10,
-                        ],
-                        "packageCount" => 12,
-                    ],
-                ],
-                "customsClearanceDetail"=> [
-                    "commodities"=> array(
-                        [
-                            "description"=> "DOCUMENTS",
-                            "quantity"=> 1,
-                            "unitPrice"=> [
-                                "amount"=>  12.45,
-                                "currency"=> "USD",
-                            ],
-                            "weight"=> [
-                                "units"=> "LB",
-                                "value"=>  10,
-                            ],
-                            "customsValue"=> [
-                                "amount"=>  12.45,
-                                "currency"=> "USD",
-                            ],
-                            "numberOfPieces"=> 1,
-                            "countryOfManufacture"=> "US",
-                            "quantityUnits"=> "PCS",
-                            "name"=> "DOCUMENTS",
-                            "harmonizedCode"=> "080211",
-                            "partNumber"=> "P1",
-                        ]
-                    ),
-                ],
-            ],
-            "carrierCodes"=> array(
-                "FDXG"
-            ),
-        ];
-        $response = $this->makeFedexJsonPostRequest(
-            env('RETRIEVE_SERVICE_TRANSIT_TEST_URL'),
-            env('RETRIEVE_SERVICE_TRANSIT_PRODUCTION_URL'),
-            $body
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body,
-        ]);
-    }
-
-    public function createOpenShipmentRequest(Request $request){
-        $requestJson = json_decode($request->get('open_shipment'));
-    
-        $response = $this->makeFedexJsonPostRequest(
-            env('CREATE_OPEN_SHIP_TEST_URL'),
-            env('CREATE_OPEN_SHIP_PRODUCTION_URL'),
-            $requestJson
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $requestJson,
-        ]);
-    }
-    
-    public function modifyOpenShipmentRequest(Request $request){
-        $requestJson = json_decode($request->get('open_shipment'));
-        $body = [
-            "accountNumber"=> [
-                "value"=> "your account number",
-            ],
-            "index"=> "Test1234",
-            "labelResponseOptions"=> "URL_ONLY",
-            "labelSpecification" => [
-                "shipper" => [
-                    "labelStockType"=> "PAPER_85X11_TOP_HALF_LABEL",
-                    "imageType"=> "PDF",
-                ],
-            ],
-        ];
-        $response = $this->makeFedexJsonPutRequest(
-            env('ALTER_OPEN_SHIP_TEST_URL'),
-            env('ALTER_OPEN_SHIP_PRODUCTION_URL'),
-            $body
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body,
-        ]);
-    }
-    
-    public function confirmOpenShipmentRequest(Request $request){
-        $requestJson = json_decode($request->get('open_shipment'));
-        $body = [
-            "accountNumber"=> [
-                "value"=> "your account number",
-            ],
-            "index"=> "Test1234",
-            "labelResponseOptions"=> "URL_ONLY",
-            "labelSpecification" => [
-                "shipper" => [
-                    "labelStockType"=> "PAPER_85X11_TOP_HALF_LABEL",
-                    "imageType"=> "PDF",
-                ],
-            ],
-        ];
-        $response = $this->makeFedexJsonPostRequest(
-            env('ALTER_OPEN_SHIP_TEST_URL'),
-            env('ALTER_OPEN_SHIP_PRODUCTION_URL'),
-            $body
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body,
-        ]);
-    }
-    
-    public function modifyOpenShipmentPackagesRequest(Request $request){
-        # code...
-    }
-    
-    public function addOpenShipmentPackagesRequest(Request $request){
-        # code...
-    }
-    
-    public function deleteOpenShipmentPackagesRequest(Request $request){
-        # code...
-    }
-    
-    public function retriveOpenShipmentPackagesRequest(Request $request){
-        # code...
-    }
-    
-    public function openShipmentDeleteV1Request(Request $request){
-        # code...
-    }
-    
-    public function retriveOpenShipmentRequest(Request $request){
-        # code...
-    }
-    
-    public function getOpenShipmentResultsRequest(Request $request){
-        # code...
-    }
-
-    public function reprintDayCloseRequest(Request $request){
-        $requestJson = json_decode($request->get('reprint_day_close'));
-        $body = [
-            "closeReqType"=> "GCDR",//$requestJson->{'closeReqType'}, //=> "GCDR",
-            "reprintOption"=> "BY_SHIP_DATE",//$requestJson->{'closeReqType'}, //=> "GCDR",
-            "groundServiceCategory"=> "GROUND",//$requestJson->{'groundServiceCategory'}, //=> "GROUND",
-            "accountNumber" => [
-                "value"=> "510051408"//$requestJson->{'accountNumber'},//=>"510051408",
-            ],
-            //"closeDate" => "2022-04-16",//$requestJson->{'closeDate'},//=> "2022-04-16",
-        ];
-        $response = $this->makeFedexJsonPostRequest(
-            env('GROUND_DAY_CLOSE_TEST_URL'),
-            env('GROUND_DAY_CLOSE_PRODUCTION_URL'),
-            $body
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body,
-        ]);
-    }
-
-    public function GroundDayCloseRequest(Request $request){
-        $requestJson = json_decode($request->get('ground_day_close'));
-        $body = [
-            "accountNumber" => [
-                "value"=>$requestJson->{'accountNumber'},//=>"510051408",
-            ],
-            "closeReqType"=> $requestJson->{'closeReqType'}, //=> "GCDR",
-            "closeDate" => $requestJson->{'closeDate'},//=> "2022-04-16",
-            "groundServiceCategory"=> $requestJson->{'groundServiceCategory'}, //=> "GROUND",
-        ];
-        $response = $this->makeFedexJsonPutRequest(
-            env('GROUND_DAY_CLOSE_TEST_URL'),
-            env('GROUND_DAY_CLOSE_PRODUCTION_URL'),
-            $body
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body,
-        ]);
-    }
-
-    
 }

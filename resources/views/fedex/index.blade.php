@@ -9,7 +9,7 @@
             <a href="{{url('/fedex/findLocationForm')}}"><li>API de búsqueda de ubicaciones de Fedex</li></a>
             <a href="{{url('/fedex/globalTradeForm')}}"><li>API de comercio global</li></a>
             <a href="{{url('/fedex/GroundDayCloseForm')}}"><li>API de cierre de fin de día terrestre</li></a>
-            <a href="{{url('/fedex/openShip')}}"><li>API de envío abierto</li></a>
+            <li>API de envío abierto</li>
             <a href="{{url('/fedex/')}}"><li>API de solicitud de recogida</li></a>
             <a href="{{url('/fedex/')}}"><li>API de validación de código postal</li></a>
             <a href="{{url('/fedex/')}}"><li>API de tarifas y tiempos de tránsito</li></a>
