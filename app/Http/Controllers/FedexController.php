@@ -813,69 +813,16 @@ class FedexController extends Controller
 
     public function createOpenShipmentRequest(Request $request){
         $requestJson = json_decode($request->get('open_shipment'));
-        $body = [
-            "index"=> "Test1234",
-            "requestedShipment" => [
-                "shipper" => [
-                    "contact" => [
-                        "personName"=> "SENDER NAME",
-                        "phoneNumber"=> "901xxx8595",
-                    ],
-                    "address" => [
-                        "streetLines" => array(
-                            [ "SENDER ADDRESS 1", ]
-                        ),
-                        "city"=> "MEMPHIS",
-                        "stateOrProvinceCode"=> "TN",
-                        "postalCode"=> "38116",
-                        "countryCode"=> "US",
-                    ],
-                ],
-                "recipients"=> array(
-                    [
-                        "contact"=> [
-                            "personName"=> "RECIPIENT NAME",
-                            "phoneNumber"=> "901xxx8595",
-                        ],
-                        "address"=> [
-                            "streetLines" => array(
-                                [ "SENDER ADDRESS 1", ]
-                            ),
-                            "city"=> "MEMPHIS",
-                            "stateOrProvinceCode"=> "TN",
-                            "postalCode"=> "38116",
-                            "countryCode"=> "US",
-                        ],
-                    ],
-                ),
-                "serviceType"=> "STANDARD_OVERNIGHT",
-                "packagingType"=> "YOUR_PACKAGING",
-                "pickupType"=> "DROPOFF_AT_FEDEX_LOCATION",
-                "shippingChargesPayment" => [
-                    "paymentType"=> "SENDER",
-                ],
-                "requestedPackageLineItems"=> array(
-                    [
-                        "weight"=> [
-                            "units"=> "LB",
-                            "value"=> "20",
-                        ],
-                    ],
-                ),
-            ],
-            "accountNumber" => [
-                "value"=> "value"
-            ],
-        ];
+    
         $response = $this->makeFedexJsonPostRequest(
             env('CREATE_OPEN_SHIP_TEST_URL'),
             env('CREATE_OPEN_SHIP_PRODUCTION_URL'),
-            $body
+            $requestJson
         ); 
         return response()->json([
             'validateAddressJson' => $response->json(),
             'statusCode' => $response->status(),
-            'cookie' => $body,
+            'cookie' => $requestJson,
         ]);
     }
     
