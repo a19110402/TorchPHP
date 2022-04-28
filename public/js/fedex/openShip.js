@@ -74,8 +74,8 @@ $(document).ready(function(){
       })();
 
 
-    $('#modify-open-ship').on('submit', function(event){
-        $url = $(this).attr('data-action');
+      $('#create-open-ship').on('submit', function(event){
+          $url = $(this).attr('data-action');
         $input = JSON.stringify({
             'index': "Test1234",
             'requestedShipment': {
@@ -106,7 +106,7 @@ $(document).ready(function(){
                             'postalCode': $('input[name="recipient_postalCode"]').val(),
                             'countryCode': $('input[name="recipient_countryCode"]').val()
                         }
-
+                        
                     }
                 ],
                 'serviceType': $('select[name="serviceType"]').val(),
@@ -127,69 +127,13 @@ $(document).ready(function(){
             'accountNumber': {
                 'value': $('input[name="accountNumber"]').val()
             }
-
+            
         }
-
+        
         );
         console.log($input);
-
-        // $input = JSON.stringify(
-        //     {
-        //         "index": "Test1234",
-        //         "requestedShipment": {
-        //           "shipper": {
-        //             "contact": {
-        //               "personName": "SENDER NAME",
-        //               "phoneNumber": "901xxx8595"
-        //             },
-        //             "address": {
-        //               "streetLines": [
-        //                 "SENDER ADDRESS 1"
-        //               ],
-        //               "city": "MEMPHIS",
-        //               "stateOrProvinceCode": "TN",
-        //               "postalCode": "38116",
-        //               "countryCode": "US"
-        //             }
-        //           },
-        //           "recipients": [
-        //             {
-        //               "contact": {
-        //                 "personName": "RECIPIENT NAME",
-        //                 "phoneNumber": "901xxx8595"
-        //               },
-        //               "address": {
-        //                 "streetLines": [
-        //                   "RECIPIENT ADDRESS 1"
-        //                 ],
-        //                 "city": "MEMPHIS",
-        //                 "stateOrProvinceCode": "TN",
-        //                 "postalCode": "38116",
-        //                 "countryCode": "US"
-        //               }
-        //             }
-        //           ],
-        //           "serviceType": "STANDARD_OVERNIGHT",
-        //           "packagingType": "YOUR_PACKAGING",
-        //           "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-        //           "shippingChargesPayment": {
-        //             "paymentType": "SENDER"
-        //           },
-        //           "requestedPackageLineItems": [
-        //             {
-        //               "weight": {
-        //                 "units": "LB",
-        //                 "value": "20"
-        //               }
-        //             }
-        //           ]
-        //         },
-        //         "accountNumber": {
-        //           "value": "Your account number"
-        //         }
-        //       }
-        // );
-
+        
+ 
         $.ajax({
             type:'POST',
             url:$url + '/openShip',
@@ -228,125 +172,67 @@ $(document).ready(function(){
             }
         });
     });
-    $('#create-open-ship').on('submit', function(event){
+    $('#modify-open-ship').on('submit', function(event){
         $url = $(this).attr('data-action');
+        const selector = document.querySelectorAll("#modify-open-ship");
         $input = JSON.stringify({
             'index': "Test1234",
             'requestedShipment': {
                 'shipper':{
                     'contact': {
-                        'personName':$('input[name="shipper_personName"]').val(),
-                        'phoneNumber':$('input[name="shipper_phoneNumber"]').val(),
+                        'personName': selector[0]["shipper_personName"].value,
+                        'phoneNumber':selector[0]["shipper_phoneNumber"].value,
                     },
                     'address':{
-                        'streetLines':[$('input[name="shipper_streetLines"]').val()],
-                        'city':$('input[name="shipper_city"]').val(),
-                        'stateOrProvinceCode':$('input[name="shipper_stateOrProvinceCode"]').val(),
-                        'countryCode':$('select[name="shipper_countryCode"]').val(),
+                        'streetLines':[selector[0]["shipper_streetLines"].value],
+                        'city':selector[0]["shipper_personName"].value,
+                        'stateOrProvinceCode':selector[0]["shipper_stateOrProvinceCode"].value,
+                        'countryCode':selector[0]["shipper_countryCode"].value,
                     }
                 },
                 'recipients': [
                     {
                         'contact': {
-                            'personName': $('input[name="recipient_personName"]').val(),
-                            'phoneNumber': $('input[name="recipient_phoneNumber"]').val()
+                            'personName': selector[0]["recipient_personName"].value,
+                            'phoneNumber': selector[0]["recipient_phoneNumber"].value
                         },
                         'address':{
                             'streetLines':[
-                                $('input[name="recipient_streetLines"]').val()
+                                selector[0]["recipient_streetLines"].value
                             ],
-                            'city': $('input[name="recipient_city"]').val(),
-                            'stateOrProvinceCode': $('input[name="recipient_stateOrProvinceCode"]').val(),
-                            'postalCode': $('input[name="recipient_postalCode"]').val(),
-                            'countryCode': $('input[name="recipient_countryCode"]').val()
+                            'city': selector[0]["recipient_city"].value,
+                            'stateOrProvinceCode': selector[0]["recipient_stateOrProvinceCode"].value,
+                            'countryCode': selector[0]["recipient_countryCode"].value
                         }
-
+    
                     }
                 ],
-                'serviceType': $('select[name="serviceType"]').val(),
-                'packagingType': $('select[name="packagingType"]').val(),
-                'pickupType': $('select[name="pickupType"]').val(),
+                'serviceType': selector[0]["serviceType"].value,
+                'packagingType': selector[0]["packagingType"].value,
+                'pickupType':  selector[0]["pickupType"].value,
                 'shippingChargesPayment': {
-                    'paymentType': $('select[name="paymentType"]').val()
+                    'paymentType': selector[0]["paymentType"].value
                 },
                 'requestedPackageLineItems':[
                     {
                         'weight':{
                             'units':'LB',
-                            'value': $('select[name="weight_value"]').val() 
+                            'value': selector[0]["weight_value"].value
                         }
                     }
                 ],
             },
             'accountNumber': {
-                'value': $('input[name="accountNumber"]').val()
+                'value': selector[0]["accountNumber"].value
             }
-
+    
         }
-
+    
         );
         console.log($input);
-
-        // $input = JSON.stringify(
-        //     {
-        //         "index": "Test1234",
-        //         "requestedShipment": {
-        //           "shipper": {
-        //             "contact": {
-        //               "personName": "SENDER NAME",
-        //               "phoneNumber": "901xxx8595"
-        //             },
-        //             "address": {
-        //               "streetLines": [
-        //                 "SENDER ADDRESS 1"
-        //               ],
-        //               "city": "MEMPHIS",
-        //               "stateOrProvinceCode": "TN",
-        //               "postalCode": "38116",
-        //               "countryCode": "US"
-        //             }
-        //           },
-        //           "recipients": [
-        //             {
-        //               "contact": {
-        //                 "personName": "RECIPIENT NAME",
-        //                 "phoneNumber": "901xxx8595"
-        //               },
-        //               "address": {
-        //                 "streetLines": [
-        //                   "RECIPIENT ADDRESS 1"
-        //                 ],
-        //                 "city": "MEMPHIS",
-        //                 "stateOrProvinceCode": "TN",
-        //                 "postalCode": "38116",
-        //                 "countryCode": "US"
-        //               }
-        //             }
-        //           ],
-        //           "serviceType": "STANDARD_OVERNIGHT",
-        //           "packagingType": "YOUR_PACKAGING",
-        //           "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-        //           "shippingChargesPayment": {
-        //             "paymentType": "SENDER"
-        //           },
-        //           "requestedPackageLineItems": [
-        //             {
-        //               "weight": {
-        //                 "units": "LB",
-        //                 "value": "20"
-        //               }
-        //             }
-        //           ]
-        //         },
-        //         "accountNumber": {
-        //           "value": "Your account number"
-        //         }
-        //       }
-        // );
-
         $.ajax({
-            type:'POST',
-            url:$url + '/openShip',
+            type:'PUT',
+            url:$url + '/modifyOpenShip',
             data: {
                 open_shipment: $input,
                 _token: $('input[name="_token"]').val(), 
@@ -378,6 +264,7 @@ $(document).ready(function(){
                 }
             },
             error:function(data){
+                console.log("ERROR DE CONEXIÓN");
                 alert(JSON.stringify(data));
             }
         });

@@ -828,28 +828,16 @@ class FedexController extends Controller
     
     public function modifyOpenShipmentRequest(Request $request){
         $requestJson = json_decode($request->get('open_shipment'));
-        $body = [
-            "accountNumber"=> [
-                "value"=> "your account number",
-            ],
-            "index"=> "Test1234",
-            "labelResponseOptions"=> "URL_ONLY",
-            "labelSpecification" => [
-                "shipper" => [
-                    "labelStockType"=> "PAPER_85X11_TOP_HALF_LABEL",
-                    "imageType"=> "PDF",
-                ],
-            ],
-        ];
+        
         $response = $this->makeFedexJsonPutRequest(
             env('ALTER_OPEN_SHIP_TEST_URL'),
             env('ALTER_OPEN_SHIP_PRODUCTION_URL'),
-            $body
-        ); 
+            $requestJson
+        );
         return response()->json([
-            'validateAddressJson' => $response->json(),
+            'modifyOpenShip'=> $response->json(),
             'statusCode' => $response->status(),
-            'cookie' => $body,
+            'cookie' => $requestJson,
         ]);
     }
     

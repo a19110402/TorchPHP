@@ -39,6 +39,7 @@ Route::post('/fedex/ReprintDayCloseRequest', 'FedexController@reprintDayCloseReq
 //API Open Ship
 Route::get('/fedex/openShip', 'FedexController@openShip');
 Route::post('/fedex/openShip', 'FedexController@createOpenShipmentRequest');
+Route::put('/fedex/modifyOpenShip', 'FedexController@modifyOpenShipmentRequest');
 // Route::post('/fedex/createOpenShipmentRequest', 'FedexController@createOpenShipmentRequest');
 // Service Availability API
 Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
