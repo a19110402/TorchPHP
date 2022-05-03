@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,8 +46,13 @@ Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailab
 //Route::post('/test', 'TestController@index');
 
 //Login
-Route::get('/login', 'LoginControler@login');
-
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Login de admin
+Route::get('/admin', [AdminController::class, 'index'])->middleware('auth.admin');
+
+//Logout
+Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 'destroy'])
+    ->name('login.destroy');

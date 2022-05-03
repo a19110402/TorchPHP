@@ -27,8 +27,8 @@
             <a href="#">Rastreo</a>
             <a href="#">Logística</a>
             <a href="#">Promociones</a>
-            <a href="#">Crear cuenta</a>
-            <a href="#">Iniciar sesión</a>
+            <a href="{{url('/register')}}">Crear cuenta</a>
+            <a href="{{url('/login')}}">Iniciar sesión</a>
         </div>
     </header>
 
