@@ -122,6 +122,11 @@ class FedexController extends Controller
         ])->put(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray);
     }
 
+    public function getAccountShipmentNumber()
+    {
+        return env('PRODUCTION_ENV') ? env('SHIPPER_ACCOUNT_PRODUCTION'): env('SHIPPER_ACCOUNT_TEST');
+    }
+
     public function globalTradeRequest(Request $request){
         $requestJson = json_decode($request->get('global_trade'));
         $body = [
@@ -827,7 +832,7 @@ class FedexController extends Controller
     }
     
     public function modifyOpenShipmentRequest(Request $request){
-        $requestJson = json_decode($request->get('open_shipment'));
+        $requestJson = json_decode($request->put('open_shipment'));
         
         $response = $this->makeFedexJsonPutRequest(
             env('ALTER_OPEN_SHIP_TEST_URL'),
@@ -840,22 +845,21 @@ class FedexController extends Controller
             'cookie' => $requestJson,
         ]);
     }
-    
+   #PROBLEMA CON WEIGHT 
     public function confirmOpenShipmentRequest(Request $request){
-        $requestJson = json_decode($request->get('open_shipment'));
-        $body = [
-            "accountNumber"=> [
-                "value"=> "your account number",
-            ],
-            "index"=> "Test1234",
-            "labelResponseOptions"=> "URL_ONLY",
-            "labelSpecification" => [
-                "shipper" => [
-                    "labelStockType"=> "PAPER_85X11_TOP_HALF_LABEL",
-                    "imageType"=> "PDF",
-                ],
-            ],
-        ];
+        $requestJson = json_decode($request->post('open_shipment'));
+        $body = json_decode('
+        {
+            "accountNumber": {
+                "value": "Your account number"
+            },
+            "index": "Test1234",
+            "labelResponseOptions": "URL_ONLY",
+            "labelSpecification": {
+                "labelStockType": "PAPER_85X11_TOP_HALF_LABEL",
+                "imageType": "PDF"
+            }
+        }');
         $response = $this->makeFedexJsonPostRequest(
             env('ALTER_OPEN_SHIP_TEST_URL'),
             env('ALTER_OPEN_SHIP_PRODUCTION_URL'),
@@ -868,12 +872,80 @@ class FedexController extends Controller
         ]);
     }
     
+
+    #PROBLEMA CON EL TRACKING NUMBER
     public function modifyOpenShipmentPackagesRequest(Request $request){
-        # code...
+        $request = json_decode($request->post('modify_openShipment'));
+        
+        $body = json_decode('{
+            "accountNumber": {
+              "value": '+ this->getAccountShipmentNumber()+ '
+            },
+            "index": "Test1234",
+            "trackingId": {
+              "trackingIdType": "FEDEX",
+              "formId": "0263",
+              "trackingNumber": "794953535000"
+            },
+            "requestedPackageLineItem": {
+              "weight": {
+                "units": "LB",
+                "value": "20"
+              },
+              "dimensions": {
+                "length": "12",
+                "height": "12",
+                "width": "16",
+                "units": "IN"
+              },
+              "declaredValue": {
+                "currency": "USD",
+                "amount": "100"
+              }
+            }
+          }');
+        $response = $this ->makeFedexJsonPutRequest(
+            env('ALTER_PACKAGES_OPEN_SHIP_TEST_URL'),
+            env('ALTER_PACKAGES_SHIP_PRODUCTION_URL'),
+            $body
+        );
+        return response() ->json([
+            'modifyShipPackages'=> $response->json(),
+            'statusCode'=> $response->status(),
+            'cookie'=> $body
+        ]);
     }
-    
+    #LISTA
     public function addOpenShipmentPackagesRequest(Request $request){
-        # code...
+        $request = json_decode($request->post('add_openShipmentPackages'));
+        $body = json_decode('{
+            "accountNumber": {
+              "value": "510087020"
+            },
+            "index": "Test1234",
+            "requestedPackageLineItems": [
+              {
+                "weight": {
+                  "units": "LB",
+                  "value": "20"
+                },
+                "declaredValue": {
+                  "currency": "USD",
+                  "amount": "100"
+                }
+              }
+            ]
+          }');
+        $response = $this->makeFedexJsonPostRequest(
+            env('ALTER_PACKAGES_OPEN_SHIP_TEST_URL'),
+            env('ALTER_PACKAGES_SHIP_PRODUCTION_URL'),
+            $body
+        );
+        return response() -> json([
+            'addOpenShipmentPackages'=>$response->json(),
+            'statusCode'=> $response->status(),
+            'cookie'=> $body
+        ]);
     }
     
     public function deleteOpenShipmentPackagesRequest(Request $request){
@@ -881,7 +953,29 @@ class FedexController extends Controller
     }
     
     public function retriveOpenShipmentPackagesRequest(Request $request){
-        # code...
+        $request = json_decode($request->post('retrieve_openShipmentPackage'));
+        $body = json_decode('{
+            "accountNumber": {
+              "value": "510087020"
+            },
+            "index": "Test1234",
+            "trackingId": {
+              "trackingIdType": "FEDEX",
+              "formId": "0891",
+              "trackingNumber": "794631811751"
+            }
+          }');
+        
+        $response = $this->makeFedexJsonPostRequest(
+            env('RETRIVE_OPEN_SHIP_TEST_URL'),
+            env('RETRIVE_OPEN_SHIP_PRODUCTION_URL'),
+            $body
+        );
+        return response() -> json([
+            'retrieveOpenShipmentPackages'=>$response->json(),
+            'statusCode'=>$response->status(),
+            'cookie'=>$body
+        ]);
     }
     
     public function openShipmentDeleteV1Request(Request $request){

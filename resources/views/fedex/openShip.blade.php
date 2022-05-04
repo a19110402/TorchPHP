@@ -380,7 +380,7 @@
   <section id="section3">
     <h3>Confirm Open shipment</h3>
       @csrf
-      <form method='PUT' action="javascript:void(0);" data-action="{{ url('/fedex') }}" id="confirm-open-ship">
+      <form method='POST' action="javascript:void(0);" data-action="{{ url('/fedex') }}" id="confirm-open-ship">
         @csrf
         <label for="serviceType">                	
         Indicate the FedEx serviceType used for this shipment. The results will be filtered by the serviceType value indicated.

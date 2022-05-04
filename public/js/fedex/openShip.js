@@ -269,4 +269,251 @@ $(document).ready(function(){
             }
         });
     });
+    $('#confirm-open-ship').on('submit', function(event){
+        $url = $(this).attr('data-action');
+        $input =JSON.stringify(
+        {
+            "accountNumber": {
+              "value": "Your account number"
+            },
+            "index": "Test1234",
+            "labelResponseOptions": "URL_ONLY",
+            "labelSpecification": {
+              "labelStockType": "PAPER_85X11_TOP_HALF_LABEL",
+              "imageType": "PDF"
+            }
+          });
+
+        
+        $.ajax({
+            type:'POST',
+            url:$url + '/confirmOpenShip',
+            data: {
+                open_shipment: $input,
+                _token: $('input[name="_token"]').val(), 
+            },
+            success:function(data) {
+                //window.confirm(data.validateAddressJson.errors[0].code + " " +JSON.stringify(data.cookie))
+                switch(data.statusCode){
+                    case 200:
+                        console.log("SMN " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        if (window.confirm(JSON.stringify(data))){
+                            //window.location = $url;
+                        }
+                    break;
+                    case 400:
+                    case 401:
+                    case 403:
+                    case 404:
+                    case 500:
+                    case 503:
+                        console.log("NEL " + data.statusCode);
+                        window.confirm(data.statusCode + " " + JSON.stringify(data))
+                        console.log(JSON.stringify(data));
+                    break;
+                    default:
+                        console.log("Def " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        window.confirm(data.validateAddressJson.errors[0].code + " " + JSON.stringify(data.cookie))
+                }
+            },
+            error:function(data){
+                console.log("ERROR DE CONEXIÓN");
+                alert(JSON.stringify(data));
+            }
+        });
+    });
+    $('#modify-open-ship-packages').on('submit', function(event){
+        $url = $(this).attr('data-action');
+        $input =JSON.stringify(
+            {
+                "accountNumber": {
+                  "value": "8014xxxxx"
+                },
+                "index": "Test1234",
+                "trackingId": {
+                  "trackingIdType": "FEDEX",
+                  "formId": "0263",
+                  "trackingNumber": "7950095xxxxx"
+                },
+                "requestedPackageLineItem": {
+                  "weight": {
+                    "units": "LB",
+                    "value": "20"
+                  },
+                  "dimensions": {
+                    "length": "12",
+                    "height": "12",
+                    "width": "16",
+                    "units": "IN"
+                  },
+                  "declaredValue": {
+                    "currency": "USD",
+                    "amount": "100"
+                  }
+                }
+              }
+        );
+
+        
+        $.ajax({
+            type:'PUT',
+            url:$url + '/modifyOpenShipPackage',
+            data: {
+                modify_openShipment: $input,
+                _token: $('input[name="_token"]').val(), 
+            },
+            success:function(data) {
+                //window.confirm(data.validateAddressJson.errors[0].code + " " +JSON.stringify(data.cookie))
+                switch(data.statusCode){
+                    case 200:
+                        console.log("SMN " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        if (window.confirm(JSON.stringify(data))){
+                            //window.location = $url;
+                        }
+                    break;
+                    case 400:
+                    case 401:
+                    case 403:
+                    case 404:
+                    case 500:
+                    case 503:
+                        console.log("NEL " + data.statusCode);
+                        window.confirm(data.statusCode + " " + JSON.stringify(data))
+                        console.log(JSON.stringify(data));
+                    break;
+                    default:
+                        console.log("Def " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        window.confirm(data.validateAddressJson.errors[0].code + " " + JSON.stringify(data.cookie))
+                }
+            },
+            error:function(data){
+                console.log("ERROR DE CONEXIÓN");
+                alert(JSON.stringify(data));
+            }
+        });
+    });
+    $('#add-open-ship-packages').on('submit', function(event){
+        $url = $(this).attr('data-action');
+        $input =JSON.stringify(
+            {
+                "accountNumber": {
+                  "value": "8014xxxxx"
+                },
+                "index": "Test1234",
+                "requestedPackageLineItems": [
+                  {
+                    "weight": {
+                      "units": "LB",
+                      "value": "20"
+                    },
+                    "declaredValue": {
+                      "currency": "USD",
+                      "amount": "100"
+                    }
+                  }
+                ]
+              }
+        );
+
+        
+        $.ajax({
+            type:'POST',
+            url:$url + '/addOpenShipmentPackages',
+            data: {
+                add_openShipmentPackages: $input,
+                _token: $('input[name="_token"]').val(), 
+            },
+            success:function(data) {
+                //window.confirm(data.validateAddressJson.errors[0].code + " " +JSON.stringify(data.cookie))
+                switch(data.statusCode){
+                    case 200:
+                        console.log("SMN " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        if (window.confirm(JSON.stringify(data))){
+                            //window.location = $url;
+                        }
+                    break;
+                    case 400:
+                    case 401:
+                    case 403:
+                    case 404:
+                    case 500:
+                    case 503:
+                        console.log("NEL " + data.statusCode);
+                        window.confirm(data.statusCode + " " + JSON.stringify(data))
+                        console.log(JSON.stringify(data));
+                    break;
+                    default:
+                        console.log("Def " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        window.confirm(data.validateAddressJson.errors[0].code + " " + JSON.stringify(data.cookie))
+                }
+            },
+            error:function(data){
+                console.log("ERROR DE CONEXIÓN");
+                alert(JSON.stringify(data));
+            }
+        });
+    });
+    $('#retrieve-open-ship-packages').on('submit', function(event){
+        $url = $(this).attr('data-action');
+        $input =JSON.stringify(
+            {
+                "accountNumber": {
+                  "value": "801472842"
+                },
+                "index": "Test1234",
+                "trackingId": {
+                  "trackingIdType": "FEDEX",
+                  "formId": "0263",
+                  "trackingNumber": "795009503570"
+                }
+              }
+        );
+
+        
+        $.ajax({
+            type:'POST',
+            url:$url + '/retrieveOpenShipmentPackage',
+            data: {
+                retrieve_openShipmentPackage: $input,
+                _token: $('input[name="_token"]').val(), 
+            },
+            success:function(data) {
+                //window.confirm(data.validateAddressJson.errors[0].code + " " +JSON.stringify(data.cookie))
+                switch(data.statusCode){
+                    case 200:
+                        console.log("SMN " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        if (window.confirm(JSON.stringify(data))){
+                            //window.location = $url;
+                        }
+                    break;
+                    case 400:
+                    case 401:
+                    case 403:
+                    case 404:
+                    case 500:
+                    case 503:
+                        console.log("NEL " + data.statusCode);
+                        window.confirm(data.statusCode + " " + JSON.stringify(data))
+                        console.log(JSON.stringify(data));
+                    break;
+                    default:
+                        console.log("Def " + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        window.confirm(data.validateAddressJson.errors[0].code + " " + JSON.stringify(data.cookie))
+                }
+            },
+            error:function(data){
+                console.log("ERROR DE CONEXIÓN");
+                alert(JSON.stringify(data));
+            }
+        });
+    });
+
 });
