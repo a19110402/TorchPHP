@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,8 +53,10 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //Login de admin
-Route::get('/admin', [AdminController::class, 'index'])->middleware('auth.admin');
+Route::get('/admin', [AdminController::class, 'index'])->middleware('auth.admin')->name('admin.index');
 
 //Logout
 Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 'destroy'])
     ->name('login.destroy');
+
+Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('createNew');
