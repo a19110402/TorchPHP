@@ -860,7 +860,182 @@ class FedexController extends Controller
         ]; 
     }
 
-}
+    // Track API
+
+    public function trackMultiplePieceShipmentRequest(Request $request)
+    {   
+        $requestBody = [
+            "includeDetailedScans" => true,
+            "associatedType" => "STANDARD_MPS",
+            "masterTrackingNumberInfo" => [
+                "shipDateEnd" => "2022-11-03",
+                "shipDateBegin" => "2022-11-01",
+                "trackingNumberInfo" => [
+                    "trackingNumberUniqueId" => "245822~123456789012~FDEG",
+                    "carrierCode" => "FDXE",
+                    "trackingNumber" => "123456789012"
+                ]
+            ],
+            "pagingDetails" => [
+                "resultsPerPage" => 56,
+                "pagingToken" => "38903279038"
+            ]
+        ];
+
+        $response = $this->makeFedexJsonPostRequest(
+            env('TRACK_MULTIPLE_PIECE_SHIPMENT_TEST_URL'),
+            env('TRACK_MULTIPLE_PIECE_SHIPMENT_PRODUCTION_URL'),
+            $requestBody
+        );
+        
+        return ['response' => $response->json(), 'status' => $response->status()];
+    }
+ 
+    public function sendNotificationRequest(Request $request)
+    {
+        $requestBody = [
+            "includeDetailedScans" => true,
+            "associatedType" => "STANDARD_MPS",
+            "masterTrackingNumberInfo" => [
+                "shipDateEnd" => "2022-11-03",
+                "shipDateBegin" => "2022-11-01",
+                "trackingNumberInfo" => [
+                "trackingNumberUniqueId" => "245822~123456789012~FDEG",
+                "carrierCode" => "FDXE",
+                "trackingNumber" => "858488600850"
+                ]
+            ],
+            "pagingDetails" => [
+                "resultsPerPage" => 56,
+                "pagingToken" => "38903279038"
+            ]
+        ];
+
+        $response = $this->makeFedexJsonPostRequest(
+            env('SEND_NOTIFICATION_TEST_URL'),
+            env('SEND_NOTIFICATION_PRODUCTION_URL'),
+            $requestBody
+        );
+        
+        return ['response' => $response->json(), 'status' => $response->status()];
+    }
+
+    public function trackByReferencesRequest(Request $request)
+    {
+        $requestBody = [
+            "referencesInformation" => [
+                "type" => "BILL_OF_LADING",
+                "value" => "56754674567546754",
+                "accountNumber" => "697561862",
+                "carrierCode" => "FDXE",
+                "shipDateBegin" => "2022-02-13",
+                "shipDateEnd" => "2022-02-13",
+                "destinationCountryCode" => "US",
+                "destinationPostalCode" => "75063"
+            ],
+            "includeDetailedScans" => "true"
+        ];
+
+        $response = $this->makeFedexJsonPostRequest(
+            env('TRACK_BY_REFERENCES_TEST_URL'),
+            env('TRACK_BY_REFERENCES_PRODUCTION_URL'),
+            $requestBody
+        );
+        
+        return $response->json();
+    }
+
+    public function trackByTrackingControlNumberRequest(Request $request)
+    {
+        $requestBody = [
+            "tcnInfo" => [
+                "value" => "N552428361Y506XXX",
+                "carrierCode" => "FDXE",
+                "shipDateBegin" => "2022-02-13",
+                "shipDateEnd" => "2022-02-13"
+            ],
+            "includeDetailedScans" => true
+        ];
+
+        $response = $this->makeFedexJsonPostRequest(
+            env('TRACK_BY_TRACKING_CONTROL_NUMBER_TEST_URL'),
+            env('TRACK_BY_TRACKING_CONTROL_NUMBER_PRODUCTION_URL'),
+            $requestBody
+        );
+        
+        return ['response' => $response->json(), 'status' => $response->status()];
+    }
+
+    public function trackDocumentRequest(Request $request)
+    {
+        $requestBody = [
+            "trackDocumentDetail" => [
+                "documentType" => "SIGNATURE_PROOF_OF_DELIVERY",
+                "documentFormat" => "PNG"
+            ],
+            "trackDocumentSpecification" => array(
+                [
+                    "trackingNumberInfo" => [
+                        "trackingNumber" => "794971357442",
+                        "carrierCode" => "FDXE",
+                        "trackingNumberUniqueId" => "245822~123456789012~FDEG"
+                    ],
+                    "shipDateBegin" => "2022-11-29",
+                    "shipDateEnd" => "2022-12-01",
+                    "accountNumber" => "123456789"
+                ]
+            )
+        ];
+        
+        //return $requestBody;
+
+        $response = $this->makeFedexJsonPostRequest(
+            env('TRACK_DOCUMENT_TEST_URL'),
+            env('TRACK_DOCUMENT_PRODUCTION_URL'),
+            $requestBody
+        );
+        
+        return ['response' => $response->json(), 'status' => $response->status()];
+    }
+
+    // Trade Documents Upload API
+
+    public function tradeDocumentsUploadRequest(Request $request)
+    {
+        //$file = fopen('../storage/app/CertificateOfOrigin.pdf', 'r');
+
+        $requestBody = [
+            'document' => [
+                'workflowName' => 'ETDPreshipment',
+                'carrierCode' => 'FDXE',
+                'name' => 'CertificateOfOrigin.pdf',
+                'contentType' => 'application/pdf',
+                'meta' => [
+                    'shipDocumentType' => 'CERTIFICATE_OF_ORIGIN',
+                    'formCode' => 'USMCA',
+                    'trackingNumber' => '794791292805',
+                    'shipmentDate' => '2021-02-17T00:00:00',
+                    'originLocationCode' => 'GVTKK',
+                    'originCountryCode' => 'US',
+                    'destinationLocationCode' => 'DEL',
+                    'destinationCountryCode' => 'IN'
+                ]
+            ]
+        ];    
+        
+        
+        $response = HTTP::attach('attachment', file_get_contents('../storage/app/CertificateOfOrigin.pdf'))->withHeaders([
+            'Content-Type' => 'multipart/form-data',
+            'Authorization' => Cookie::get('token_type')." ".Cookie::get('access_token_fedex')
+        ])->post(
+            env('PRODUCTION_ENV') ? 
+            env('TRADE_DOCUMENTS_UPLOAD_PRODUCTION_URL'): env('TRADE_DOCUMENTS_UPLOAD_TEST_URL'),
+            $requestBody
+        );
+        
+        
+        return ['response' => $response->json(), 'status' => $response->status()];
+    }
 
     private function getPackageType(){
         return [
@@ -1357,6 +1532,4 @@ class FedexController extends Controller
             'cookie' => $body,
         ]);
     }
-
-    
 }

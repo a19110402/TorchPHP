@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FedexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,15 @@ Route::put('/fedex/modifyOpenShipPackage', 'FedexController@modifyOpenShipmentPa
 Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
 Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailabilityRequest');
 
+//Track API
+Route::get('/fedex/trackMultiplePieceShipmentRequest', [FedexController::class, 'trackMultiplePieceShipmentRequest'])->name('fedex.trackMultiplePieceShipment');
+Route::get('/fedex/sendNotificationRequest', [FedexController::class, 'sendNotificationRequest'])->name('fedex.sendNotification');
+Route::get('/fedex/trackByReferencesRequest', [FedexController::class, 'trackByReferencesRequest'])->name('fedex.trackByReferences');
+Route::get('/fedex/trackByTrackingControlNumberRequest', [FedexController::class, 'trackByTrackingControlNumberRequest'])->name('fedex.trackByTrackingControlNumber');
+Route::get('/fedex/trackDocumentRequest', [FedexController::class, 'trackDocumentRequest'])->name('fedex.trackDocument');
+
+//Trade Documents Upload API
+Route::get('/fedex/tradeDocumentsUploadRequest', [FedexController::class, 'tradeDocumentsUploadRequest'])->name('fedex.tradeDocumentsUpload');
 
 //Route::post('/test', 'TestController@index');
 
@@ -70,6 +80,10 @@ Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 
     ->name('login.destroy');
 
 Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('createNew');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
