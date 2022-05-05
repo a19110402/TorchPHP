@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FedexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,18 @@ Route::get('/fedex/GroundDayCloseForm', 'FedexController@GroundDayCloseForm');
 Route::post('/fedex/GroundDayCloseRequest', 'FedexController@GroundDayCloseRequest');
 Route::post('/fedex/ReprintDayCloseRequest', 'FedexController@reprintDayCloseRequest');
 //API Open Ship
-
-
+// Service Availability API
+Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
+Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailabilityRequest');
 //Route::post('/test', 'TestController@index');
+
+//Track API
+Route::get('/fedex/trackMultiplePieceShipmentRequest', [FedexController::class, 'trackMultiplePieceShipmentRequest'])->name('fedex.trackMultiplePieceShipment');
+Route::get('/fedex/sendNotificationRequest', [FedexController::class, 'sendNotificationRequest'])->name('fedex.sendNotification');
+Route::get('/fedex/trackByReferencesRequest', [FedexController::class, 'trackByReferencesRequest'])->name('fedex.trackByReferences');
+Route::get('/fedex/trackByTrackingControlNumberRequest', [FedexController::class, 'trackByTrackingControlNumberRequest'])->name('fedex.trackByTrackingControlNumber');
+Route::get('/fedex/trackDocumentRequest', [FedexController::class, 'trackDocumentRequest'])->name('fedex.trackDocument');
+
+//Trade Documents Upload API
+Route::get('/fedex/tradeDocumentsUploadRequest', [FedexController::class, 'tradeDocumentsUploadRequest'])->name('fedex.tradeDocumentsUpload');
+

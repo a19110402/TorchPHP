@@ -13,12 +13,11 @@
             <a href="{{url('/fedex/')}}"><li>API de solicitud de recogida</li></a>
             <a href="{{url('/fedex/')}}"><li>API de validación de código postal</li></a>
             <a href="{{url('/fedex/')}}"><li>API de tarifas y tiempos de tránsito</li></a>
-            <a href="{{url('/fedex/')}}"><li>API de disponibilidad del servicio</li></a>
+            <a href="{{url('/fedex/ServiceAvailabilityForm')}}"><li>API de disponibilidad del servicio</li></a>
             <a href="{{url('/fedex/')}}"><li>API de envío</li></a>
-            <a href="{{url('/fedex/')}}"><li>API de seguimiento</li></a>
-            <a href="{{url('/fedex/')}}"><li>API de carga de documentos comerciales</li></a>
+            <a href="{{ route('fedex.trackDocument') }}"><li>API de seguimiento</li></a>
+            <a href="{{ route('fedex.tradeDocumentsUpload') }}"><li>API de carga de documentos comerciales</li></a>
         </ul>
 
     </section>
-
 @endsection
