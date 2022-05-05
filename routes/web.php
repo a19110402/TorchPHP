@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +56,20 @@ Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailab
 
 
 //Route::post('/test', 'TestController@index');
+
+//Login
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Login de admin
+Route::get('/admin', [AdminController::class, 'index'])->middleware('auth.admin')->name('admin.index');
+
+//Logout
+Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 'destroy'])
+    ->name('login.destroy');
+
+Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('createNew');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
