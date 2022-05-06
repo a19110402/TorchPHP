@@ -104,7 +104,7 @@ $(document).ready(function(){
                             'city': $('input[name="recipient_city"]').val(),
                             'stateOrProvinceCode': $('input[name="recipient_stateOrProvinceCode"]').val(),
                             'postalCode': $('input[name="recipient_postalCode"]').val(),
-                            'countryCode': $('input[name="recipient_countryCode"]').val()
+                            'countryCode':$('select[name="recipient_countryCode"]').val(),
                         }
                         
                     }

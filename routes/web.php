@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FedexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,7 @@ Route::get('/fedex/GroundDayCloseForm', 'FedexController@GroundDayCloseForm');
 Route::post('/fedex/GroundDayCloseRequest', 'FedexController@GroundDayCloseRequest');
 Route::post('/fedex/ReprintDayCloseRequest', 'FedexController@reprintDayCloseRequest');
 //API Open Ship
+Route::get('/fedex/options', [FedexController::class, 'fedexOptions'])->name('fedexOptions');
 Route::get('/fedex/openShip', 'FedexController@openShip');
 Route::post('/fedex/openShip', 'FedexController@createOpenShipmentRequest');
 Route::post('/fedex/confirmOpenShipment', 'FedexController@confirmOpenShipmentRequest');
@@ -70,6 +72,6 @@ Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 
     ->name('login.destroy');
 
 Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('createNew');
-Auth::routes();
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -13,6 +13,7 @@
         </fieldset>
     </form>
 @endsection
+
 @section('scripts')
     <script type="text/javascript" src="{{ asset('js/fedex/auth.js') }}"></script>
 @endsection
