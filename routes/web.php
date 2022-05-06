@@ -59,4 +59,8 @@ Route::get('/admin', [AdminController::class, 'index'])->middleware('auth.admin'
 Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 'destroy'])
     ->name('login.destroy');
 
-Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('createNew');
+Route::get('/register', [AdminController::class, 'createNew'])->name('register');
+
+
+Route::post('/registerP', [RegisterController::class, 'createPerron'])->name('register1');
+
