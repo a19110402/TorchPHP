@@ -1,3 +1,5 @@
+import {requeringToken} from './requeringToken.js';
+
 $(document).ready(function(){
     (function () {
         // Get relevant elements and collections
@@ -74,9 +76,10 @@ $(document).ready(function(){
       })();
 
 
-      $('#create-open-ship').on('submit', function(event){
-          $url = $(this).attr('data-action');
-        $input = JSON.stringify({
+
+    $('#create-open-ship').on('submit', function(event){
+        let url = $(this).attr('data-action');
+         let input = JSON.stringify({
             'index': "Test1234",
             'requestedShipment': {
                 'shipper':{
@@ -131,14 +134,37 @@ $(document).ready(function(){
         }
         
         );
-        console.log($input);
+        function createOpenShip (){
+            console.log("resending the post for create open ship");
+            $.ajax({
+                type: 'POST',
+                url: url + '/openShip',
+                data: {
+                   open_shipment: input,
+                   _token: $('input[name="_token"]').val(),
+                },
+                success: function(data){
+                    switch(data.statusCode){
+                        case 200:
+                        console.log("SMN" + data.statudCode);
+                        console.log(JSON.stringify(data));
+                        break;
+                        default: 
+                            console.log("def" + data.statusCode);
+                            console.log(JSON.stringify(data));
+                    }
+                },
+                error: {}
+            });
+        }
+        console.log(input);
         
  
         $.ajax({
             type:'POST',
-            url:$url + '/openShip',
+            url:url + '/openShip',
             data: {
-                open_shipment: $input,
+                open_shipment: input,
                 _token: $('input[name="_token"]').val(), 
             },
             success:function(data) {
@@ -152,10 +178,20 @@ $(document).ready(function(){
                         }
                     break;
                     case 400:
+                        console.log("Tracking number invalid" + data.statusCode);
+                        console.log(JSON.stringify(data));
+                        break;
                     case 401:
+                        console.log("Not authorized" + data.statusCode);
+                        requeringToken(createOpenShip);
+                       
+                        break;
                     case 403:
+                        console.log("We could not authorize your credentials" + data.statusCode);
                     case 404:
+                        console.log("The resource you requested is no longer available. Please modify your request and try again" + data.statusCode);
                     case 500:
+                        console.log("We encountered an unexpected error and are working to resolve the issue. We apologize for any inconvenience. Please check back at a later time." + data.statusCode);
                     case 503:
                         console.log("NEL " + data.statusCode);
                         window.confirm(data.statusCode + " " + JSON.stringify(data))
@@ -173,9 +209,9 @@ $(document).ready(function(){
         });
     });
     $('#modify-open-ship').on('submit', function(event){
-        $url = $(this).attr('data-action');
+        let url = $(this).attr('data-action');
         const selector = document.querySelectorAll("#modify-open-ship");
-        $input = JSON.stringify({
+        let input = JSON.stringify({
             'index': "Test1234",
             'requestedShipment': {
                 'shipper':{
@@ -229,12 +265,12 @@ $(document).ready(function(){
         }
     
         );
-        console.log($input);
+        console.log(input);
         $.ajax({
             type:'PUT',
-            url:$url + '/modifyOpenShip',
+            url:url + '/modifyOpenShip',
             data: {
-                open_shipment: $input,
+                open_shipment: input,
                 _token: $('input[name="_token"]').val(), 
             },
             success:function(data) {
@@ -270,8 +306,8 @@ $(document).ready(function(){
         });
     });
     $('#confirm-open-ship').on('submit', function(event){
-        $url = $(this).attr('data-action');
-        $input =JSON.stringify(
+        let url = $(this).attr('data-action');
+        let input =JSON.stringify(
         {
             "accountNumber": {
               "value": "Your account number"
@@ -287,9 +323,9 @@ $(document).ready(function(){
         
         $.ajax({
             type:'POST',
-            url:$url + '/confirmOpenShip',
+            url:url + '/confirmOpenShip',
             data: {
-                open_shipment: $input,
+                open_shipment: input,
                 _token: $('input[name="_token"]').val(), 
             },
             success:function(data) {
@@ -325,8 +361,8 @@ $(document).ready(function(){
         });
     });
     $('#modify-open-ship-packages').on('submit', function(event){
-        $url = $(this).attr('data-action');
-        $input =JSON.stringify(
+        let url = $(this).attr('data-action');
+        let input =JSON.stringify(
             {
                 "accountNumber": {
                   "value": "8014xxxxx"
@@ -359,9 +395,9 @@ $(document).ready(function(){
         
         $.ajax({
             type:'PUT',
-            url:$url + '/modifyOpenShipPackage',
+            url:url + '/modifyOpenShipPackage',
             data: {
-                modify_openShipment: $input,
+                modify_openShipment: input,
                 _token: $('input[name="_token"]').val(), 
             },
             success:function(data) {
@@ -397,34 +433,60 @@ $(document).ready(function(){
         });
     });
     $('#add-open-ship-packages').on('submit', function(event){
-        $url = $(this).attr('data-action');
-        $input =JSON.stringify(
+        function addOpenShipmentPackages(){
+            console.log("resending the post for add packages");
+            $.ajax({
+                type: 'POST',
+                url: url + '/addOpenShipmentPackages',
+                data: {
+                   open_shipment: input,
+                   _token: $('input[name="_token"]').val(),
+                },
+                success: function(data){
+                    switch(data.statusCode){
+                        case 200:
+                        console.log("SMN" + data.statudCode);
+                        console.log(JSON.stringify(data));
+                        break;
+                        case 401:
+                            break;
+                        default: 
+                            console.log("def" + data.statusCode);
+                            console.log(JSON.stringify(data));
+                    }
+                },
+                error: {}
+            });  
+        }
+        let url = $(this).attr('data-action');
+        let select = document.querySelectorAll("#add-open-ship-packages");
+        let input =JSON.stringify(
             {
                 "accountNumber": {
-                  "value": "8014xxxxx"
+                  "value": select[0]["accountNumber"].value
                 },
                 "index": "Test1234",
                 "requestedPackageLineItems": [
                   {
                     "weight": {
                       "units": "LB",
-                      "value": "20"
+                      "value": select[0]["weight_value"].value
                     },
                     "declaredValue": {
-                      "currency": "USD",
-                      "amount": "100"
+                      "currency": select[0]["currency"].value,
+                      "amount": select[0]["amount"].value
                     }
                   }
                 ]
               }
         );
 
-        
+        console.log(input);
         $.ajax({
             type:'POST',
-            url:$url + '/addOpenShipmentPackages',
+            url:url + '/addOpenShipmentPackages',
             data: {
-                add_openShipmentPackages: $input,
+                add_openShipmentPackages: input,
                 _token: $('input[name="_token"]').val(), 
             },
             success:function(data) {
@@ -439,6 +501,7 @@ $(document).ready(function(){
                     break;
                     case 400:
                     case 401:
+                        requeringToken(addOpenShipmentPackages);
                     case 403:
                     case 404:
                     case 500:
@@ -460,8 +523,8 @@ $(document).ready(function(){
         });
     });
     $('#retrieve-open-ship-packages').on('submit', function(event){
-        $url = $(this).attr('data-action');
-        $input =JSON.stringify(
+        let url = $(this).attr('data-action');
+        let input =JSON.stringify(
             {
                 "accountNumber": {
                   "value": "801472842"
@@ -478,9 +541,9 @@ $(document).ready(function(){
         
         $.ajax({
             type:'POST',
-            url:$url + '/retrieveOpenShipmentPackage',
+            url:url + '/retrieveOpenShipmentPackage',
             data: {
-                retrieve_openShipmentPackage: $input,
+                retrieve_openShipmentPackage: input,
                 _token: $('input[name="_token"]').val(), 
             },
             success:function(data) {
@@ -516,4 +579,6 @@ $(document).ready(function(){
         });
     });
 
+   
 });
+

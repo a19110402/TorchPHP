@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Cookie;
 
 class FedexController extends Controller
 {
-
     public function fedexOptions(Request $request){
-       $response = $this->postToken($request);
+    //    $response = $this->postToken($request);
 
         return view('fedex.fedexOptions');
     }
@@ -516,18 +515,80 @@ class FedexController extends Controller
     }
     public function createOpenShipmentRequest(Request $request){
         $requestJson = json_decode($request->get('open_shipment'));
-    
-        $response = $this->makeFedexJsonPostRequest(
-            env('CREATE_OPEN_SHIP_TEST_URL'),
-            env('CREATE_OPEN_SHIP_PRODUCTION_URL'),
+        $responseCreate = $this->makeFedexJsonPostRequest(
+            env('CREATE_OPEN_SHIP_TEST_URL'), env('CREATE_OPEN_SHIP_PRODUCTION_URL'),
             $requestJson
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $requestJson,
-        ]);
-    }
+        );
+        
+        switch ($responseCreate->status()){
+            case '401':
+                return response()->json([
+                    'createOpenShip' => $responseCreate,
+                    'statusCode'=> $responseCreate->status(),
+                    'cookie'=>$requestJson
+                ]);
+                // $responseToken=$this->postToken($request);
+
+                // return response()->json([    
+                // 'postToken'=>$responseToken,
+                // 'statusCode'=>$responseToken->status(),
+                // ]);
+            //     // return response()->json([
+            //     //     'API' => 'authToken',
+            //     //     'statusCodeToken' => $responseToken->status(),
+            //     //     'createOpenShip' => $responseCreate->json(),
+            //     //     'statusCode' => $responseCreate->status(),
+            //     // ]);
+            // }
+            // else{
+            //     return response()->json([
+            //         'statusCodeToken' => $responseToken->status(),
+            //         'createOpenShip' => $responseCreate->json(),
+            //         'statusCode' => $responseCreate->status(),
+            //     ]);
+            // }
+            // //This code is for monitoring the response of an API
+            // // return response()->json([
+            // //     'createOpenShip' => $response->json(),
+            // //     'statusCode' => $response->status(),
+            // //     'cookie' => $requestJson
+            // // ]
+            // // );
+
+                break;
+            case '200':
+                dd($responseCreate->status());
+                break;
+            default:
+            return response()->json([
+                'createOpenShip'=>$responseCreate->json(),
+                'statusCode'=>$responseCreate->status(),
+            ]);
+        }
+
+
+        // $requestJson = json_decode($request->get('open_shipment'));
+        // $responseToken = $this->postToken($request);
+        // if ($responseToken->status() == '200'){
+        //     $response = $this->makeFedexJsonPostRequest(
+        //         env('CREATE_OPEN_SHIP_TEST_URL'),
+        //         env('CREATE_OPEN_SHIP_PRODUCTION_URL'),
+        //         $requestJson
+        //     ); 
+        //     return response()->json([
+        //         'validateAddressJson' => $response->json(),
+        //         'statusCode' => $response->status(),
+        //         'statusToken' => $responseToken->status(),
+        //         'cookie' => $requestJson,
+        //     ]);
+        // }
+        // else{
+        //     return response()->json([
+        //         'Response' => $responseToken,
+        //         'AuthenticationProblem' => 'true'
+        //     ]);
+        }
+    
     public function confirmOpenShipmentRequest(Request $request){
         $requestJson = json_decode($request->get('open_shipment'));
         $body = [
@@ -616,35 +677,30 @@ class FedexController extends Controller
     }
     #LISTA
     public function addOpenShipmentPackagesRequest(Request $request){
-        $request = json_decode($request->post('add_openShipmentPackages'));
-        $body = json_decode('{
-            "accountNumber": {
-              "value": "510087020"
-            },
-            "index": "Test1234",
-            "requestedPackageLineItems": [
-              {
-                "weight": {
-                  "units": "LB",
-                  "value": "20"
-                },
-                "declaredValue": {
-                  "currency": "USD",
-                  "amount": "100"
-                }
-              }
-            ]
-          }');
-        $response = $this->makeFedexJsonPostRequest(
-            env('ALTER_PACKAGES_OPEN_SHIP_TEST_URL'),
-            env('ALTER_PACKAGES_SHIP_PRODUCTION_URL'),
-            $body
-        );
-        return response() -> json([
-            'addOpenShipmentPackages'=>$response->json(),
-            'statusCode'=> $response->status(),
-            'cookie'=> $body
-        ]);
+        $requestJson = json_decode($request->post('add_openShipmentPackages'));
+        // $response = $this->getTokenValidation($request->post('add_openShipmentPackages'));
+        // return response() ->json([
+        //     'cookie' => $response
+        // ]);
+        $responseToken = $this->postToken($request);
+        if ($responseToken->status() == '200'){
+            $response = $this->makeFedexJsonPostRequest(
+                env('ALTER_PACKAGES_OPEN_SHIP_TEST_URL'),
+                env('ALTER_PACKAGES_SHIP_PRODUCTION_URL'),
+                $requestJson
+            );
+            return response() -> json([
+                'addOpenShipmentPackages'=>$response->json(),
+                'statusCode'=> $response->status(),
+                'cookie'=> $response
+            ]);
+        }
+        else{
+            return response()->json([
+                'Response'=>$responseToken,
+                'AuthenticationProblem'=>'true'
+            ]);
+        }
     }
     
     public function deleteOpenShipmentPackagesRequest(Request $request){
@@ -676,6 +732,67 @@ class FedexController extends Controller
             'cookie'=>$body
         ]);
     }
+
+    //rate And Transtit Times////////////////////////////////////////////////////////////////////
+    public function rateAndTransitTimes(Request $request){
+        $countryCode = $this->getCountryCode();
+        return view('fedex.rateAndTransitTimes', compact('countryCode')) ;
+    }
+    public function rateAndTransitTimesRequest(Request $request){
+        $requestJson = json_decode($request->post('rateAndTransiteTimes'));
+        $body = json_decode('
+        {
+            "accountNumber": {
+              "value": "510087020"
+            },
+            "requestedShipment": {
+              "shipper": {
+                "address": {
+                  "postalCode": "65247",
+                  "countryCode": "US"
+                }
+              },
+              "recipient": {
+                "address": {
+                  "postalCode": "75063",
+                  "countryCode": "US"
+                }
+              },
+              "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
+              "serviceType": "FEDEX_1_DAY_FREIGHT",
+              "rateRequestType": [
+                "LIST",
+                "ACCOUNT"
+              ],
+              "requestedPackageLineItems": [
+                {
+                  "weight": {
+                    "units": "LB",
+                    "value": 151
+                  },
+                  "dimensions": {
+                    "length": 30,
+                    "width": 30,
+                    "height": 40,
+                    "units": "IN"
+                  }
+                }
+              ]
+            }
+          }
+        ');
+        $response = $this->makeFedexJsonPostRequest(
+            env('RATE_AND_TRANSIT_TIMES_URL'),
+            env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+            // $requestJson
+            $body
+        );
+        return response()->json([
+            'rateAndTransitTimes' => $response->json(),
+            'statusCode' => $response->status(),
+            'cookie' => $body
+        ]);
+    }
     //makeFedexJson/////////////////////////////////////////////////////////////////////
     public function makeFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray) {
         return $response = HTTP::withHeaders([
@@ -690,7 +807,28 @@ class FedexController extends Controller
             'authorization'=> Cookie::get('token_type')." ".Cookie::get('access_token_fedex'),
         ])->put(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray);
     }
-
+    public function getTokenValidation($request){
+        $request = json_decode($request);
+        $responseToken = $this->postToken($request);
+        if ($responseToken->status() == '200'){
+            $response = $this->makeFedexJsonPostRequest(
+                env('ALTER_PACKAGES_OPEN_SHIP_TEST_URL'),
+                env('ALTER_PACKAGES_SHIP_PRODUCTION_URL'),
+                $request
+            );
+            return response() -> json([
+                'addOpenShipmentPackages'=>$response->json(),
+                'statusCode'=> $response->status(),
+                'cookie'=> $response
+            ]);
+        }
+        else{
+            return response()->json([
+                'Response' => $responseToken,
+                'AuthenticationProblem' => 'true'
+            ]);
+        }
+    }
     //functions for forms//////////////////////////////////////////////////////////////
     public function getAccountShipmentNumber()
     {
