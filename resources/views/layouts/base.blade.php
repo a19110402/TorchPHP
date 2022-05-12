@@ -9,9 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;1,400;1,700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{{url('css/normalize.css')}}">
-    
     <link rel="stylesheet" href="{{url('css/au.css')}}">
+
     @yield('extraCSS')@section('extraCSS')
     <title>Torch</title>
 </head>
@@ -50,9 +51,11 @@
     @yield('content')@section('content')
 
     <footer class="footer">
-        <div>
-            <p class="no-margin">Las mejores empresas que ya utilizan nuestra plataforma:</p>
-        </div>
+        @if(Request::url() == 'http://127.0.0.1:8000/home')
+            <div>
+                <p class="no-margin">Las mejores empresas que ya utilizan nuestra plataforma:</p>
+            </div>
+        @endif
 
         <div class="contenedor">
             <div class="flecha-contenedor flecha-formato">

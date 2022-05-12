@@ -1,0 +1,82 @@
+main {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  margin: 1rem 0 7rem 0;
+  column-gap: 2rem;
+}
+
+.principal{
+  text-align: center;
+  width: auto;
+  padding: 2rem;
+  font-weight: bold;
+}
+
+.interlineado{
+  line-height: 5rem;
+  font-weight: bolder;
+}
+
+.no-margin{
+  margin: 0;
+  padding: 0;
+}
+
+.color-texto {
+  color: rgba(54, 55, 149, 1);
+}
+
+.imagen-formato{
+background-image: url("../img/TORCH-imagen.png");
+padding-left: 2.5rem;
+background-size: 130%;
+background-repeat: no-repeat;
+background-position: center;
+grid-column: 2/3;
+}
+
+.cont-boton{
+min-width: 150px;
+}
+.cont-boton-reg{
+min-width: 150px;
+border: var(--azul-primario) solid 3px;
+border-radius: 20px;
+padding: 1px;
+box-shadow: -2px 8px 10px -1px var(--negro);
+}
+
+.cont-botones{
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+height: 5rem;
+}
+
+.boton-inicia{
+background-color: var(--azul-primario);
+color: var(--blanco);
+text-transform: uppercase;
+border-radius: 20px;
+padding: 0.85rem;
+box-shadow: -2px 8px 10px -1px var(--negro);
+}
+
+.boton-registro{
+background-color: var(--blanco);
+color: var(--negro);
+text-transform: uppercase;
+}
+
+.linea-divisora{
+width: auto;
+margin-left: 14rem;
+margin-right: 14rem;
+margin-bottom: 2rem;
+display: flex;
+justify-content: center;
+align-items: center;
+background-color: var(--amarillo);
+height: 0.15rem;
+}

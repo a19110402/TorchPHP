@@ -5,7 +5,7 @@
 
     <main>
         <div class="principal">
-            <h1>
+            <h1 class="interlineado">
                 <span class="color-texto">Envía tus productos</span>
                 en un mismo lugar y visualiza tus guías
                 <span class="color-texto">desde un mismo lugar</span>
@@ -15,9 +15,11 @@
                 Genera los envíos de tu tienda en línea, empresa o negocio,compara precios, tiempos de entrega de tus envíos y aprovecha nuestras promociones con tan solo un click.
             </p>
             
-            <p class="no-margin">
+            <p>
                 ¡Somos la Plataforma logística que hará crecer tu negocio!
             </p>
+
+            <div class="linea-divisora"></div>
 
             <div class="cont-botones">
                 <div class="cont-boton"> <a href="{{url('/login')}}" class="boton-inicia">Iniciar Sesión</a> </div>
@@ -26,7 +28,6 @@
             </div>
             
         </div>
-    
         <div class="imagen-formato"></div>
     </main>
 @endsection
