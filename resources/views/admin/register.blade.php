@@ -1,8 +1,8 @@
-@extends('layouts.base')
+@extends('layouts.admin')
+<!-- @extends('admin.index') -->
+
 
 @section('content')
-<link rel="stylesheet" href="{{url('css/index.css')}}">
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -63,21 +63,18 @@
                             </div>
                         </div>
 
-                        @if (auth()->user() != null and auth()->user()->role == 'admin')
-                            <div class="row mb-3">
-                                <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Role') }}</label>
+                        <div class="row mb-3">
+                            <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Role') }}</label>
 
-                                <div class="col-md-6">
-                                    <input id="role" type="text" class="form-control" name="role" required>
-                                </div>
+                            <div class="col-md-6">
+                                <input id="role" type="text" class="form-control" name="role" required>
                             </div>
-                        @endif
+                        </div>
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Register') }}
-                                    
                                 </button>
                             </div>
                         </div>
@@ -88,3 +85,5 @@
     </div>
 </div>
 @endsection
+
+

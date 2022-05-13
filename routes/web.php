@@ -64,7 +64,7 @@ Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailab
 //Login
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //Login de admin
 Route::get('/admin', [AdminController::class, 'index'])->middleware('auth.admin')->name('admin.index');
@@ -77,3 +77,8 @@ Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('creat
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/register', [AdminController::class, 'createNew'])->name('register');
+
+
+Route::post('/registerP', [RegisterController::class, 'createPerron'])->name('register1');
+
