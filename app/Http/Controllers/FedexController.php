@@ -6,8 +6,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
 
 
+
 class FedexController extends Controller
 {
+    protected $authToken;
+
     public function fedexOptions(Request $request){
     //    $response = $this->postToken($request);
 
@@ -740,66 +743,57 @@ class FedexController extends Controller
     }
     public function rateAndTransitTimesRequest(Request $request){
         $requestJson = json_decode($request->post('rateAndTransiteTimes'));
-        $body = json_decode('
-        {
-            "accountNumber": {
-              "value": "510087020"
-            },
-            "requestedShipment": {
-              "shipper": {
-                "address": {
-                  "postalCode": "65247",
-                  "countryCode": "US"
-                }
-              },
-              "recipient": {
-                "address": {
-                  "postalCode": "75063",
-                  "countryCode": "US"
-                }
-              },
-              "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-              "serviceType": "FEDEX_1_DAY_FREIGHT",
-              "rateRequestType": [
-                "LIST",
-                "ACCOUNT"
-              ],
-              "requestedPackageLineItems": [
-                {
-                  "weight": {
-                    "units": "LB",
-                    "value": 151
-                  },
-                  "dimensions": {
-                    "length": 30,
-                    "width": 30,
-                    "height": 40,
-                    "units": "IN"
-                  }
-                }
-              ]
+            $response = $this->makeFedexJsonPostRequest(
+                env('RATE_AND_TRANSIT_TIMES_URL'),
+                env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+                $requestJson,
+            );
+        if ($response->status() == '401'){
+
+            $responseToken = $this->postToken($request);
+
+            $this->authToken = json_decode($responseToken->content());
+            
+            if($responseToken->status() == '200'){
+                $response = $this->makeFedexJsonPostRequest(
+                    env('RATE_AND_TRANSIT_TIMES_URL'),
+                    env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+                    $requestJson, $this->authToken->answer
+                );
+                dd($response->json());
             }
-          }
-        ');
-        $response = $this->makeFedexJsonPostRequest(
-            env('RATE_AND_TRANSIT_TIMES_URL'),
-            env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-            // $requestJson
-            $body
-        );
-        return response()->json([
-            'rateAndTransitTimes' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body
-        ]);
+        }
+        else{
+            $responseToken = $this->postToken($request);
+            if($responseToken->status() == '200'){
+                $response = $this->makeFedexJsonPostRequest(
+                    env('RATE_AND_TRANSIT_TIMES_URL'),
+                    env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+                    $requestJson, 
+                    $this->authToken->answer
+                );
+            }
+        }
+
+        // return response()->json([
+        //     'rateAndTransitTimes' => $response->json(),
+        //     'statusCode' => $response->status(),
+        //     'cookie' => $body
+        // ]);
     }
     //makeFedexJson/////////////////////////////////////////////////////////////////////
-    public function makeFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray) {
+    public function makeFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray, $token=0) {
         return $response = HTTP::withHeaders([
             'content-type'=>'application/json',
-            'authorization'=> Cookie::get('token_type')." ".Cookie::get('access_token_fedex'),
+            'authorization'=> $token,
         ])->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray);
     }
+    // public function makeFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray) {
+    //     return $response = HTTP::withHeaders([
+    //         'content-type'=>'application/json',
+    //         'authorization'=> Cookie::get('token_type')." ".Cookie::get('access_token_fedex'),
+    //     ])->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray);
+    // }
     
     public function makeFedexJsonPutRequest($urlTest, $urlProduction, $jsonArray) {
         return $response = HTTP::withHeaders([

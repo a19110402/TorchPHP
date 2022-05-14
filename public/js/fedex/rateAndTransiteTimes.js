@@ -21,7 +21,7 @@ $("#requestRate").on('submit',
           "countryCode": $('select[name="countryCode"]').val()
         }
       },
-      //   "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
+      "pickupType": $('select[name="pickupType"]'),
       //   "serviceType": "FEDEX_1_DAY_FREIGHT",
       //   "rateRequestType": [
       //     "LIST",

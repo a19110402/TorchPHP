@@ -34,7 +34,7 @@
 
 
     @yield('content')
-    
+    @yield('rates');
     <footer class="footer">
         <div>
             <img src="" alt="Logo de empresa">

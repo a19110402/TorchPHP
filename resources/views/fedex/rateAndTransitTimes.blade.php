@@ -2,12 +2,12 @@
 
 @section('content')
 
-<h1>¡ Cotiza con FedEx !</h1>
+<h1>¡ Cotiza Con Nosotros !</h1>
 
 <form action="javascript:void(0)" data-action="{{ route('rateAndTransitTimes') }}" method="POST" id="requestRate">
     
     @csrf
-    <label for="accountNumber">AccountNumber</label>
+    <label for="accountNumber">AccountNumber 510087020</label>
     <input type="text" name="accountNumber" id=""><br><br>
         <fieldset>
             <legend>Shipper</legend>
@@ -29,6 +29,14 @@
     
             <label for="recipient_country">Country</label>
             <input type="text" name="recipient_country" id=""><br><br>
+    
+            <label for="pickupType">Pick up type</label>
+            <select name="pickupType">
+                <option value="CONTACT_FEDEX_TO_SCHEDULE">Contact FedEx To Schedule</option>
+                <option value="DROPOFF_AT_FEDEX_LOCATION">Dropoff At FedEx Location</option>
+                <option value="USE_SCHEDULED_PICKUP">Use Scheduled Pickup</option>
+            </select>
+
         </fieldset>
 
         <fieldset>
@@ -49,8 +57,17 @@
 
         <input type="submit" name="requestRate" value="submit">
     </form>
+
+
+
 @endsection
 
-@section('scripts')
+@section('rates')
+    <p>
+
+    </p>
+@endsection
+
+    @section('scripts')
     <script type="module" src="{{ asset('js/fedex/rateAndTransiteTimes.js') }}"></script>
 @endsection

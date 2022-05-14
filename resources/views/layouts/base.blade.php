@@ -26,22 +26,20 @@
             </a>
         </div>
         <div class="navegacion-principal">
-            <a href="#">Envíos</a>
-            <a href="#">Consulta api FEDEX</a>
-            <a href="#">Rastreo</a>
-            <a href="#">Logística</a>
-            <a href="#">Promociones</a>
-
-            @if (auth()->user() != null and auth()->user()->role == 'admin')
-                <a href="{{url('/register')}}">Crear usuario</a>
-                <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
-                <a href="{{ route('login.destroy') }}" >Log out</a>
-            @elseif (auth()->check())
-                <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
-                <a href="{{ route('login.destroy') }}" >Log out</a>
-            @else
+            @if (auth()->user() == null)
+                <a href="#">Cotización</a>
+                <a href="#">Rastreo</a>
+                <a href="#">Logística</a>
+                <a href="#">Promociones</a>
                 <a href="{{url('/register')}}">Crear cuenta</a>
                 <a href="{{url('/login')}}">Iniciar sesión</a>
+            @elseif(auth()->user()->role =='admin')
+                <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
+                <a href="/fedex/rateAndTransitTimes">Cotización</a>
+                <a href="#">Envío</a>
+                <a href="#">Rastrear</a>
+                <a href="{{url('/register')}}">Crear usuario</a>
+                <a href="{{ route('login.destroy') }}" >Log out</a>
             @endif
             
         </div>
