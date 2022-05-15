@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-<link rel="stylesheet" href="{{url('css/index.css')}}">
+<!-- <link rel="stylesheet" href="{{url('css/index.css')}}"> -->
 
 <div class="container">
     <div class="row justify-content-center">

@@ -27,10 +27,11 @@
         </div>
         <div class="navegacion-principal">
             <a href="#">Envíos</a>
-            <a href="#">Consulta api FEDEX</a>
+            <a href="#">Consulta API FEDEX</a>
             <a href="#">Rastreo</a>
             <a href="#">Logística</a>
             <a href="#">Promociones</a>
+            <a href="#">Nosotros</a>
 
             @if (auth()->user() != null and auth()->user()->role == 'admin')
                 <a href="{{url('/register')}}">Crear usuario</a>
@@ -43,28 +44,16 @@
                 <a href="{{url('/register')}}">Crear cuenta</a>
                 <a href="{{url('/login')}}">Iniciar sesión</a>
             @endif
+
             
         </div>
     </header>
 
-
     @yield('content')@section('content')
 
     <footer class="footer">
-        @if(Request::url() == 'http://127.0.0.1:8000/home')
-            <div>
-                <p class="no-margin">Las mejores empresas que ya utilizan nuestra plataforma:</p>
-            </div>
-        @endif
 
-        <div class="contenedor">
-            <div class="flecha-contenedor flecha-formato">
-                <p><</p>
-            </div>
-            <div class="flecha-contenedor flecha-formato">
-                <p>></p>
-            </div>
-        </div>
+        @yield('footer')@section('footer')
 
         <div class="contenedor-baseline">
 

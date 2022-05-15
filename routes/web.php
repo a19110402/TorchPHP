@@ -60,7 +60,3 @@ Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 
     ->name('login.destroy');
 
 Route::get('/register', [AdminController::class, 'createNew'])->name('register');
-
-
-Route::post('/registerP', [RegisterController::class, 'createPerron'])->name('register1');
-
