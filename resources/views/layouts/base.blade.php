@@ -31,11 +31,11 @@
             <a href="#">Rastreo</a>
             <a href="#">Logística</a>
             <a href="#">Promociones</a>
-            <a href="#">Nosotros</a>
+            <a href="{{url('/nosotros')}}">Nosotros</a>
 
             @if (auth()->user() != null and auth()->user()->role == 'admin')
                 <a href="{{url('/register')}}">Crear usuario</a>
-                <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
+                <a href="{{url('/home')}}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
                 <a href="{{ route('login.destroy') }}" >Log out</a>
             @elseif (auth()->check())
                 <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
