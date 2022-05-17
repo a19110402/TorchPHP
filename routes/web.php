@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -62,3 +63,5 @@ Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 
 Route::get('/register', [AdminController::class, 'createNew'])->name('register');
 
 Route::get('/fedex/registerUser', 'AdminController@createPerron');
+
+Route::get('/nosotros', [IndexController::class, 'nosotros'])->name('nosotros');
