@@ -7,15 +7,14 @@
 <form action="javascript:void(0)" data-action="{{ route('rateAndTransitTimes') }}" method="POST" id="requestRate">
     
     @csrf
-    <label for="accountNumber">AccountNumber 510087020</label>
-    <input type="text" name="accountNumber" id=""><br><br>
+   
         <fieldset>
             <legend>Shipper</legend>
             <label for="shipper_postalCode">Postal Code</label>
             <input type="text" name="shipper_postalCode" id=""><br><br>
     
             <label for="shipper_Country">Country</label>
-            <select name="countryCode" id="">
+            <select name="shipper_countryCode" id="">
                 @foreach ($countryCode as $country => $code )
                     <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
                 @endforeach
@@ -28,7 +27,11 @@
             <input type="text" name="recipient_postalCode" id=""><br><br>
     
             <label for="recipient_country">Country</label>
-            <input type="text" name="recipient_country" id=""><br><br>
+            <select name="recipient_countryCode" id="">
+                @foreach ($countryCode as $country => $code )
+                    <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                @endforeach
+            </select><br><br>
     
             <label for="pickupType">Pick up type</label>
             <select name="pickupType">
@@ -54,7 +57,7 @@
             <input type="text" name="height" id=""><br><br>
     
         </fieldset>
-
+        
         <input type="submit" name="requestRate" value="submit">
     </form>
 
@@ -62,12 +65,8 @@
 
 @endsection
 
-@section('rates')
-    <p>
 
-    </p>
-@endsection
 
     @section('scripts')
-    <script type="module" src="{{ asset('js/fedex/rateAndTransiteTimes.js') }}"></script>
+    <script src="{{ asset('js/fedex/rateAndTransiteTimes.js') }}"></script>
 @endsection
