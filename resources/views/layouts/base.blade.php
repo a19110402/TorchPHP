@@ -27,7 +27,7 @@
         </div>
         <div class="navegacion-principal">
             @if (auth()->user() == null)
-                <a href="#">Cotización</a>
+                <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
                 <a href="#">Rastreo</a>
                 <a href="#">Logística</a>
                 <a href="#">Promociones</a>
