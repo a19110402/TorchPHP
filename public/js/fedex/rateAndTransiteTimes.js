@@ -1,39 +1,7 @@
 $("#requestRate").on('submit',
 function (){
+  $('#rates').remove();
     let url = $(this).attr('data-action');
-    // $input = JSON.stringify({
-    // "accountNumber": {
-    //   "value": ""
-    // },
-    // "requestedShipment": {
-    //   "shipper": {
-    //     "address": {
-    //       "postalCode": "65247",
-    //         "countryCode": "US"
-    //         }
-    //   },
-    //   "recipient": {
-    //     "address": {
-    //       "postalCode": "75063",
-    //       "countryCode": "US"
-    //     }
-    //   },
-    //   "pickupType": $('select[name="pickupType"]').val(),
-    //   "rateRequestType":["ACCOUNT"],
-    //   "requestedPackageLineItems": [{
-    //     "weight": {
-    //       "units": "LB",
-    //       "value": "10",
-    //     },
-    //     "dimensions": {
-    //       "length": "10",
-    //       "width": "10",
-    //       "height": "10",
-    //       "units": "IN"
-    //     }
-    //   }]
-    // }
-    // });
     $input = JSON.stringify({
     "accountNumber": {
       "value": ""
@@ -81,21 +49,21 @@ function (){
 
         $('#rates').remove();
 
-        $('#requestRate').after("<div id='rates'></div>");
+        $('#id-rateRequest').after("<div id='rates'></div>");
         $("#rates").css("display", "flex").css("justify-content", "space-evenly");
         //FEDEX
         $('#rates').append("<div id='ratesFedex'></div>");
-        $("#ratesFedex").css("display", "flex").css("flex-direction", "column");
+        $("#ratesFedex").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
         $("#ratesFedex").append("<h2 id='fedex'>FedEx</h2>");
         $("#ratesFedex").append("<p id='fedexRate'>Tarifa FedEx: $" + data.rateAndTransitTimes.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetCharge + "</p>");
         //DHL
         $('#rates').append("<div id='ratesDhl'></div>");
-        $("#ratesDhl").css("display", "flex").css("flex-direction", "column");
+        $("#ratesDhl").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
         $("#ratesDhl").append("<h2 id='dhl'>DHL</h2>");
         $("#ratesDhl").append("<p id='dhlRate'>Tarifa dhl: $</p>");
         //UPS
         $('#rates').append("<div id='ratesUps'></div>");
-        $("#ratesUps").css("display", "flex").css("flex-direction", "column");
+        $("#ratesUps").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
         $("#ratesUps").append("<h2 id='ups'>UPS</h2>");
         $("#ratesUps").append("<p id='upsRate'>Tarifa UPS: $</p>");
         break;
