@@ -49,24 +49,11 @@
         </div>
     </header>
 
-
     @yield('content')
 
     <footer class="footer">
-        @if(Request::url() == 'http://127.0.0.1:8000/home')
-            <div>
-                <p class="no-margin">Las mejores empresas que ya utilizan nuestra plataforma:</p>
-            </div>
-        @endif
 
-        <div class="contenedor">
-            <div class="flecha-contenedor flecha-formato">
-                <p><</p>
-            </div>
-            <div class="flecha-contenedor flecha-formato">
-                <p>></p>
-            </div>
-        </div>
+        @yield('footer')@section('footer')
 
         <div class="contenedor-baseline">
 

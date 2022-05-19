@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
 
 class AdminController extends Controller
 {
@@ -18,8 +21,11 @@ class AdminController extends Controller
      }
 
      
-    // public function createPerron(array $data)
-    // {
-    //     dd($data);
-    // }
+    public function createPerron(){ 
+        $user = new User;
+        $user->name = "anotherUser";
+        $user->email = "admin2@prueba.com";
+        $user->password = "1234";
+        $user->save();    
+    }
 }
