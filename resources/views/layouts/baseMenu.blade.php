@@ -23,6 +23,9 @@
             </a>
         </div>
         <div class="navegacion-principal">
+            @if (auth()::)
+                
+            @endif
             <a href="#">Envíos</a>
             <a href="#">Rastreo</a>
             <a href="#">Logística</a>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FedexController;
@@ -52,7 +53,7 @@ Route::post('/fedex/getOpenShipment', 'FedexController@getOpenShipmentResultsReq
 Route::put('/fedex/modifyOpenShip', 'FedexController@modifyOpenShipmentRequest');
 Route::put('/fedex/modifyOpenShipPackage', 'FedexController@modifyOpenShipmentPackagesRequest');
 // Route::post('/fedex/createOpenShipmentRequest', 'FedexController@createOpenShipmentRequest');
-Route::get('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimes'])->name('rateAndTransitTimes');
+Route::get('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimes'])->name('rateAndTransitTimes')->middleware('auth');
 Route::post('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimesRequest']);
 // Service Availability API
 Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
@@ -79,6 +80,6 @@ Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('creat
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/register', [AdminController::class, 'createNew'])->name('register');
 
+Route::get('/fedex/registerUser', 'AdminController@createPerron');
 
-Route::post('/registerP', [RegisterController::class, 'createPerron'])->name('register1');
-
+Route::get('/nosotros', [IndexController::class, 'nosotros'])->name('nosotros');

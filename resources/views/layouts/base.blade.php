@@ -9,60 +9,51 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="{{url('css/normalize.css')}}">
     <link rel="stylesheet" href="{{url('css/au.css')}}">
 
-    @yield('extraCSS')@section('extraCSS')
-    <title>Torch</title>
+    @yield('extraCSS')
+    <title >Torch</title>
 </head>
 <body>
     <header>
-        <div class="logo">
-            <a href="/">
-                <picture>
-                    <img src="{{asset('img/TORCH-logo.png')}}" alt="LogoEmpresa">
-                </picture>
-            </a>
-        </div>
-        <div class="navegacion-principal">
-            @if (auth()->user() == null)
-                <a href="#">Cotización</a>
-                <a href="#">Rastreo</a>
-                <a href="#">Logística</a>
-                <a href="#">Promociones</a>
-                <a href="{{url('/register')}}">Crear cuenta</a>
-                <a href="{{url('/login')}}">Iniciar sesión</a>
-            @elseif(auth()->user()->role =='admin')
-                <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
-                <a href="/fedex/rateAndTransitTimes">Cotización</a>
-                <a href="#">Envío</a>
-                <a href="#">Rastrear</a>
-                <a href="{{url('/register')}}">Crear usuario</a>
-                <a href="{{ route('login.destroy') }}" >Log out</a>
-            @endif
-            
+        <div class="flex-col md:flex md:flex-row md:justify-between">
+            <div class="w-full md:w-auto">
+                <a href="/">
+                    <picture class="flex justify-center ">
+                        <img class="w-6/12 md:w-6/12" src="{{asset('img/TORCH-logo.png')}}" alt="LogoEmpresa">
+                    </picture>
+                </a>
+            </div>
+            {{-- <div class="navegacion-principal md:flex items-center"> --}}
+            <div class="flex flex-col items-center w-full  md:flex md:flex-row md:justify-evenly">
+                @if (auth()->user() == null)
+                    <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
+                    <a href="#">Rastreo</a>
+                    <a href="#">Logística</a>
+                    <a href="#">Promociones</a>
+                    <a href="{{url('/register')}}">Crear cuenta</a>
+                    <a href="{{url('/login')}}">Iniciar sesión</a>
+                @elseif(auth()->user()->role =='admin')
+                    <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
+                    <a href="/fedex/rateAndTransitTimes">Cotización</a>
+                    <a href="#">Envío</a>
+                    <a href="#">Rastrear</a>
+                    <a href="{{url('/register')}}">Crear usuario</a>
+                    <a href="{{ route('login.destroy') }}" >Log out</a>
+                @endif
+                
+            </div>
         </div>
     </header>
 
-
-    @yield('content')@section('content')
+    @yield('content')
 
     <footer class="footer">
-        @if(Request::url() == 'http://127.0.0.1:8000/home')
-            <div>
-                <p class="no-margin">Las mejores empresas que ya utilizan nuestra plataforma:</p>
-            </div>
-        @endif
 
-        <div class="contenedor">
-            <div class="flecha-contenedor flecha-formato">
-                <p><</p>
-            </div>
-            <div class="flecha-contenedor flecha-formato">
-                <p>></p>
-            </div>
-        </div>
+        @yield('footer')@section('footer')
 
         <div class="contenedor-baseline">
 
@@ -101,7 +92,7 @@
 
 
     </footer>
-    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    @yield('scripts')@section('scripts')
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    @yield('scripts')
 </body>
 </html>
