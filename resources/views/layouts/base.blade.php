@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        <div class="flex-col md:flex md:flex-row md:justify-between">
+        <div class="flex-col md:flex md:flex-row md:justify-between flex">
             <div class="w-full md:w-auto">
                 <a href="/">
                     <picture class="flex justify-center ">
@@ -29,22 +29,29 @@
             </div>
             {{-- <div class="navegacion-principal md:flex items-center"> --}}
             <div class="flex flex-col items-center w-full  md:flex md:flex-row md:justify-evenly">
-                @if (auth()->user() == null)
+
+                @if(auth()->user() != null && auth()->user()->role =='admin')
+                    <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
+                    <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
+                    <a href="#">Envío</a>
+                    <a href="#">Rastrear</a>
+                    <a href="{{url('/registerUser')}}">Crear usuario</a>
+                    <a href="{{ route('login.destroy') }}" >Log out</a>
+                @elseif(auth()->user() != null)
+                    <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
+                    <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
+                    <a href="#">Envío</a>
+                    <a href="#">Rastrear</a>
+                    <a href="{{ route('login.destroy') }}" >Log out</a>
+                @else
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
                     <a href="#">Rastreo</a>
                     <a href="#">Logística</a>
                     <a href="#">Promociones</a>
                     <a href="{{url('/register')}}">Crear cuenta</a>
                     <a href="{{url('/login')}}">Iniciar sesión</a>
-                @elseif(auth()->user()->role =='admin')
-                    <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
-                    <a href="/fedex/rateAndTransitTimes">Cotización</a>
-                    <a href="#">Envío</a>
-                    <a href="#">Rastrear</a>
-                    <a href="{{url('/register')}}">Crear usuario</a>
-                    <a href="{{ route('login.destroy') }}" >Log out</a>
                 @endif
-                
+
             </div>
         </div>
     </header>

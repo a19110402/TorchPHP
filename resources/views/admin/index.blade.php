@@ -16,6 +16,14 @@
 
                     {{ __('You are logged in and you are admin!') }}
                 </div>
+
+                @if (\Session::has('success'))
+                    <div class="alert alert-success">
+                        <ul>
+                            <p>{!! \Session::get('success') !!} {!! \Session::get('user') !!}</p>
+                        </ul>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

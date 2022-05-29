@@ -3,8 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth;
 use App\Http\Controllers\FedexController;
 
 /*
@@ -63,23 +62,31 @@ Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailab
 //Route::post('/test', 'TestController@index');
 
 //Login
-Auth::routes();
+// Auth::routes(); //Conjunto de rutas,  ya no funcionaba
+// Auth Routes...
+Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::get('/logout', 'Auth\LogoutController@destroy')->name('login.destroy');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Registration Routes...
+// Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::get('/register', 'Auth\RegisterController@createNew')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
 
-//Login de admin
-Route::get('/admin', [AdminController::class, 'index'])->middleware('auth.admin')->name('admin.index');
+// Password Reset Routes...
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
 
-//Logout
-Route::get('/logout', [App\Http\Controllers\Auth\VerificationController::class, 'destroy'])
-    ->name('login.destroy');
+//Homepage
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home/admin', 'AdminController@index')->middleware('auth.admin')->name('admin.index');
 
-Route::get('/adminRegister', [AdminController::class, 'createNew'])->name('createNew');
+//Creación de usuario estando loggeado
+Route::get('/registerUser', 'Auth\RegisterByUserController@userCreation')->name('registerUser');
+Route::post('registerUser', 'Auth\RegisterByUserController@register');
 
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/register', [AdminController::class, 'createNew'])->name('register');
-
-Route::get('/fedex/registerUser', 'AdminController@createPerron');
-
-Route::get('/nosotros', [IndexController::class, 'nosotros'])->name('nosotros');
+//Página nosotros
+Route::get('/nosotros', 'IndexController@nosotros')->name('nosotros');
