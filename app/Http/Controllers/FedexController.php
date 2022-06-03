@@ -91,16 +91,39 @@ class FedexController extends Controller
         ]);
     }
 
-    public function postToken(Request $request){
+    // public function postToken(Request $request){
+    //     $response = HTTP::asForm()->post(env('PRODUCTION_ENV') ?
+    //     env('AUTHORIZATION_API_PRODUCITON_URL'): env('AUTHORIZATION_API_TEST_URL'), [
+    //         'grant_type' => 'client_credentials',
+    //         'client_id' => env('PRODUCTION_ENV') ?
+    //         env('CLIENT_ID_FEDEX_PRODUCTION'): env('CLIENT_ID_FEDEX_TEST'),
+    //         'client_secret' => env('PRODUCTION_ENV') ?
+    //         env('CLIENT_SECRET_FEDEX_PRODUCTION'): env('CLIENT_SECRET_FEDEX_TEST'),
+    //         'child_Key' => $request->get('client_id'),
+    //         'child_secret' => $request->get('child_secret'),
+    //     ]);
+    //     $responseJson = $response;
+    //     $responseJson->json();
+    //     Cookie::queue(Cookie::forget('access_token_fedex'));
+    //     Cookie::queue(Cookie::forget('token_type'));
+    //     Cookie::queue(Cookie::forget('scope'));
+    //     Cookie::queue(Cookie::make('access_token_fedex', $responseJson['access_token'], $responseJson['expires_in']));
+    //     Cookie::queue(Cookie::make('token_type', $responseJson['token_type'], $responseJson['expires_in']));
+    //     Cookie::queue(Cookie::make('scope', $responseJson['scope'], $responseJson['expires_in']));
+    //     return response()->json([
+    //         'answer' => $responseJson['token_type']." ".$responseJson['access_token'],
+    //         'statusCode' => $response->status(),
+    //         'cookie' => Cookie::get('token_type')." ".Cookie::get('access_token_fedex'),
+    //     ]);
+    // }
+    public function postToken(){
         $response = HTTP::asForm()->post(env('PRODUCTION_ENV') ?
         env('AUTHORIZATION_API_PRODUCITON_URL'): env('AUTHORIZATION_API_TEST_URL'), [
             'grant_type' => 'client_credentials',
             'client_id' => env('PRODUCTION_ENV') ?
             env('CLIENT_ID_FEDEX_PRODUCTION'): env('CLIENT_ID_FEDEX_TEST'),
             'client_secret' => env('PRODUCTION_ENV') ?
-            env('CLIENT_SECRET_FEDEX_PRODUCTION'): env('CLIENT_SECRET_FEDEX_TEST'),
-            'child_Key' => $request->get('client_id'),
-            'child_secret' => $request->get('child_secret'),
+            env('CLIENT_SECRET_FEDEX_PRODUCTION'): env('CLIENT_SECRET_FEDEX_TEST')
         ]);
         $responseJson = $response;
         $responseJson->json();
@@ -736,115 +759,139 @@ class FedexController extends Controller
         ]);
     }
 
-    //rate And Transtit Times////////////////////////////////////////////////////////////////////
+    //API RATE AND TRANSIT TIMES
+
     public function rateAndTransitTimes(Request $request){
         $countryCode = $this->getCountryCode();
+        // $responseToken = $this->postToken();
         return view('fedex.rateAndTransitTimes', compact('countryCode')) ;
-    }
-    
+        }
+
     public function rateAndTransitTimesRequest(Request $request){
-
-        $requestJson = json_decode($request->post('rateAndTransiteTimes'));
+        $requestJson = json_decode($request->post('json'));
         $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
-        if( $this->authToken != NULL){ //If there is a Token
-            $response = $this->resendFedexJsonPostRequest(
-                env('RATE_AND_TRANSIT_TIMES_URL'),
-                env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-                $requestJson,
-                $this->authToken->answer
-            );
-            switch($response)
-            {
-                case '200':
-                    return response()->json([
-                        'rateAndTransitTimes' => $response->json(),
-                        'statusCode' => $response->status(),
-                        'cookie' => $requestJson
-                    ]);
-                    break;
-                    case '400':
-                        return response()->json([
-                            'rateAndTransitTimes' => $response->json(),
-                            'statusCode' => $response->status(),
-                            'cookie' => $requestJson
-                        ]);
-                    break;
-                    default:
-                    return response()->json([
-                        'rateAndTransitTimes' => $response->json(),
-                        'statusCode' => $response->status(),
-                        'cookie' => $requestJson
-                    ]);
-                    break;
-            }
-        }
-        else{ //if there isn't token
-            $responseToken = $this->postToken($request);
-            $this->authToken = json_decode($responseToken->content());
-                $response = $this->resendFedexJsonPostRequest(
-                    env('RATE_AND_TRANSIT_TIMES_URL'),
-                    env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-                    $requestJson,
-                    $this->authToken->answer
-                );
+        $response = $this->makeFedexJsonPostRequest(
+            env('RATE_AND_TRANSIT_TIMES_URL'), 
+            env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+             $requestJson
+        );
+        return response()->json([
+            'rateAndTransitTimes' => $response->json(),
+            'statusCode'=> $response->status(),
+            'cookie'=>$requestJson
+        ]);
+    }
+    //FUNCTIONS
+    // public function tryRateAndTransitTimes($requestJson){
+    //     $response = $this->resendFedexJsonPostRequest(
+    //         env('RATE_AND_TRANSIT_TIMES_URL'),
+    //         env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+    //         $requestJson,
+    //         $this->authToken->answer
+    //     );
+    //     switch($response)
+    //     {
+    //         case '200':
+    //             dd($response);
+    //             return response()->json([
+    //                 'rateAndTransitTimes' => $response->json(),
+    //                 'statusCode' => $response->status(),
+    //                 'cookie' => $requestJson
+    //             ]);
+    //             break;
+    //             case '400':
+    //                 return response()->json([
+    //                     'rateAndTransitTimes' => $response->json(),
+    //                     'statusCode' => $response->status(),
+    //                     'cookie' => $requestJson
+    //                 ]);
+    //             break;
+    //             case '401':
+                    
+    //                 break;
+    //             default:
+    //             return response()->json([
+    //                 'rateAndTransitTimes' => $response->json(),
+    //                 'statusCode' => $response->status(),
+    //                 'cookie' => $requestJson
+    //             ]);
+    //             break;
+    //     }
+    // }
+    
+    // //CONTROLLER
+    // public function rateAndTransitTimes(Request $request){
+    //     $countryCode = $this->getCountryCode();
+    //     return view('fedex.rateAndTransitTimes', compact('countryCode')) ;
+    // }
+    
+    // public function rateAndTransitTimesRequest(Request $request){
+        
+    //     dd($request);
+    //     $requestJson = json_decode($request->post('rateAndTransiteTimes'));
+    //     $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+    //     if( $this->authToken != null){ //If there is a Token
+    //         $response = $this->tryRateAndTransitTimes($requestJson);
+    //     }
+    //     else{ //if there isn't token
+    //         $responseToken = $this->postToken($request);
+    //         $this->authToken = json_decode($responseToken->content());
+    //             $response = $this->resendFedexJsonPostRequest(
+    //                 env('RATE_AND_TRANSIT_TIMES_URL'),
+    //                 env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+    //                 $requestJson,
+    //                 $this->authToken->answer
+    //             );
             
-                switch($response)
-                {
-                    case '200':
-                        return response()->json([
-                            'rateAndTransitTimes' => $response->json(),
-                            'statusCode' => $response->status(),
-                            'cookie' => $requestJson
-                        ]);
-                        break;
-                    case '400':
-                        return response()->json([
-                            'rateAndTransitTimes' => $response->json(),
-                            'statusCode' => $response->status(),
-                            'cookie' => $requestJson
-                        ]);
-                        break;
-                        default:
-                        return response()->json([
-                            'rateAndTransitTimes' => $response->json(),
-                            'statusCode' => $response->status(),
-                            'cookie' => $requestJson
-                        ]);
-                        break;
-                }
-        }
+    //             switch($response)
+    //             {
+    //                 case '200':
+    //                     return response()->json([
+    //                         'rateAndTransitTimes' => $response->json(),
+    //                         'statusCode' => $response->status(),
+    //                         'cookie' => $requestJson
+    //                     ]);
+    //                     break;
+    //                 case '400':
+    //                     return response()->json([
+    //                         'rateAndTransitTimes' => $response->json(),
+    //                         'statusCode' => $response->status(),
+    //                         'cookie' => $requestJson
+    //                     ]);
+    //                     break;
+    //                     default:
+    //                     return response()->json([
+    //                         'rateAndTransitTimes' => $response->json(),
+    //                         'statusCode' => $response->status(),
+    //                         'cookie' => $requestJson
+    //                     ]);
+    //                     break;
+    //             }
+    //     }
+    // }
+    //SHIPMENTS
+    //CONTROLLER
+    public function shipments(Request $request){
+        $countryCode = $this->getCountryCode();
+        $serviceType = $this->getServiceType();
+        $packingType = $this->getPackageType();
+        $pickupType = $this->getPickupType();
+        return view('fedex.shipments', compact('countryCode', 'serviceType', 'packingType', 'pickupType'));
+    }
 
-        if ($response->status() == '401'){
-
-
-            $this->authToken = json_decode($responseToken->content());
-            
-            // if($responseToken->status() == '200'){
-            //     $response = $this->makeFedexJsonPostRequest(
-            //         env('RATE_AND_TRANSIT_TIMES_URL'),
-            //         env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-            //         $requestJson, $this->authToken->answer
-            //     );
-            //     dd($response->json());
-            // }
-        }
-        else{
-            // $responseToken = $this->postToken($request);
-            // if($responseToken->status() == '200'){
-            //     $response = $this->makeFedexJsonPostRequest(
-            //         env('RATE_AND_TRANSIT_TIMES_URL'),
-            //         env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-            //         $requestJson, 
-            //         $this->authToken->answer
-            //     );
-            // }
-        }
-
-        // return response()->json([
-        //     'rateAndTransitTimes' => $response->json()->json(),
-        //     'statusCode' => $response->status(),
-        //     'cookie' => $body
-        // ]);
+    public function shipmentsRequest(Request $request){
+        $requestJson = json_decode($request->post('json'));
+        $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+        $response = $this->makeFedexJsonPostRequest(
+            env('SHIP_API_URL'), 
+            env('SHIP_API_PRODUCTION_URL'),
+             $requestJson
+        );
+        return response()->json([
+            'rateAndTransitTimes' => $response->json(),
+            'statusCode'=> $response->status(),
+            'cookie'=>$requestJson
+        ]);
     }
     //makeFedexJson/////////////////////////////////////////////////////////////////////
     public function resendFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray, $token) {

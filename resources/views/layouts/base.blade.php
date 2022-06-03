@@ -39,7 +39,7 @@
                 @elseif(auth()->user()->role =='admin')
                     <a>Bienvenido <b>{{ auth()->user()->name }}</b></a>
                     <a href="/fedex/rateAndTransitTimes">Cotización</a>
-                    <a href="#">Envío</a>
+                    <a href="{{ route('shipments') }}">Envío</a>
                     <a href="#">Rastrear</a>
                     <a href="{{url('/register')}}">Crear usuario</a>
                     <a href="{{ route('login.destroy') }}" >Log out</a>

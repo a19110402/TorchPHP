@@ -125,5 +125,6 @@
 
 
 @section('scripts')
-    <script src="{{ asset('js/fedex/rateAndTransiteTimes.js') }}"></script>
+    <script type="module" src="{{ asset('js/fedex/rateAndTransiteTimes.js') }}"></script>
+    <script type="module" src="{{ asset('js/ajax.js') }}"></script>
 @endsection
