@@ -18,10 +18,20 @@ return new class extends Migration
             $table->string('name');
             $table->string('lastname');
             $table->string('email')->unique();
-            // $table->timestamp('email_verified_at')->nullable();
             $table->string('phone');
             $table->string('password');
-            $table->string('role')->default('admin');
+            $table->string('role')->default('cliente');
+            $table->string('createdBy')->nullable();
+
+            // if(auth()->user() != null && auth()->user()->role =='admin'){
+            //     // $table->string('createdBy')->user()->name;
+            //     $table->where('createdBy', auth()->user()->name)->get();
+            // }else{
+            //     // $table->where('createdBy', auth()->id())->get();
+            //     $table->string('createdBy')->nullable();
+            // }
+            
+            // $table->timestamp('email_verified_at')->nullable();
             // $table->rememberToken();
             $table->timestamps();
         });

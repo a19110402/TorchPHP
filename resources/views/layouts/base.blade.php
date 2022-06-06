@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;500&display=swap" rel="stylesheet">
+    
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="{{url('css/normalize.css')}}">
@@ -18,7 +18,7 @@
     <title >Torch</title>
 </head>
 <body>
-    <header>
+    <header class="mt-7">
         <div class="flex-col md:flex md:flex-row md:justify-between flex">
             <div class="w-full md:w-auto">
                 <a href="/">
@@ -35,7 +35,6 @@
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
                     <a href="#">Envío</a>
                     <a href="#">Rastrear</a>
-                    <a href="{{url('/registerUser')}}">Crear usuario</a>
                     <a href="{{ route('login.destroy') }}" >Log out</a>
                 @elseif(auth()->user() != null)
                     <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
@@ -95,11 +94,9 @@
 
             <div class="linea-amarilla"></div>
         </div>
-
-
-
     </footer>
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+
     @yield('scripts')
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 </body>
 </html>

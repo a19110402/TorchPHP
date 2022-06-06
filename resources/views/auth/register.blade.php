@@ -47,6 +47,12 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <input id="phone" type="text" class="formato-entrada" name="phone" required placeholder="Teléfono">
+                        
+                        @error('phone')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                 </div>
 
@@ -67,14 +73,6 @@
                         <input id="password-confirm" type="password" class="form-control formato-entrada" name="password_confirmation" required autocomplete="new-password" placeholder="Repetir contraseña">
                     </div>
                 </div>
-
-                @if (auth()->user() != null and auth()->user()->role == 'admin')
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <input id="role" type="text" class="form-control" name="role" required placeholder="Tipo de usuario">
-                        </div>
-                    </div>
-                @endif
 
                 <div class="row mb-0 contenedor-check">
                     <div class="col-md-6 offset-md-4 center">

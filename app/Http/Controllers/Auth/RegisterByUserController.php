@@ -51,7 +51,7 @@ class RegisterByUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['required', 'string', 'max:10'],
+            'phone' => ['required', 'string', 'size:9'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'string'],
         ]);
@@ -72,6 +72,7 @@ class RegisterByUserController extends Controller
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
+            'createdBy' => auth()->user()->name,
         ]);
     }
 
