@@ -60,13 +60,7 @@ function (){
         $('#rates').append("<div id='ratesDhl'></div>");
         $("#ratesDhl").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
         $("#ratesDhl").append("<h2 id='dhl'>DHL</h2>");
-        console.log(data.responseDHL.RateResponse.Provider[0].Service.length );
-        if (data.responseDHL.RateResponse.Provider[0].Service.length <=1){
-          $service =  data.responseDHL.RateResponse.Provider[0].Service.TotalNet.Amount;
-        } else {
-          $service =  data.responseDHL.RateResponse.Provider[0].Service.TotalNet.Amount;
-        }
-        $("#ratesDhl").append("<p id='dhlRate'>Tarifa dhl: $" + $service + "</p>");
+        $("#ratesDhl").append("<p id='dhlRate'>Tarifa dhl: $</p>");
         //UPS
         $('#rates').append("<div id='ratesUps'></div>");
         $("#ratesUps").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
