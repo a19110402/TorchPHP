@@ -29,6 +29,7 @@
             </div>
             {{-- <div class="navegacion-principal md:flex items-center"> --}}
             <div class="flex flex-col items-center w-full  md:flex md:flex-row md:justify-evenly">
+                    <a href="{{url('/products')}}">Productos</a>
                 @if (auth()->user() == null)
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
                     <a href="#">Rastreo</a>
