@@ -6,6 +6,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FedexController;
+use App\Http\Controllers\Admin\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,3 +84,8 @@ Route::get('/register', [AdminController::class, 'createNew'])->name('register')
 Route::get('/fedex/registerUser', 'AdminController@createPerron');
 
 Route::get('/nosotros', [IndexController::class, 'nosotros'])->name('nosotros');
+
+//Products
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/add-products', [ProductController::class, 'add']);
+Route::post('/insert-product', [ProductController::class, 'insert']);
