@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
-
+use app\models\User;
 
 
 class FedexController extends Controller
@@ -764,22 +764,45 @@ class FedexController extends Controller
     public function rateAndTransitTimes(Request $request){
         $countryCode = $this->getCountryCode();
         // $responseToken = $this->postToken();
-        return view('fedex.rateAndTransitTimes', compact('countryCode')) ;
+        return view('fedex.rateAndTransitTimes', compact('countryCode'));
         }
 
     public function rateAndTransitTimesRequest(Request $request){
         $requestJson = json_decode($request->post('json'));
-        $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
-        $response = $this->makeFedexJsonPostRequest(
+        $requestJson->fedex->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+        $requestJson->dhl->RateRequest->RequestedShipment->Account= env('ACCOUNT_DHL');
+        //FEDEX
+        $responseFedex = $this->makeFedexJsonPostRequest(
             env('RATE_AND_TRANSIT_TIMES_URL'), 
             env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-             $requestJson
+             $requestJson->fedex
         );
+        //DHL
+        $responseDhl = $this->makeFedexJsonPostRequest(
+            env('RATE_REQUEST_TEST_URL_DHL'), 
+            env('RATE_REQUEST_PRODUCTION_URL_DHL'),
+             $requestJson->dhl
+            );
+            // DD($responseFedex->json());
+            DD($responseDhl->json());
         return response()->json([
-            'rateAndTransitTimes' => $response->json(),
-            'statusCode'=> $response->status(),
-            'cookie'=>$requestJson
+            'fedexResponse' => [
+                'response' => $responseFedex ->json(),
+                'statusCode' => $responseFedex->status()
+            ],
+            'dhlResponse' => [
+                'response'=> $responseDhl->json(),
+                'statusCode'=>$responseDhl->status()
+            ],
+            'upsResponse' => [
+
+            ]
         ]);
+        // return response()->json([
+        //     'rateAndTransitTimes' => $response->json(),
+        //     'statusCode'=> $response->status(),
+        //     'cookie'=>$requestJson
+        // ]);
     }
     //FUNCTIONS
     // public function tryRateAndTransitTimes($requestJson){
@@ -873,25 +896,56 @@ class FedexController extends Controller
     //CONTROLLER
     public function shipments(Request $request){
         $countryCode = $this->getCountryCode();
-        $serviceType = $this->getServiceType();
+        // $serviceType = $this->getServiceType();
         $packingType = $this->getPackageType();
         $pickupType = $this->getPickupType();
-        return view('fedex.shipments', compact('countryCode', 'serviceType', 'packingType', 'pickupType'));
+        return view('fedex.shipments', compact('countryCode', 'packingType', 'pickupType'));
     }
 
     public function shipmentsRequest(Request $request){
         $requestJson = json_decode($request->post('json'));
-        $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+        // $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
         $response = $this->makeFedexJsonPostRequest(
-            env('SHIP_API_URL'), 
-            env('SHIP_API_PRODUCTION_URL'),
-             $requestJson
+            env('VALIDATE_SHIP_API_URL'),
+            env('VALIDATE_SHIP_API_PRODUCTION_URL'),
+            $requestJson
         );
-        return response()->json([
-            'rateAndTransitTimes' => $response->json(),
-            'statusCode'=> $response->status(),
-            'cookie'=>$requestJson
-        ]);
+        if($response->status() == '200'){
+            $response = $this->makeFedexJsonPostRequest(
+                env('SHIP_API_URL'), 
+                env('SHIP_API_PRODUCTION_URL'),
+                 $requestJson
+            );
+            return response()->json([
+                'response'=>$response->json(),
+                'statusCode'=>$response->status()
+            ]);
+            // return response()->json([
+            //     'shipAPI' => $response->json(),
+            //     'statusCode'=> $response->status(),
+            //     'cookie'=>$requestJson,
+            //     'TEST'=>''
+            // ]);
+        }
+        else{
+            return response()->json([
+                'shipAPI' => $response->json(),
+                'statusCode'=> $response->status(),
+                'cookie'=>$requestJson,
+                'TEST'=>'FROM DEFAULT'
+            ]);
+        }
+    }
+
+    //API TRACKING
+
+    public function tracking()
+    {
+
+    }
+    public function trackingRequest()
+    {
+
     }
     //makeFedexJson/////////////////////////////////////////////////////////////////////
     public function resendFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray, $token) {

@@ -14,9 +14,19 @@
                             <label class="m-0" for="shipper_postalCode"> Origin Postal Code</label>
                         </div>
                         <div>
-                            <input class="border border-black rounded" type="text" name="shipper_postalCode" id="">
+                            <input value="45128" class="border border-black rounded" type="text" name="shipper_postalCode" id="">
                         </div>
                     </div>
+                    
+                    <div class="p-1 md:columns-2" >
+                        <div>
+                            <label for="">City of shipper</label>
+                        </div>
+                        <div>
+                            <input value="Zapopan" class="border border-black rounded" type="text" name="shipper_city">
+                        </div>
+                    </div>
+
                     <div class="md:columns-2 p-1">
                         <div>
                             <label class="m-0" for="shipper_Country">Country</label>
@@ -25,7 +35,12 @@
                         <div>
                             <select class="border-black border rounded-r-md w-7/12" name="shipper_countryCode" id="">
                                 @foreach ($countryCode as $country => $code )
-                                    <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @if ($code == 'MX')
+                                        <option selected value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @else
+                                        <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @endif
+
                                 @endforeach
                             </select>
                             
@@ -36,12 +51,23 @@
                             <label class="m-0" for="recipient_postalCode">Destination Postal Code</label>
                             
                         </div>
+                        
                         <div>
-                            <input class="border border-black rounded" type="text" name="recipient_postalCode" id="">
+                            <input  value="44100" class="border border-black rounded" type="text" name="recipient_postalCode" id="">
                             
                         </div>
     
                     </div>
+
+                    <div class="p-1 md:columns-2" >
+                        <div>
+                            <label for="">City of recipient</label>
+                        </div>
+                        <div>
+                            <input value="Guadalajara" class="border border-black rounded" type="text" name="recipient_city">
+                        </div>
+                    </div>
+
                     <div class="md:columns-2 p-1">
                         <div>
                             <label class="m-0" for="recipient_country">Country</label>
@@ -50,7 +76,12 @@
                         <div>
                             <select class="border-black border rounded-r-md w-7/12" name="recipient_countryCode" id="">
                                 @foreach ($countryCode as $country => $code )
-                                    <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @if ($code == 'MX')
+                                        <option selected value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @else
+                                        <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @endif
+
                                 @endforeach
                             </select>
                             
@@ -79,7 +110,7 @@
                             
                         </div>
                         <div>
-                            <input class="border border-black rounded" type="text" name="weight" id="">
+                            <input value="1" class="border border-black rounded" type="text" name="weight" id="">
                             
                         </div>
                     </div>
@@ -89,7 +120,7 @@
                             
                         </div>
                         <div>
-                            <input class="border border-black rounded" type="text" name="lenght" id="">
+                            <input value="10" class="border border-black rounded" type="text" name="lenght" id="">
                             
                         </div>
                     </div>
@@ -99,7 +130,7 @@
                             
                         </div>
                         <div>
-                            <input class="border border-black rounded" type="text" name="width" id="">
+                            <input value="10" class="border border-black rounded" type="text" name="width" id="">
                             
                         </div>
                     </div>
@@ -109,7 +140,7 @@
                             
                         </div>
                         <div>
-                            <input class="border border-black rounded" type="text" name="height" id="">
+                            <input value="10" class="border border-black rounded" type="text" name="height" id="">
                             
                         </div>
                     </div>
@@ -118,8 +149,16 @@
                     </div>
                 </div>
             
-            </form>
-    </div>
+            </div>
+            
+        </form>
+        <div id="fedEx">
+            <a class="border-2 rounded-lg border-gray-800" href="{{ route('shipments') }}">GENERAR ENVÍO CON FEDEX</a>
+            {{-- <h1>FedEx</h1> --}}
+            {{-- <p id="id-serviceType">Tipo de servicio: </p>
+            <p id="id-serviceName">Servicio por:</p>
+            <p id="id-netCharge">Tarifa Neta:</p> --}}
+        </div>
 @endsection
 
 

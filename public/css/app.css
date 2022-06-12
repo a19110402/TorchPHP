@@ -562,35 +562,20 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: -moz-max-content;
   width: max-content;
 }
+.w-3\/12 {
+  width: 25%;
+}
 .w-full {
   width: 100%;
 }
 .w-6\/12 {
   width: 50%;
 }
-.w-3\/12 {
-  width: 25%;
-}
 .min-w-full {
   min-width: 100%;
 }
 .max-w-6xl {
   max-width: 72rem;
-}
-.max-w-md {
-  max-width: 28rem;
-}
-.max-w-xs {
-  max-width: 20rem;
-}
-.max-w-xl {
-  max-width: 36rem;
-}
-.max-w-sm {
-  max-width: 24rem;
-}
-.max-w-lg {
-  max-width: 32rem;
 }
 .cursor-pointer {
   cursor: pointer;
@@ -606,6 +591,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .justify-center {
   justify-content: center;
+}
+.justify-items-center {
+  justify-items: center;
 }
 .overflow-hidden {
   overflow: hidden;
@@ -650,6 +638,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 .border-slate-600 {
   --tw-border-opacity: 1;
   border-color: rgb(71 85 105 / var(--tw-border-opacity));
+}
+.border-gray-800 {
+  --tw-border-opacity: 1;
+  border-color: rgb(31 41 55 / var(--tw-border-opacity));
 }
 .bg-white {
   --tw-bg-opacity: 1;
@@ -698,6 +690,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
+}
+.text-8xl {
+  font-size: 6rem;
+  line-height: 1;
 }
 .font-semibold {
   font-weight: 600;

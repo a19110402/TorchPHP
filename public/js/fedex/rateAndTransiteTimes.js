@@ -1,54 +1,132 @@
 import ajax from '../ajax.js';
 
+$("#fedEx").hide();
 $("#requestRate").on('submit',
 function (){
   $('#rates').remove();
     let url = $(this).attr('data-action');
     let input = JSON.stringify({
-    "accountNumber": {
-      "value": ""
-    },
-    "requestedShipment": {
-      "shipper": {
-        "address": {
-          "postalCode": $('input[name="shipper_postalCode"]').val(),
-            "countryCode": $('select[name="shipper_countryCode"]').val()
-            }
+    "fedex": {
+      "accountNumber": {
+        "value": ""
       },
-      "recipient": {
-        "address": {
-          "postalCode": $('input[name="recipient_postalCode"]').val(),
-          "countryCode": $('select[name="recipient_countryCode"]').val()
-        }
-      },
-      "pickupType": $('select[name="pickupType"]').val(),
-      "rateRequestType":["LIST", "ACCOUNT"],
-      "requestedPackageLineItems": [{
-        "weight": {
-          "units": "LB",
-          "value": $('input[name="weight"]').val(),
+      "requestedShipment": {
+        "shipper": {
+          "address": {
+            "city" : $('input[name="shipper_city"]').val(),
+            "postalCode": $('input[name="shipper_postalCode"]').val(),
+              "countryCode": $('select[name="shipper_countryCode"]').val(),
+              }
         },
-        "dimensions": {
-          "length": $('input[name="lenght"]').val(),
-          "width": $('input[name="width"]').val(),
-          "height": $('input[name="height"]').val(),
-          "units": "IN"
-        }
-      }]
-    }
+        "recipient": {
+          "address": {
+            "city" : $('input[name="recipient_city"]').val(),
+            "postalCode": $('input[name="recipient_postalCode"]').val(),
+            "countryCode": $('select[name="recipient_countryCode"]').val()
+          }
+        },
+        "pickupType": $('select[name="pickupType"]').val(),
+        "rateRequestType":["LIST", "ACCOUNT"],
+        "requestedPackageLineItems": [{
+          "weight": {
+            "units": "LB",
+            "value": $('input[name="weight"]').val(),
+          },
+          "dimensions": {
+            "length": $('input[name="lenght"]').val(),
+            "width": $('input[name="width"]').val(),
+            "height": $('input[name="height"]').val(),
+            "units": "IN"
+          }
+        }]
+      }
+    },
+    "dhl": {
+        "RateRequest": {
+          "ClientDetails": null,
+          "RequestedShipment": {
+              "DropOffType": "REQUEST_COURIER",
+              "ShipTimestamp": "2022-06-01T09:10:09",
+              "UnitOfMeasurement": "SI",
+              "Content": "NON_DOCUMENTS",
+              "PaymentInfo": "DDU",
+            "Account": "",
+              "Ship": {
+                  "Shipper": {
+                      "City": "",
+                      "PostalCode": "65247",
+                      "CountryCode": "US"
+                  },
+                  "Recipient": {
+                      "City": "",
+                      "PostalCode": "75063",
+                      "CountryCode": "US"
+                  }
+              },
+              "Packages": {
+                  "RequestedPackages": {
+                      "@number": "1",
+                      "Weight": {
+                          "Value": 20
+                      },
+                      "Dimensions": {
+                          "Length": 20,
+                          "Width": 20,
+                          "Height": 20
+                      }
+                  }
+              }
+            }
+          }
+    },
+    "ups":{},
     });
-    request();
 
-    function request(){
+    // let input = JSON.stringify({
+    //   "accountNumber": {
+    //     "value": ""
+    //   },
+    //   "requestedShipment": {
+    //     "shipper": {
+    //       "address": {
+    //         "postalCode": 65247,
+    //         "countryCode": "US"
+    //       }
+    //     },
+    //     "recipient": {
+    //       "address": {
+    //         "postalCode": 75063,
+    //         "countryCode": "US"
+    //       }
+    //     },
+    //     "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
+    //     "rateRequestType": [
+    //       "ACCOUNT",
+    //       "LIST"
+    //     ],
+    //     "requestedPackageLineItems": [
+    //       {
+    //         "weight": {
+    //           "units": "LB",
+    //           "value": 10
+    //         }
+    //       }
+    //     ]
+    //   }
+    // });
+    request(url, input);
+    
+    function request(url, input){
       console.log("starting petition");
       let data = ajax('POST', url, input, $('input[name="_token"]').val());
       
       data.then(function(response){
         console.log("Reading response");
-        switch (response.statusCode){
+        switch (response.fedexResponse.statusCode){
           case 200:
             showResult(response);
             console.log("Cool");
+            console.log(JSON.stringify(response));
             break;
           case 400:
             console.log("Some information is missing");
@@ -63,7 +141,7 @@ function (){
     }
 
     function showResult(data){
-
+        $("#fedEx").show();
         $('#rates').remove();
 
         $('#id-rateRequest').after("<div id='rates'></div>");
@@ -71,8 +149,19 @@ function (){
         //FEDEX
         $('#rates').append("<div id='ratesFedex'></div>");
         $("#ratesFedex").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
-        $("#ratesFedex").append("<h2 id='fedex'>FedEx</h2>");
-        $("#ratesFedex").append("<p id='fedexRate'>Tarifa FedEx: $" + data.rateAndTransitTimes.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetCharge + "</p>");
+        $("#ratesFedex").append("<h2 id='fedex'>FedEx</h2>");        
+        // data.rateAndTransitTimes.output.rateReplyDetails.forEach(element => {
+        //   $("#ratesFedex").append("<p id='fedexRate'><b>Tipo de servicio: " + element.serviceType + "</b></p>");
+        //   $("#ratesFedex").append("<p id='fedexRate'>Servicio por: " + element.serviceName+ "</p>");
+        //   $("#ratesFedex").append("<p id='fedexRate'>Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55 + "</p>");          
+        // });
+        data.fedexResponse.response.output.rateReplyDetails.forEach(element => {
+          $("#ratesFedex").append("<p id='fedexRate'><b>Tipo de servicio: " + element.serviceType + "</b></p>");
+          $("#ratesFedex").append("<p id='fedexRate'>Servicio por: " + element.serviceName+ "</p>");
+          $("#ratesFedex").append("<p id='fedexRate'>Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55 + "</p>");          
+        });
+
+
         //DHL
         $('#rates').append("<div id='ratesDhl'></div>");
         $("#ratesDhl").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");

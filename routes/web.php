@@ -22,28 +22,35 @@ Route::get('/', function () {
     return view('welcome');
 });
 */
+
+
+Route::get('/rateAndTransitTimes', 'mainController@getRateView');
+Route::post('/rateAndTransitTimes', 'mainController@rate');
+
+
+
 Route::get('/', 'IndexController@index');
 //API Index Fedex
 Route::get('/fedex', 'FedexController@index');
 //API Get Token
-Route::get('/fedex/auth', 'FedexController@auth');
+// Route::get('/fedex/auth', 'FedexController@auth');
 Route::post('/fedex/authKey', 'FedexController@postToken');
 //API Validation Address
-Route::get('/fedex/addresValidationForm', 'FedexController@addresValidation');
+// Route::get('/fedex/addresValidationForm', 'FedexController@addresValidation');
 Route::post('/fedex/addresValidationRequest', 'FedexController@validationFedexRequest');
 //API Find Location
-Route::get('/fedex/findLocationForm', 'FedexController@findLocationForm');
+// Route::get('/fedex/findLocationForm', 'FedexController@findLocationForm');
 Route::post('/fedex/findLocationRequest', 'FedexController@findLocationRequest');
 //API Global Trade
-Route::get('/fedex/globalTradeForm', 'FedexController@globalTradeForm');
+// Route::get('/fedex/globalTradeForm', 'FedexController@globalTradeForm');
 Route::post('/fedex/globalTradeRequest', 'FedexController@globalTradeRequest');
 //API Ground End Day 
-Route::get('/fedex/GroundDayCloseForm', 'FedexController@GroundDayCloseForm');
+// Route::get('/fedex/GroundDayCloseForm', 'FedexController@GroundDayCloseForm');
 Route::post('/fedex/GroundDayCloseRequest', 'FedexController@GroundDayCloseRequest');
 Route::post('/fedex/ReprintDayCloseRequest', 'FedexController@reprintDayCloseRequest');
 //API Open Ship
-Route::get('/fedex/options', [FedexController::class, 'fedexOptions'])->name('fedexOptions');
-Route::get('/fedex/openShip', 'FedexController@openShip');
+// Route::get('/fedex/options', [FedexController::class, 'fedexOptions'])->name('fedexOptions');
+// Route::get('/fedex/openShip', 'FedexController@openShip');
 Route::post('/fedex/openShip', 'FedexController@createOpenShipmentRequest');
 Route::post('/fedex/confirmOpenShipment', 'FedexController@confirmOpenShipmentRequest');
 Route::post('/fedex/addOpenShipmentPackages', 'FedexController@addOpenShipmentPackagesRequest');
@@ -54,14 +61,20 @@ Route::put('/fedex/modifyOpenShip', 'FedexController@modifyOpenShipmentRequest')
 Route::put('/fedex/modifyOpenShipPackage', 'FedexController@modifyOpenShipmentPackagesRequest');
 // Route::post('/fedex/createOpenShipmentRequest', 'FedexController@createOpenShipmentRequest');
 //API RATE AND TRANSIT TIMES
-Route::get('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimes'])->name('rateAndTransitTimes')->middleware('auth');
-Route::post('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimesRequest']);
+Route::get('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimes')->name('rateAndTransitTimes')->middleware('auth');
+// Route::get('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimes'])->name('rateAndTransitTimes')->middleware('auth');
+Route::post('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimesRequest');
+// Route::post('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimesRequest']);
 //API SHIPMENTS
 Route::get('/fedex/shipments', [FedexController::class, 'shipments'])->name('shipments') -> middleware('auth');
 Route::post('/fedex/shipments', 'FedexController@shipmentsRequest');
+//TRACKING API
+// Route::get('fedex/tracking', 'FedexController@tracking')->name('tracking');
+// Route::get('fedex/tracking', 'FedexController@trackingRequest');
 // Service Availability API
 Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
 Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailabilityRequest');
+
 
 
 //Route::post('/test', 'TestController@index');
