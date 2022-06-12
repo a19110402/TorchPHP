@@ -14,7 +14,7 @@
                             <label class="m-0" for="shipper_postalCode"> Origin Postal Code</label>
                         </div>
                         <div>
-                            <input value="45128" class="border border-black rounded" type="text" name="shipper_postalCode" id="">
+                            <input value="65247" class="border border-black rounded" type="text" name="shipper_postalCode" id="">
                         </div>
                     </div>
                     
@@ -23,7 +23,7 @@
                             <label for="">City of shipper</label>
                         </div>
                         <div>
-                            <input value="Zapopan" class="border border-black rounded" type="text" name="shipper_city">
+                            <input value="" class="border border-black rounded" type="text" name="shipper_city">
                         </div>
                     </div>
 
@@ -35,7 +35,7 @@
                         <div>
                             <select class="border-black border rounded-r-md w-7/12" name="shipper_countryCode" id="">
                                 @foreach ($countryCode as $country => $code )
-                                    @if ($code == 'MX')
+                                    @if ($code == 'US')
                                         <option selected value="{{ $code }}">{{ $country }}({{ $code }})</option>
                                     @else
                                         <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
@@ -53,7 +53,7 @@
                         </div>
                         
                         <div>
-                            <input  value="44100" class="border border-black rounded" type="text" name="recipient_postalCode" id="">
+                            <input  value="75063" class="border border-black rounded" type="text" name="recipient_postalCode" id="">
                             
                         </div>
     
@@ -64,7 +64,7 @@
                             <label for="">City of recipient</label>
                         </div>
                         <div>
-                            <input value="Guadalajara" class="border border-black rounded" type="text" name="recipient_city">
+                            <input value="" class="border border-black rounded" type="text" name="recipient_city">
                         </div>
                     </div>
 
@@ -76,7 +76,7 @@
                         <div>
                             <select class="border-black border rounded-r-md w-7/12" name="recipient_countryCode" id="">
                                 @foreach ($countryCode as $country => $code )
-                                    @if ($code == 'MX')
+                                    @if ($code == 'US')
                                         <option selected value="{{ $code }}">{{ $country }}({{ $code }})</option>
                                     @else
                                         <option value="{{ $code }}">{{ $country }}({{ $code }})</option>

@@ -770,7 +770,7 @@ class FedexController extends Controller
     public function rateAndTransitTimesRequest(Request $request){
         $requestJson = json_decode($request->post('json'));
         $requestJson->fedex->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
-        $requestJson->dhl->RateRequest->RequestedShipment->Account= env('ACCOUNT_DHL');
+        $requestJson->dhl->RateRequest->RequestedShipment->Account= env('ACCOUNT_DHL_TEST');
         //FEDEX
         $responseFedex = $this->makeFedexJsonPostRequest(
             env('RATE_AND_TRANSIT_TIMES_URL'), 
@@ -778,120 +778,25 @@ class FedexController extends Controller
              $requestJson->fedex
         );
         //DHL
-        $responseDhl = $this->makeFedexJsonPostRequest(
+        $responseDhl = $this->makeDHLJsonPostRequest(
             env('RATE_REQUEST_TEST_URL_DHL'), 
             env('RATE_REQUEST_PRODUCTION_URL_DHL'),
              $requestJson->dhl
             );
-            // DD($responseFedex->json());
-            DD($responseDhl->json());
         return response()->json([
             'fedexResponse' => [
                 'response' => $responseFedex ->json(),
                 'statusCode' => $responseFedex->status()
-            ],
+            ], 
             'dhlResponse' => [
-                'response'=> $responseDhl->json(),
-                'statusCode'=>$responseDhl->status()
+                'response'=> $responseDhl
             ],
             'upsResponse' => [
 
             ]
         ]);
-        // return response()->json([
-        //     'rateAndTransitTimes' => $response->json(),
-        //     'statusCode'=> $response->status(),
-        //     'cookie'=>$requestJson
-        // ]);
     }
-    //FUNCTIONS
-    // public function tryRateAndTransitTimes($requestJson){
-    //     $response = $this->resendFedexJsonPostRequest(
-    //         env('RATE_AND_TRANSIT_TIMES_URL'),
-    //         env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-    //         $requestJson,
-    //         $this->authToken->answer
-    //     );
-    //     switch($response)
-    //     {
-    //         case '200':
-    //             dd($response);
-    //             return response()->json([
-    //                 'rateAndTransitTimes' => $response->json(),
-    //                 'statusCode' => $response->status(),
-    //                 'cookie' => $requestJson
-    //             ]);
-    //             break;
-    //             case '400':
-    //                 return response()->json([
-    //                     'rateAndTransitTimes' => $response->json(),
-    //                     'statusCode' => $response->status(),
-    //                     'cookie' => $requestJson
-    //                 ]);
-    //             break;
-    //             case '401':
-                    
-    //                 break;
-    //             default:
-    //             return response()->json([
-    //                 'rateAndTransitTimes' => $response->json(),
-    //                 'statusCode' => $response->status(),
-    //                 'cookie' => $requestJson
-    //             ]);
-    //             break;
-    //     }
-    // }
     
-    // //CONTROLLER
-    // public function rateAndTransitTimes(Request $request){
-    //     $countryCode = $this->getCountryCode();
-    //     return view('fedex.rateAndTransitTimes', compact('countryCode')) ;
-    // }
-    
-    // public function rateAndTransitTimesRequest(Request $request){
-        
-    //     dd($request);
-    //     $requestJson = json_decode($request->post('rateAndTransiteTimes'));
-    //     $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
-    //     if( $this->authToken != null){ //If there is a Token
-    //         $response = $this->tryRateAndTransitTimes($requestJson);
-    //     }
-    //     else{ //if there isn't token
-    //         $responseToken = $this->postToken($request);
-    //         $this->authToken = json_decode($responseToken->content());
-    //             $response = $this->resendFedexJsonPostRequest(
-    //                 env('RATE_AND_TRANSIT_TIMES_URL'),
-    //                 env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-    //                 $requestJson,
-    //                 $this->authToken->answer
-    //             );
-            
-    //             switch($response)
-    //             {
-    //                 case '200':
-    //                     return response()->json([
-    //                         'rateAndTransitTimes' => $response->json(),
-    //                         'statusCode' => $response->status(),
-    //                         'cookie' => $requestJson
-    //                     ]);
-    //                     break;
-    //                 case '400':
-    //                     return response()->json([
-    //                         'rateAndTransitTimes' => $response->json(),
-    //                         'statusCode' => $response->status(),
-    //                         'cookie' => $requestJson
-    //                     ]);
-    //                     break;
-    //                     default:
-    //                     return response()->json([
-    //                         'rateAndTransitTimes' => $response->json(),
-    //                         'statusCode' => $response->status(),
-    //                         'cookie' => $requestJson
-    //                     ]);
-    //                     break;
-    //             }
-    //     }
-    // }
     //SHIPMENTS
     //CONTROLLER
     public function shipments(Request $request){
@@ -947,7 +852,7 @@ class FedexController extends Controller
     {
 
     }
-    //makeFedexJson/////////////////////////////////////////////////////////////////////
+    //FEDEX JSON POST/////////////////////////////////////////////////////////////////////
     public function resendFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray, $token) {
         return $response = HTTP::withHeaders([
             'content-type'=>'application/json',
@@ -988,6 +893,15 @@ class FedexController extends Controller
                 'AuthenticationProblem' => 'true'
             ]);
         }
+    }
+
+    //DHL JSON POST
+    public function makeDHLJsonPostRequest($urlTest, $urlProduction, $jsonArray)
+    {
+        return HTTP::withBasicAuth(
+            env('PRODUCTION_ENV') ? env('USER_DHL_PRODUCTION'): env('USER_DHL_TEST'), 
+            env('PRODUCTION_ENV') ? env('PASS_DHL_PRODUCTION'): env('PASS_DHL_TEST')
+        )->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray)->json();
     }
     //functions for forms//////////////////////////////////////////////////////////////
     public function getAccountShipmentNumber()

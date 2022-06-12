@@ -3,6 +3,20 @@ import ajax from '../ajax.js';
 $("#fedEx").hide();
 $("#requestRate").on('submit',
 function (){
+  //shipper
+  let shipperCity = $('input[name="shipper_city"]').val();
+  let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
+  let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
+  //recipient
+  let recipientCity = $('input[name="recipient_city"]').val();
+  let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
+  let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
+  //package
+  let pickupType = $('select[name="pickupType"]').val();
+  let weight = $('input[name="weight"]').val();
+  let lenght = $('input[name="lenght"]').val();
+  let width = $('input[name="width"]').val();
+  let height = $('input[name="height"]').val();
   $('#rates').remove();
     let url = $(this).attr('data-action');
     let input = JSON.stringify({
@@ -13,29 +27,29 @@ function (){
       "requestedShipment": {
         "shipper": {
           "address": {
-            "city" : $('input[name="shipper_city"]').val(),
-            "postalCode": $('input[name="shipper_postalCode"]').val(),
-              "countryCode": $('select[name="shipper_countryCode"]').val(),
+            "city" : shipperCity,
+            "postalCode": shipperPostalCode,
+              "countryCode": shipperCountrCode,
               }
         },
         "recipient": {
           "address": {
-            "city" : $('input[name="recipient_city"]').val(),
-            "postalCode": $('input[name="recipient_postalCode"]').val(),
-            "countryCode": $('select[name="recipient_countryCode"]').val()
+            "city" : recipientCity,
+            "postalCode": recipientPostalCode,
+            "countryCode": recipientCountryCode
           }
         },
-        "pickupType": $('select[name="pickupType"]').val(),
+        "pickupType": pickupType,
         "rateRequestType":["LIST", "ACCOUNT"],
         "requestedPackageLineItems": [{
           "weight": {
             "units": "LB",
-            "value": $('input[name="weight"]').val(),
+            "value": weight,
           },
           "dimensions": {
-            "length": $('input[name="lenght"]').val(),
-            "width": $('input[name="width"]').val(),
-            "height": $('input[name="height"]').val(),
+            "length": lenght,
+            "width": width,
+            "height": height,
             "units": "IN"
           }
         }]
@@ -53,26 +67,26 @@ function (){
             "Account": "",
               "Ship": {
                   "Shipper": {
-                      "City": "",
-                      "PostalCode": "65247",
-                      "CountryCode": "US"
+                      "City": shipperCity,
+                      "PostalCode": shipperPostalCode,
+                      "CountryCode": shipperCountrCode
                   },
                   "Recipient": {
-                      "City": "",
-                      "PostalCode": "75063",
-                      "CountryCode": "US"
+                      "City": recipientCity,
+                      "PostalCode": recipientPostalCode,
+                      "CountryCode": recipientCountryCode
                   }
               },
               "Packages": {
                   "RequestedPackages": {
                       "@number": "1",
                       "Weight": {
-                          "Value": 20
+                          "Value": weight
                       },
                       "Dimensions": {
-                          "Length": 20,
-                          "Width": 20,
-                          "Height": 20
+                          "Length": lenght,
+                          "Width": width,
+                          "Height": height
                       }
                   }
               }
@@ -138,6 +152,7 @@ function (){
             break;
         }
       });
+
     }
 
     function showResult(data){
@@ -166,7 +181,9 @@ function (){
         $('#rates').append("<div id='ratesDhl'></div>");
         $("#ratesDhl").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
         $("#ratesDhl").append("<h2 id='dhl'>DHL</h2>");
-        $("#ratesDhl").append("<p id='dhlRate'>Tarifa dhl: $</p>");
+        $("#ratesDhl").append("<p id='dhlRate'>Tarifa dhl: $" + data.dhlResponse.response.RateResponse.Provider[0].Service.Charges.Charge[0].ChargeType + "</p>");
+        $("#ratesDhl").append("<p id='dhlRate'>Tipo de servicio: $" + data.dhlResponse.response.RateResponse.Provider[0].Service.TotalNet.Amount + "</p>");
+
         //UPS
         $('#rates').append("<div id='ratesUps'></div>");
         $("#ratesUps").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
