@@ -789,7 +789,8 @@ class FedexController extends Controller
                 'statusCode' => $responseFedex->status()
             ], 
             'dhlResponse' => [
-                'response'=> $responseDhl
+                'response' => $responseDhl,
+                
             ],
             'upsResponse' => [
 

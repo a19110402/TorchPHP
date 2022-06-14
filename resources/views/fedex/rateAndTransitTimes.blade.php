@@ -14,7 +14,7 @@
                             <label class="m-0" for="shipper_postalCode"> Origin Postal Code</label>
                         </div>
                         <div>
-                            <input value="65247" class="border border-black rounded" type="text" name="shipper_postalCode" id="">
+                            <input required value="65247" class="border border-black rounded" type="text" name="shipper_postalCode" id="">
                         </div>
                     </div>
                     
@@ -53,7 +53,7 @@
                         </div>
                         
                         <div>
-                            <input  value="75063" class="border border-black rounded" type="text" name="recipient_postalCode" id="">
+                            <input required  value="75063" class="border border-black rounded" type="text" name="recipient_postalCode" id="">
                             
                         </div>
     
@@ -110,7 +110,7 @@
                             
                         </div>
                         <div>
-                            <input value="1" class="border border-black rounded" type="text" name="weight" id="">
+                            <input required value="1" class="border border-black rounded" type="text" name="weight" id="">
                             
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                             
                         </div>
                         <div>
-                            <input value="10" class="border border-black rounded" type="text" name="lenght" id="">
+                            <input required value="10" class="border border-black rounded" type="text" name="lenght" id="">
                             
                         </div>
                     </div>
@@ -130,7 +130,7 @@
                             
                         </div>
                         <div>
-                            <input value="10" class="border border-black rounded" type="text" name="width" id="">
+                            <input required value="10" class="border border-black rounded" type="text" name="width" id="">
                             
                         </div>
                     </div>
@@ -140,12 +140,12 @@
                             
                         </div>
                         <div>
-                            <input value="10" class="border border-black rounded" type="text" name="height" id="">
+                            <input required value="10" class="border border-black rounded" type="text" name="height" id="">
                             
                         </div>
                     </div>
                     <div  >
-                        <input class="w-max border-2 border-slate-600 rounded-xl cursor-pointer p-1" type="submit" name="requestRate" value="submit">
+                        <input required class="w-max border-2 border-slate-600 rounded-xl cursor-pointer p-1" type="submit" name="requestRate" value="submit">
                     </div>
                 </div>
             
@@ -153,7 +153,7 @@
             
         </form>
         <div id="fedEx">
-            <a class="border-2 rounded-lg border-gray-800" href="{{ route('shipments') }}">GENERAR ENVÍO CON FEDEX</a>
+            {{-- <a class="border-2 rounded-lg border-gray-800" href="{{ route('shipments') }}">GENERAR ENVÍO CON FEDEX</a> --}}
             {{-- <h1>FedEx</h1> --}}
             {{-- <p id="id-serviceType">Tipo de servicio: </p>
             <p id="id-serviceName">Servicio por:</p>
