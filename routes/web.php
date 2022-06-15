@@ -62,9 +62,9 @@ Route::put('/fedex/modifyOpenShipPackage', 'FedexController@modifyOpenShipmentPa
 // Route::post('/fedex/createOpenShipmentRequest', 'FedexController@createOpenShipmentRequest');
 //API RATE AND TRANSIT TIMES
 Route::get('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimes')->name('rateAndTransitTimes')->middleware('auth');
-// Route::get('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimes'])->name('rateAndTransitTimes')->middleware('auth');
 Route::post('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimesRequest');
-// Route::post('/fedex/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimesRequest']);
+//API Postal Code Validation
+Route::post('/validatePostalCode','FedexController@validatePostalCodeRequest')->name('validatePostalCodeRequest');
 //API SHIPMENTS
 Route::get('/fedex/shipments', [FedexController::class, 'shipments'])->name('shipments') -> middleware('auth');
 Route::post('/fedex/shipments', 'FedexController@shipmentsRequest');

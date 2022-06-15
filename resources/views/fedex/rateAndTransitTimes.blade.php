@@ -14,7 +14,7 @@
                             <label class="m-0" for="shipper_postalCode"> Origin Postal Code</label>
                         </div>
                         <div>
-                            <input required value="65247" class="border border-black rounded" type="text" name="shipper_postalCode" id="">
+                            <input required value="65247" class="border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode">
                         </div>
                     </div>
                     

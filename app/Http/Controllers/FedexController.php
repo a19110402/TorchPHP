@@ -797,7 +797,22 @@ class FedexController extends Controller
             ]
         ]);
     }
-    
+    //API VALIDATE POSTAL CODE 
+    public function validatePostalCodeRequest(Request $request)
+    {
+        $requestJson = json_decode($request->post('json'));
+        $response = $this->makeFedexJsonPostRequest(
+            env('VALIDATE_POSTAL_CODE_API_URL'),
+            env('VALIDATE_POSTAL_CODE_PRODUCTION_URL'),
+            $requestJson
+        );
+        return response()->json([
+            'fedexResponse'=> [
+                'validation' => $response->json(),
+                'statusCode'=> $response->status(),
+            ]
+        ]);
+    }
     //SHIPMENTS
     //CONTROLLER
     public function shipments(Request $request){

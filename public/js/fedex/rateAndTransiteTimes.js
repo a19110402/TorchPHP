@@ -1,5 +1,18 @@
 import ajax from '../ajax.js';
 // $("#fedEx").hide();
+$("#shipper_postalCode").on('change',function(e){
+  let response, postalCodeAPI = JSON.stringify({
+      "carrierCode": "FDXE",
+      "countryCode": "MX",
+      "stateOrProvinceCode": "JA",
+      "postalCode": "45128",
+      "shipDate": "2022-06-14"
+  });
+  response = ajax('POST', '/validatePostalCode', postalCodeAPI, $('input[name="_token"]').val() )
+  response.then(function(answer){
+    console.log(answer);
+  });
+});
 $("#requestRate").on('submit',
 function (){
   $('#rates').remove();
