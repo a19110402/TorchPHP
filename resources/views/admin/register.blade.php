@@ -77,8 +77,14 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <input id="role" type="text" class="form-control formato-entrada" name="role" required placeholder="Tipo de usuario">
+                        {{-- <input id="role" type="text" class="form-control formato-entrada" name="role" required placeholder="Tipo de usuario"> --}}
 
+                        <select name="role" id="role" class="form-control formato-entrada bg-white" required  placeholder="Tipo de usuario">
+                              <option selected disabled hidden>Select role</option>
+                              <option value="client">Client</option>
+                              <option value="admin">Admin</option>
+                        </select>
+                        
                         @error('role')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
