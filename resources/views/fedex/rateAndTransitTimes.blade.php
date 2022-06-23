@@ -14,18 +14,18 @@
                             <label class="m-0" for="shipper_postalCode"> Origin Postal Code</label>
                         </div>
                         <div>
-                            <input required value="65247" class="border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode">
+                            <input required class="border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode">
                         </div>
                     </div>
                     
-                    <div class="p-1 md:columns-2" >
+                    {{-- <div class="p-1 md:columns-2" >
                         <div>
                             <label for="">City of shipper</label>
                         </div>
                         <div>
                             <input value="" class="border border-black rounded" type="text" name="shipper_city">
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="md:columns-2 p-1">
                         <div>
@@ -53,20 +53,20 @@
                         </div>
                         
                         <div>
-                            <input required  value="75063" class="border border-black rounded" type="text" name="recipient_postalCode" id="">
+                            <input required  class="border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode">
                             
                         </div>
     
                     </div>
 
-                    <div class="p-1 md:columns-2" >
+                    {{-- <div class="p-1 md:columns-2" >
                         <div>
                             <label for="">City of recipient</label>
                         </div>
                         <div>
                             <input value="" class="border border-black rounded" type="text" name="recipient_city">
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="md:columns-2 p-1">
                         <div>
@@ -110,7 +110,7 @@
                             
                         </div>
                         <div>
-                            <input required value="1" class="border border-black rounded" type="text" name="weight" id="">
+                            <input required  class="border border-black rounded" type="text" name="weight" id="">
                             
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                             
                         </div>
                         <div>
-                            <input required value="10" class="border border-black rounded" type="text" name="lenght" id="">
+                            <input required  class="border border-black rounded" type="text" name="lenght" id="">
                             
                         </div>
                     </div>
@@ -130,7 +130,7 @@
                             
                         </div>
                         <div>
-                            <input required value="10" class="border border-black rounded" type="text" name="width" id="">
+                            <input required  class="border border-black rounded" type="text" name="width" id="">
                             
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                             
                         </div>
                         <div>
-                            <input required value="10" class="border border-black rounded" type="text" name="height" id="">
+                            <input required  class="border border-black rounded" type="text" name="height" id="">
                             
                         </div>
                     </div>

@@ -1,18 +1,83 @@
 import ajax from '../ajax.js';
 // $("#fedEx").hide();
-$("#shipper_postalCode").on('change',function(e){
-  let response, postalCodeAPI = JSON.stringify({
-      "carrierCode": "FDXE",
-      "countryCode": "MX",
-      "stateOrProvinceCode": "JA",
-      "postalCode": "45128",
-      "shipDate": "2022-06-14"
-  });
-  response = ajax('POST', '/validatePostalCode', postalCodeAPI, $('input[name="_token"]').val() )
+
+
+function getDate(){
+  let date = new Date();
+  let dateString =  date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+  return dateString;
+}
+
+function validatePostalCode(postalCodeAPI){
+  let response = '';
+  let x;
+  response = ajax('POST', '/validatePostalCode', postalCodeAPI, $('input[name="_token"]').val() );
   response.then(function(answer){
-    console.log(answer);
+    x = answer.fedexResponse.statusCode;
   });
+  return response;
+}
+
+$("#shipper_postalCode").on('change',function(e){
+  $("#shipper_postalCode").css("border-color", "black");
+  let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
+  let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
+  // let shipperCity = $('input[name="shipper_city"]').val();
+  let postalCodeAPI = JSON.stringify({
+    "carrierCode": "FDXG",
+    "countryCode": shipperCountrCode,
+    "postalCode": shipperPostalCode,
+    "shipDate": getDate()
 });
+  let myPromise = new Promise(function(resolve){
+    let response = validatePostalCode(postalCodeAPI);
+    resolve(response);
+  });
+
+  myPromise.then(function(response){
+    switch(response.fedexResponse.statusCode){
+        case 200:
+          $("#shipper_postalCode").css("border", "2px solid #8bef89");  
+          break;
+        case 400:
+          $("#shipper_postalCode").css("border", "2px solid red");  
+        }
+  });
+   
+  // let response = validatePostalCode(postalCodeAPI);
+  // switch(response.fedexResponse.statusCode){
+  //   case 200:
+  //     $("#shipper_postalCode").css("border", "2px solid green");  
+  //     break;
+  // }
+});
+
+$("#recipient_postalCode").on('change',function(e){
+  let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
+  let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
+  // let recipientCity = $('input[name="recipient_city"]').val();
+  let postalCodeAPI = JSON.stringify({
+    "carrierCode": "FDXG",
+    "countryCode": recipientCountryCode,
+    "postalCode": recipientPostalCode,
+    "shipDate": getDate()
+});
+let myPromise = new Promise(function(resolve){
+  let response = validatePostalCode(postalCodeAPI);
+  resolve(response);
+});
+
+myPromise.then(function(response){
+  switch(response.fedexResponse.statusCode){
+      case 200:
+        $("#recipient_postalCode").css("border", "2px solid #8bef89");  
+        break;
+      case 400:
+        $("#recipient_postalCode").css("border", "2px solid red");  
+      }
+});
+});
+
 $("#requestRate").on('submit',
 function (){
   $('#rates').remove();
@@ -80,12 +145,12 @@ function (){
             "Account": "",
               "Ship": {
                   "Shipper": {
-                      "City": shipperCity,
+                      "City": "",
                       "PostalCode": shipperPostalCode,
                       "CountryCode": shipperCountrCode
                   },
                   "Recipient": {
-                      "City": recipientCity,
+                      "City": "",
                       "PostalCode": recipientPostalCode,
                       "CountryCode": recipientCountryCode
                   }
@@ -108,39 +173,6 @@ function (){
     },
     "ups":{},
     });
-
-    // let input = JSON.stringify({
-    //   "accountNumber": {
-    //     "value": ""
-    //   },
-    //   "requestedShipment": {
-    //     "shipper": {
-    //       "address": {
-    //         "postalCode": 65247,
-    //         "countryCode": "US"
-    //       }
-    //     },
-    //     "recipient": {
-    //       "address": {
-    //         "postalCode": 75063,
-    //         "countryCode": "US"
-    //       }
-    //     },
-    //     "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-    //     "rateRequestType": [
-    //       "ACCOUNT",
-    //       "LIST"
-    //     ],
-    //     "requestedPackageLineItems": [
-    //       {
-    //         "weight": {
-    //           "units": "LB",
-    //           "value": 10
-    //         }
-    //       }
-    //     ]
-    //   }
-    // });
     request(url, input);
     
     function request(url, input){
