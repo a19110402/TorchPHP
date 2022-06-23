@@ -32,7 +32,7 @@
                 </div>
                 
                 <div class="card-body hover:text-azul-primario hover:underline">
-                    <a href="">Ver usuarios creados</a>
+                    <a href="{{url('/users')}}">Ver usuarios creados</a>
                 </div>
 
             </div>

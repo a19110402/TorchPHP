@@ -88,5 +88,8 @@ Route::get('/home/admin', 'AdminController@index')->middleware('auth.admin')->na
 Route::get('/registerUser', 'Auth\RegisterByUserController@userCreation')->name('registerUser');
 Route::post('registerUser', 'Auth\RegisterByUserController@register');
 
+//Visualización de usuarios creados
+Route::get('/users','AdminController@watchUsers');
+
 //Página nosotros
 Route::get('/nosotros', 'IndexController@nosotros')->name('nosotros');
