@@ -7,9 +7,9 @@
     <div class="flex justify-center m-20" id="id-rateRequest">  
         <form class="w-min border-2 border-stone-500 p-20 rounded-3xl" action="javascript:void(0)" data-action="{{ route('rateAndTransitTimes') }}" method="POST" id="requestRate">
             @csrf
-                <div class="flex-col items-center justify-center">
+                <div class="flex-col items-center justify-center m">
                     
-                    <div class="p-1 md:columns-2" >
+                    <div class="m-4 justify-center md:columns-2" >
                         <div>
                             <label class="m-0" for="shipper_postalCode"> Origin Postal Code</label>
                         </div>
@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     
-                    {{-- <div class="p-1 md:columns-2" >
+                    {{-- <div class="m-4 justify-center md:columns-2" >
                         <div>
                             <label for="">City of shipper</label>
                         </div>
@@ -27,7 +27,7 @@
                         </div>
                     </div> --}}
 
-                    <div class="md:columns-2 p-1">
+                    <div class="md:columns-2 m-4 justify-center">
                         <div>
                             <label class="m-0" for="shipper_Country">Country</label>
                             
@@ -46,7 +46,7 @@
                             
                         </div>
                     </div>
-                    <div class="md:columns-2 p-1">
+                    <div class="md:columns-2 m-4 justify-center">
                         <div>
                             <label class="m-0" for="recipient_postalCode">Destination Postal Code</label>
                             
@@ -54,12 +54,11 @@
                         
                         <div>
                             <input required  class="border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode">
-                            
                         </div>
     
                     </div>
 
-                    {{-- <div class="p-1 md:columns-2" >
+                    {{-- <div class="m-4 justify-center md:columns-2" >
                         <div>
                             <label for="">City of recipient</label>
                         </div>
@@ -68,7 +67,7 @@
                         </div>
                     </div> --}}
 
-                    <div class="md:columns-2 p-1">
+                    <div class="md:columns-2 m-4 justify-center">
                         <div>
                             <label class="m-0" for="recipient_country">Country</label>
                             
@@ -88,16 +87,16 @@
                         </div>
     
                     </div>
-                    <div class="md:columns-2 p-1">
+                    <div class="md:columns-2 m-4 justify-center">
                         <div>
                             <label class="m-0" for="pickupType">Pick up type</label>
                             
                         </div>
                         <div>
                             <select class="border-black border rounded-r-md" name="pickupType">
-                                <option value="CONTACT_FEDEX_TO_SCHEDULE">Contact FedEx To Schedule</option>
-                                <option value="DROPOFF_AT_FEDEX_LOCATION">Dropoff At FedEx Location</option>
-                                <option value="USE_SCHEDULED_PICKUP">Use Scheduled Pickup</option>
+                                <option value="CONTACT_FEDEX_TO_SCHEDULE">Contactar para programar recolección</option>
+                                <option value="DROPOFF_AT_FEDEX_LOCATION">Entregar en paqueteria</option>
+                                <option value="USE_SCHEDULED_PICKUP">Progarmar recolección</option>
                             </select>
                             
                         </div>
@@ -145,7 +144,7 @@
                         </div>
                     </div>
                     <div  >
-                        <input required class="w-max border-2 border-slate-600 rounded-xl cursor-pointer p-1" type="submit" name="requestRate" value="submit">
+                        <input required class="w-max border-2 border-slate-600 rounded-xl cursor-pointer m-4 justify-center" type="submit" name="requestRate" value="submit">
                     </div>
                 </div>
             
