@@ -11,10 +11,10 @@
                     
                     <div class="m-4 justify-center md:columns-2" >
                         <div>
-                            <label class="m-0" for="shipper_postalCode"> Origin Postal Code</label>
+                            <label class="m-0" for="shipper_postalCode">Origen</label>
                         </div>
                         <div>
-                            <input required class="border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode">
+                            <input required class="border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode" placeholder="Código postal...">
                         </div>
                     </div>
                     
@@ -29,7 +29,7 @@
 
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
-                            <label class="m-0" for="shipper_Country">Country</label>
+                            <label class="m-0" for="shipper_Country">País</label>
                             
                         </div>
                         <div>
@@ -48,12 +48,12 @@
                     </div>
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
-                            <label class="m-0" for="recipient_postalCode">Destination Postal Code</label>
+                            <label class="m-0" for="recipient_postalCode">Destino</label>
                             
                         </div>
                         
                         <div>
-                            <input required  class="border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode">
+                            <input required  class="border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode" placeholder="Código postal...">
                         </div>
     
                     </div>
@@ -69,7 +69,7 @@
 
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
-                            <label class="m-0" for="recipient_country">Country</label>
+                            <label class="m-0" for="recipient_country">País</label>
                             
                         </div>
                         <div>
@@ -87,9 +87,9 @@
                         </div>
     
                     </div>
-                    <div class="md:columns-2 m-4 justify-center">
+                    <div class="md:columns-2 justify-center">
                         <div>
-                            <label class="m-0" for="pickupType">Pick up type</label>
+                            <label class="m-0" for="pickupType">Tipo de recolección</label>
                             
                         </div>
                         <div>
@@ -102,44 +102,59 @@
                         </div>
     
                     </div>
+
+                    <div class="md:columns-2 justify-center">
+                        <div>
+                            <label class="m-0" for="#">Tipo de envío</label>
+                            
+                        </div>
+                        <div>
+                            <select class="border-black border rounded-r-md" name="#">
+                                <option value="CONTACT_FEDEX_TO_SCHEDULE">Express -Aereo-</option>
+                                <option value="DROPOFF_AT_FEDEX_LOCATION">Terrestre</option>>
+                            </select>
+                            
+                        </div>
+    
+                    </div>
             
                     <div class="md:columns-2" >
                         <div>
-                            <label class="m-0" for="weight">Weight</label>
+                            <label class="m-0" for="weight">Peso</label>
                             
                         </div>
                         <div>
-                            <input required  class="border border-black rounded" type="text" name="weight" id="">
-                            
-                        </div>
-                    </div>
-                    <div class="md:columns-2" >
-                        <div>
-                            <label class="m-0" for="lenght">lenght</label>
-                            
-                        </div>
-                        <div>
-                            <input required  class="border border-black rounded" type="text" name="lenght" id="">
+                            <input required  class="border border-black rounded" type="text" name="weight" id="weight" placeholder="kg...">
                             
                         </div>
                     </div>
                     <div class="md:columns-2" >
                         <div>
-                            <label class="m-0" for="width">Width</label>
+                            <label class="m-0" for="lenght">Largo</label>
                             
                         </div>
                         <div>
-                            <input required  class="border border-black rounded" type="text" name="width" id="">
+                            <input required  class="border border-black rounded" type="text" name="lenght" id="lenght" placeholder="cm...">
                             
                         </div>
                     </div>
                     <div class="md:columns-2" >
                         <div>
-                            <label class="m-0" for="height">Height</label>
+                            <label class="m-0" for="width">Ancho</label>
                             
                         </div>
                         <div>
-                            <input required  class="border border-black rounded" type="text" name="height" id="">
+                            <input required  class="border border-black rounded" type="text" name="width" id="width" placeholder="cm...">
+                            
+                        </div>
+                    </div>
+                    <div class="md:columns-2" >
+                        <div>
+                            <label class="m-0" for="height">Alto</label>
+                            
+                        </div>
+                        <div>
+                            <input required  class="border border-black rounded" type="text" name="height" id="height" placeholder="cm...">
                             
                         </div>
                     </div>
@@ -163,6 +178,7 @@
 
 
 @section('scripts')
-    <script type="module" src="{{ asset('js/fedex/rateAndTransiteTimes.js') }}"></script>
+    <script type="module" src="{{ asset('js/fedex/rateAndTransitTimes/rateAndTransiteTimes.js') }}"></script>
     <script type="module" src="{{ asset('js/ajax.js') }}"></script>
+    <script type="module" src="{{ asset('js/fedex/rateAndTransitTimes/validations.js') }}"></script>
 @endsection
