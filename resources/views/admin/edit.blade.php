@@ -6,17 +6,18 @@
 <div class="primer-cont">
     <div class="contenedor">
         
-        <div class="centrado estilo-titulo">Registrar usuario</div>
+        <div class="centrado estilo-titulo">Editar usuario</div>
 
         <div>
-            <form method="POST" action="{{ route('registerUser') }}" class="cont-form">
+            <form method="POST" action="{{ route('updateUser', ['id' => $user->id]) }}" class="cont-form">
+                @method('PATCH')
                 @csrf
 
                 <div class="cont-nombre">
                     <div class="row mb-3">
 
                         <div class="col-md-6">
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror formato-entrada-nombre" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Nombre">
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror formato-entrada-nombre" name="name" value="{{ $user->name }}" required autocomplete="name" autofocus placeholder="Nombre">
 
                             @error('name')
                                 <span class="invalid-feedback" role="alert">
@@ -28,12 +29,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <input id="lastname" type="text" class="form-control formato-entrada-nombre" name="lastname" value="{{ old('lastname') }}" required autocomplete="lastname" autofocus placeholder="Apellido">
+                            <input id="lastname" type="text" class="form-control formato-entrada-nombre" name="lastname" value="{{ $user->lastname }}" required autocomplete="lastname" autofocus placeholder="Apellido">
                         </div>
                     </div>
                 </div>
 
-                <div class="row mb-3">
+                {{-- <div class="row mb-3">
                     <div class="col-md-6">
                         <input id="email" type="email" class="form-control @error('email') is-invalid @enderror formato-entrada" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Correo@ejemplo.com">
 
@@ -43,11 +44,11 @@
                             </span>
                         @enderror
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <input id="phone" type="text" class="formato-entrada" name="phone" required placeholder="Teléfono">
+                        <input id="phone" type="text" class="formato-entrada" name="phone" required placeholder="Teléfono" value="{{ $user->phone }}">
 
                         @error('phone')
                             <span class="invalid-feedback" role="alert">
@@ -58,6 +59,12 @@
                 </div>
 
                 <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input id="createdBy" type="text" class="formato-entrada" name="createdBy" placeholder="Creador" value="{{ $user->createdBy }}">
+                    </div>
+                </div>
+
+                {{-- <div class="row mb-3">
                     <div class="col-md-6">
                         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror formato-entrada" name="password" required autocomplete="new-password" placeholder="Contraseña">
 
@@ -73,14 +80,13 @@
                     <div class="col-md-6">
                         <input id="password-confirm" type="password" class="form-control formato-entrada" name="password_confirmation" required autocomplete="new-password" placeholder="Repetir contraseña">
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        {{-- <input id="role" type="text" class="form-control formato-entrada" name="role" required placeholder="Tipo de usuario"> --}}
 
                         <select name="role" id="role" class="form-control formato-entrada bg-white" required  placeholder="Tipo de usuario">
-                              <option selected disabled hidden>Select role</option>
+                              <option selected hidden>{{$user->role}}</option>
                               <option value="client">client</option>
                               <option value="admin">admin</option>
                         </select>
@@ -96,7 +102,7 @@
                 <div class="row mb-0">
                     <div class="col-md-6 offset-md-4">
                         <button type="submit" class="btn btn-primary cont-botones">
-                            Crear cuenta
+                            Actualizar cuenta
                         </button>
                     </div>
                 </div>

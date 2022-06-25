@@ -89,7 +89,14 @@ Route::get('/registerUser', 'Auth\RegisterByUserController@userCreation')->name(
 Route::post('registerUser', 'Auth\RegisterByUserController@register');
 
 //Visualización de usuarios creados
-Route::get('/users','AdminController@watchUsers');
+Route::get('/users','AdminController@watchUsers')->name('users');
+
+//Editar un usuario
+Route::get('/users/{id}', 'AdminController@editUser')->name('editUser');
+Route::patch('/users/{id}', 'AdminController@updateUser')->name('updateUser');
+
+//Eliminar un usuario
+Route::delete('/users/{id}', 'AdminController@deleteUser')->name('deleteUser');
 
 //Página nosotros
 Route::get('/nosotros', 'IndexController@nosotros')->name('nosotros');
