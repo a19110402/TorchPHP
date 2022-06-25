@@ -35,10 +35,10 @@
                         <div>
                             <select class="border-black border rounded-r-md w-7/12" name="shipper_countryCode" id="">
                                 @foreach ($countryCode as $country => $code )
-                                    @if ($code == 'US')
-                                        <option selected value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @if ($code == 'MX')
+                                        <option selected value="{{ $code }}">{{ $country }}</option>
                                     @else
-                                        <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                        <option value="{{ $code }}">{{ $country }}</option>
                                     @endif
 
                                 @endforeach
@@ -75,10 +75,10 @@
                         <div>
                             <select class="border-black border rounded-r-md w-7/12" name="recipient_countryCode" id="">
                                 @foreach ($countryCode as $country => $code )
-                                    @if ($code == 'US')
-                                        <option selected value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                    @if ($code == 'MX')
+                                        <option selected value="{{ $code }}">{{ $country }}</option>
                                     @else
-                                        <option value="{{ $code }}">{{ $country }}({{ $code }})</option>
+                                        <option value="{{ $code }}">{{ $country }}</option>
                                     @endif
 
                                 @endforeach
@@ -109,15 +109,27 @@
                             
                         </div>
                         <div>
-                            <select class="border-black border rounded-r-md" name="#">
-                                <option value="CONTACT_FEDEX_TO_SCHEDULE">Express -Aereo-</option>
-                                <option value="DROPOFF_AT_FEDEX_LOCATION">Terrestre</option>>
+                            <select class="border-black border rounded-r-md" name="carrierCodes">
+                                <option value="FDXE ">Express </option>
+                                <option value="FDXG">Terrestre</option>>
                             </select>
                             
                         </div>
     
                     </div>
             
+                    <div class="md:columns-2" >
+                        <div>
+                            <label class="m-0" for="packagingType">Tipo de paquete</label>
+                        </div>
+                        <div>
+                            <select  class="border-black border rounded-r-md" name="packagingType" id="packagingType">
+                                <option value="FEDEX_ENVELOPE">Sobre</option>
+                                <option selected value="YOUR_PACKAGING">Paquete</option>
+                            </select>
+                        </div>
+                    </div>
+    
                     <div class="md:columns-2" >
                         <div>
                             <label class="m-0" for="weight">Peso</label>
@@ -128,38 +140,46 @@
                             
                         </div>
                     </div>
-                    <div class="md:columns-2" >
-                        <div>
-                            <label class="m-0" for="lenght">Largo</label>
-                            
+
+                    <div id="package">
+
+                        <div class="md:columns-2" >
+                            <div>
+                                <label class="m-0" for="lenght">Largo</label>
+                                
+                            </div>
+                            <div>
+                                <input   class="border border-black rounded" type="text" name="lenght" id="lenght" placeholder="cm...">
+                                
+                            </div>
                         </div>
-                        <div>
-                            <input required  class="border border-black rounded" type="text" name="lenght" id="lenght" placeholder="cm...">
-                            
+    
+                        <div class="md:columns-2" >
+                            <div>
+                                <label class="m-0" for="width">Ancho</label>
+                                
+                            </div>
+                            <div>
+                                <input   class="border border-black rounded" type="text" name="width" id="width" placeholder="cm...">
+                                
+                            </div>
                         </div>
+    
+                        <div class="md:columns-2" >
+                            <div>
+                                <label class="m-0" for="height">Alto</label>
+                                
+                            </div>
+                            <div>
+                                <input   class="border border-black rounded" type="text" name="height" id="height" placeholder="cm...">
+                                
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="md:columns-2" >
-                        <div>
-                            <label class="m-0" for="width">Ancho</label>
-                            
-                        </div>
-                        <div>
-                            <input required  class="border border-black rounded" type="text" name="width" id="width" placeholder="cm...">
-                            
-                        </div>
-                    </div>
-                    <div class="md:columns-2" >
-                        <div>
-                            <label class="m-0" for="height">Alto</label>
-                            
-                        </div>
-                        <div>
-                            <input required  class="border border-black rounded" type="text" name="height" id="height" placeholder="cm...">
-                            
-                        </div>
-                    </div>
-                    <div  >
-                        <input required class="w-max border-2 border-slate-600 rounded-xl cursor-pointer m-4 justify-center" type="submit" name="requestRate" value="submit">
+
+                    <div>
+                        <input  class="w-max border-2 border-slate-600 rounded-xl cursor-pointer m-4 justify-center" type="submit" name="requestRate" value="submit">
                     </div>
                 </div>
             
