@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.base')
 
 @section('content')
-<div class="container">
+<div class="container ">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -14,16 +14,10 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
-                    <li><a href="{{ route('fedexOptions') }}">FedEx</a></li>
-                    <li><a href="#">DHL</a></li>
-                    <li><a href="#">UPS</a></li>
+                    {{ __('You are logged not admin!') }}
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{ asset('js/fedex/auth.js') }}"></script>
 @endsection
