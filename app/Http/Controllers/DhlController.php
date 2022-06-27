@@ -36,7 +36,7 @@ class DhlController extends Controller
                         },
                         "Packages": {
                             "RequestedPackages": {
-                                "@number": "1",
+                                "@number": "10",
                                 "Weight": {
                                     "Value": 20
                                 },

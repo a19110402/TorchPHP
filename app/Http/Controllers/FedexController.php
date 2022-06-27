@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\DhlController;
 
 
 
@@ -753,27 +754,31 @@ class FedexController extends Controller
                 $requestJson,
                 $this->authToken->answer
             );
+            
             switch($response)
             {
                 case '200':
                     return response()->json([
                         'rateAndTransitTimes' => $response->json(),
                         'statusCode' => $response->status(),
-                        'cookie' => $requestJson
+                        'cookie' => $requestJson,
+                        'responseDHL'=> DhlController->rateRequest(),
                     ]);
                     break;
                     case '400':
                         return response()->json([
                             'rateAndTransitTimes' => $response->json(),
                             'statusCode' => $response->status(),
-                            'cookie' => $requestJson
+                            'cookie' => $requestJson,
+                            'responseDHL'=> DhlController->rateRequest(),
                         ]);
                     break;
                     default:
                     return response()->json([
                         'rateAndTransitTimes' => $response->json(),
                         'statusCode' => $response->status(),
-                        'cookie' => $requestJson
+                        'cookie' => $requestJson,
+                        'responseDHL'=> DhlController->rateRequest(),
                     ]);
                     break;
             }
@@ -794,21 +799,24 @@ class FedexController extends Controller
                         return response()->json([
                             'rateAndTransitTimes' => $response->json(),
                             'statusCode' => $response->status(),
-                            'cookie' => $requestJson
+                            'cookie' => $requestJson,
+                            'responseDHL'=> DhlController->rateRequest(),
                         ]);
                         break;
                     case '400':
                         return response()->json([
                             'rateAndTransitTimes' => $response->json(),
                             'statusCode' => $response->status(),
-                            'cookie' => $requestJson
+                            'cookie' => $requestJson,
+                            'responseDHL'=> DhlController->rateRequest(),
                         ]);
                         break;
                         default:
                         return response()->json([
                             'rateAndTransitTimes' => $response->json(),
                             'statusCode' => $response->status(),
-                            'cookie' => $requestJson
+                            'cookie' => $requestJson,
+                            'responseDHL'=> DhlController::rateRequest(),
                         ]);
                         break;
                 }

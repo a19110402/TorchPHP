@@ -78,6 +78,7 @@ function (){
         break;
         case 401:
           // requeringToken(rateAndTransiteTimes);
+            console.log(data.statusCode + JSON.stringify(data));
           break;
           
           default:
