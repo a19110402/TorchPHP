@@ -14,7 +14,7 @@
                             <label class="m-0" for="shipper_postalCode">Origen</label>
                         </div>
                         <div>
-                            <input required class="border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode" placeholder="Código postal...">
+                            <input required class="focus:outline-none border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode" placeholder="Código postal...">
                         </div>
                     </div>
                     
@@ -53,7 +53,7 @@
                         </div>
                         
                         <div>
-                            <input required  class="border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode" placeholder="Código postal...">
+                            <input required  class="focus:outline-none border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode" placeholder="Código postal...">
                         </div>
     
                     </div>
@@ -136,7 +136,7 @@
                             
                         </div>
                         <div>
-                            <input required  class="border border-black rounded" type="text" name="weight" id="weight" placeholder="kg...">
+                            <input required  class="focus:outline-none border border-black rounded" type="text" name="weight" id="weight" placeholder="kg...">
                             
                         </div>
                     </div>
@@ -149,7 +149,7 @@
                                 
                             </div>
                             <div>
-                                <input   class="border border-black rounded" type="text" name="lenght" id="lenght" placeholder="cm...">
+                                <input   class="focus:outline-none border border-black rounded" type="text" name="lenght" id="lenght" placeholder="cm...">
                                 
                             </div>
                         </div>
@@ -160,7 +160,7 @@
                                 
                             </div>
                             <div>
-                                <input   class="border border-black rounded" type="text" name="width" id="width" placeholder="cm...">
+                                <input   class="focus:outline-none border border-black rounded" type="text" name="width" id="width" placeholder="cm...">
                                 
                             </div>
                         </div>
@@ -171,7 +171,7 @@
                                 
                             </div>
                             <div>
-                                <input   class="border border-black rounded" type="text" name="height" id="height" placeholder="cm...">
+                                <input   class="focus:outline-none border border-black rounded" type="text" name="height" id="height" placeholder="cm...">
                                 
                             </div>
                         </div>
