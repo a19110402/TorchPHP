@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Auth\VerificationController;
 
 class VerifyEmail extends Notification
 {

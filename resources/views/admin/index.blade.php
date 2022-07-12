@@ -29,7 +29,7 @@
 
                 {{-- Boton para creación de usuario --}}
                 <div class="card-body hover:text-azul-primario hover:underline">
-                    <a href="{{url('/registerUser')}}">Creación de usario nuevo</a>
+                    <a href="{{route('registerUser')}}">Creación de usario nuevo</a>
                 </div>
                 
                 <div class="card-body hover:text-azul-primario hover:underline">

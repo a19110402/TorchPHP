@@ -51,7 +51,7 @@ class RegisterByUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['required', 'string', 'size:9'],
+            'phone' => ['required', 'string', 'size:10'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'string'],
         ]);
@@ -77,6 +77,9 @@ class RegisterByUserController extends Controller
     }
 
     public function userCreation(){
+
+        // return redirect()->to('/password/confirm');
+
         return view('admin/register');
     }
 

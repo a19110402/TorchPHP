@@ -39,7 +39,7 @@
                     <a href="#">Rastrear</a>
                     <a href="{{ route('login.destroy') }}" >Log out</a>
                 @elseif(auth()->user() != null)
-                    <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
+                    <a href="{{ route('home') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
                     <a href="#">Envío</a>
                     <a href="#">Rastrear</a>

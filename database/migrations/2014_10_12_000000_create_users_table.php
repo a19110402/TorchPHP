@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('role')->default('cliente');
             $table->string('createdBy')->nullable();
-            
-            // $table->timestamp('email_verified_at')->nullable();
+            $table->string('corporation')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             // $table->rememberToken();
             $table->timestamps();
             // $table->string('trackingNumber')->defaul('null');

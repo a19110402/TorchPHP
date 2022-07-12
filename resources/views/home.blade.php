@@ -16,6 +16,18 @@
 
                     {{ __('You are logged not admin!') }}
                 </div>
+
+                @if (\Session::has('success'))
+                    <div class="alert alert-success text-green-500">
+                        <ul>
+                            <p>{!! \Session::get('success') !!}</p>
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{route('corpAccount')}}">Cambiar a cuenta corporativa</a>
+                </div>
             </div>
         </div>
     </div>
