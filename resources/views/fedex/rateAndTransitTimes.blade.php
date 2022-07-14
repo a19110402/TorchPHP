@@ -186,12 +186,25 @@
             </div>
             
         </form>
-        <div id="fedEx">
-            {{-- <a class="border-2 rounded-lg border-gray-800" href="{{ route('shipments') }}">GENERAR ENVÍO CON FEDEX</a> --}}
-            {{-- <h1>FedEx</h1> --}}
-            {{-- <p id="id-serviceType">Tipo de servicio: </p>
-            <p id="id-serviceName">Servicio por:</p>
-            <p id="id-netCharge">Tarifa Neta:</p> --}}
+        <div id="showRates" class="flex justify-evenly">
+            <div class="flex flex-col p-20" id="ratesFedex">
+                <h2 class="text-6xl">FedEx</h2>
+                <form class="flex flex-col justify-center" action="/fedex/shipments">
+                    <input value="Enviar con FedEx" class="cursor-pointer border-2 border-violet-700 rounded-lg p-2 bg-transparent bg-indigo-300" type="submit" class="" id="createShipFedex">
+                </form>
+            </div>
+            <div class="flex flex-col p-20" id="ratesDhl">
+                <h2 class="text-6xl">DHL</h2>
+                <form class="flex flex-col justify-center" action="/fedex/shipments">
+                    <input value="Enviar con DHL" class="cursor-pointer border-2 border-violet-700 rounded-lg p-2 bg-transparent bg-indigo-300" type="submit" class="" id="createShipDhl">
+                </form>
+            </div>
+            <div class="flex flex-col p-20" id="ratesUps">
+                <h2 class="text-6xl">UPS</h2>
+                <form class="flex flex-col justify-center" action="/fedex/shipments">
+                    <input value="Enviar con UPS" class="cursor-pointer border-2 border-violet-700 rounded-lg p-2 bg-transparent bg-indigo-300" type="submit" class="" id="createShip">
+                </form>
+            </div>
         </div>
 @endsection
 

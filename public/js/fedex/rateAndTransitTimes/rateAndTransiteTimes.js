@@ -85,11 +85,15 @@ import { packageChange } from './validations.js';
 // });
 $(function(){
   packageChange();
+  $("#showRates").hide();
 });
 
 $("#requestRate").on('submit',
 function (){
-  $('#rates').remove();
+  $('#fedexRate').remove();
+  $('#dhlRate').remove();
+  $('#upsRate').remove();
+  $("#showRates").hide();
   //shipper
   let shipperCity = $('input[name="shipper_city"]').val();
   let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
@@ -185,7 +189,83 @@ function (){
             }
           }
     },
-    "ups":{},
+    "ups":{
+        "RateRequest":{
+        "Request":{
+        "SubVersion":"1703",
+        "TransactionReference":{
+        "CustomerContext":" "
+        }
+        },
+        "Shipment":{
+        "ShipmentRatingOptions":{
+        "UserLevelDiscountIndicator":"TRUE"
+        },
+        "Shipper":{
+        "Name":"Billy Blanks",
+        "ShipperNumber":" ",
+        "Address":{
+        "AddressLine":"366 Robin LN SE",
+        "City":"Marietta",
+        "StateProvinceCode":"GA",
+        "PostalCode":"30067",
+        "CountryCode":"US"
+        }
+        },
+        "ShipTo":{
+        "Name":"Sarita Lynn",
+        "Address":{
+        "AddressLine":"355 West San Fernando Street",
+        "City":"San Jose",
+        "StateProvinceCode":"CA",
+        "PostalCode":"95113",
+        "CountryCode":"US"
+        }
+        },
+        "ShipFrom":{
+        "Name":"Billy Blanks",
+        "Address":{
+        "AddressLine":"366 Robin LN SE",
+        "City":"Marietta",
+        "StateProvinceCode":"GA",
+        "PostalCode":"30067",
+        "CountryCode":"US"
+        }
+        },
+        "Service":{
+        "Code":"03",
+        "Description":"Ground"
+        },
+        "ShipmentTotalWeight":{
+        "UnitOfMeasurement":{
+        "Code":"LBS",
+        "Description":"Pounds"
+        },
+        "Weight":"10"
+       },
+        "Package":{
+        "PackagingType":{
+        "Code":"02",
+        "Description":"Package"
+        },
+        "Dimensions":{
+        "UnitOfMeasurement":{
+        "Code":"IN"
+        },
+        "Length":"10",
+        "Width":"7",
+        "Height":"5"
+        },
+        "PackageWeight":{
+        "UnitOfMeasurement":{
+        "Code":"LBS"
+        },
+        "Weight":"7"
+        }
+        }
+        }
+        }         
+    },
     });
     console.log(JSON.parse(input));
     request(url, input);
@@ -202,6 +282,9 @@ function (){
         let codeDhl = responseDhl.replace("@", "");
         codeDhl = JSON.parse(codeDhl);
         console.log("Reading response");
+        console.log("UPS response");
+        console.log(JSON.stringify(response.upsResponse));
+
         //FedEx
         switch (response.fedexResponse.statusCode){
           case 200:
@@ -257,53 +340,58 @@ function (){
     }
 
     function showFedex(data){
-        $("#fedEx").show();
+        $("#showRates").show();
         //FEDEX
-        $('#rates').append("<div id='ratesFedex'></div>");
-        $("#ratesFedex").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
-        $("#ratesFedex").append("<h2 id='fedex'>FedEx</h2>");      
+
+        // $('#rates').append("<div id='ratesFedex'></div>");
+        // $("#ratesFedex").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
+        // $("#ratesFedex").append("<h2 id='fedex'>FedEx</h2>");      
         if(data.fedexResponse.statusCode == 200){
+          $("#createShipFedex").before("<div id='fedexRate'></div>");
           data.fedexResponse.response.output.rateReplyDetails.forEach(element => {
-            $("#ratesFedex").append("<p id='fedexRate'><b>Tipo de servicio: " + element.serviceType + "</b></p>");
-            $("#ratesFedex").append("<p id='fedexRate'>Servicio por: " + element.serviceName+ "</p>");
-            $("#ratesFedex").append("<p id='fedexRate'>Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55 + "</p>");          
+            $("#fedexRate").append("<p><b>Tipo de servicio: " + element.serviceType + "</b></p>");
+            $("#fedexRate").append("<p>Servicio por: " + element.serviceName+ "</p>");
+            $("#fedexRate").append("<p>Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55 + "</p>");     
           });
         }  
         else{
           $("#ratesFedex").append("<p id='fedexRate'>Servicio no disponible</p>");      
         }
-}
+      } 
 function showDhl(data, code){
+  $("#showRates").show();
   //DHL
-  $('#rates').append("<div id='ratesDhl'></div>");
-  $("#ratesDhl").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
-  $("#ratesDhl").append("<h2 id='dhl'>DHL</h2>");
+  // $('#rates').append("<div id='ratesDhl'></div>");
+  // $("#ratesDhl").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
+  // $("#ratesDhl").append("<h2 id='dhl'>DHL</h2>");
   if(code == "0"){
+    $("#createShipDhl").before("<div id='dhlRate'></div>");
     if(data.dhlResponse.response.RateResponse.Provider[0].Service.length > 0){
       data.dhlResponse.response.RateResponse.Provider[0].Service.forEach(element =>{
         if(element.Charges !== undefined){
-          $("#ratesDhl").append("<p id='dhlRate'>Tipo de servicio:" + element.Charges.Charge[0].ChargeType + "</p>");
-          $("#ratesDhl").append("<p id='dhlRate'>Tarifa dhl: $" + element.TotalNet.Amount + "</p>");
+          $("#dhlRate").append("<p id='dhlRate'>Tipo de servicio:" + element.Charges.Charge[0].ChargeType + "</p>");
+          $("#dhlRate").append("<p id='dhlRate'>Tarifa dhl: $" + element.TotalNet.Amount + "</p>");
         }
        
       });
       
     }
     else{
-      $("#ratesDhl").append("<p id='dhlRate'>Tipo de servicio:" + data.dhlResponse.response.RateResponse.Provider[0].Service.Charges.Charge[0].ChargeType + "</p>");
-      $("#ratesDhl").append("<p id='dhlRate'>Tarifa dhl: $" + data.dhlResponse.response.RateResponse.Provider[0].Service.TotalNet.Amount + "</p>");
+      $("#dhlRate").append("<p id='dhlRate'>Tipo de servicio:" + data.dhlResponse.response.RateResponse.Provider[0].Service.Charges.Charge[0].ChargeType + "</p>");
+      $("#dhlRate").append("<p id='dhlRate'>Tarifa dhl: $" + data.dhlResponse.response.RateResponse.Provider[0].Service.TotalNet.Amount + "</p>");
     }
   }
   else{
-    $("#ratesDhl").append("<p id='dhlRate'>Servicio no disponible</p>");  
+    $("#dhlRate").append("<p id='dhlRate'>Servicio no disponible</p>");  
   }
 }
 function showUps(data){
-      //UPS
-      $('#rates').append("<div id='ratesUps'></div>");
-      $("#ratesUps").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
-      $("#ratesUps").append("<h2 id='ups'>UPS</h2>");
-    }
+  $("#showRates").show();
+    //UPS
+    // $('#rates').append("<div id='ratesUps'></div>");
+    // $("#ratesUps").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
+    // $("#ratesUps").append("<h2 id='ups'>UPS</h2>");
+  }
 }
 );
 

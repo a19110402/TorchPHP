@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Auth;
 use App\Http\Controllers\FedexController;
+// use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,19 +61,25 @@ Route::put('/fedex/modifyOpenShip', 'FedexController@modifyOpenShipmentRequest')
 Route::put('/fedex/modifyOpenShipPackage', 'FedexController@modifyOpenShipmentPackagesRequest');
 // Route::post('/fedex/createOpenShipmentRequest', 'FedexController@createOpenShipmentRequest');
 //API RATE AND TRANSIT TIMES
-Route::get('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimes')->name('rateAndTransitTimes')->middleware('auth');
-Route::post('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimesRequest');
+Route::get('/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimes'])->name('rateAndTransitTimes')->middleware('auth');
+Route::post('/rateAndTransitTimes', 'FedexController@rateAndTransitTimesRequest');
 //API Postal Code Validation
 Route::post('/validatePostalCode','FedexController@validatePostalCodeRequest')->name('validatePostalCodeRequest');
 //API SHIPMENTS
-Route::get('/fedex/shipments', [FedexController::class, 'shipments'])->name('shipments') -> middleware('auth');
-Route::post('/fedex/shipments', 'FedexController@shipmentsRequest');
+Route::get('/shipments', 'FedexController@shipments')->name('shipments') -> middleware('auth');
+Route::post('/shipments', 'FedexController@shipmentsRequest');
+Route::put('/cancelShipments', 'FedexController@cancelShipmentRequest');
+Route::post('/validateShipment', 'FedexController@validateShipmentRequest');
+Route::post('/createTag', 'FedexController@shipmentsRequest');
+
 //TRACKING API
-// Route::get('fedex/tracking', 'FedexController@tracking')->name('tracking');
+Route::get('/tracking', 'FedexController@tracking')->name('tracking')->middleware('auth');
+Route::post('/tracking', 'FedexController@trackingRequest')->name('tracking')->middleware('auth');
 // Route::get('fedex/tracking', 'FedexController@trackingRequest');
 // Service Availability API
 Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
 Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailabilityRequest');
+
 
 
 

@@ -1,4 +1,6 @@
+//THE AJAX FUNCTION IS A JS FILE WHICH ITS FUNCTIONALITY START AN AJAX PETITION
 import ajax from '../../ajax.js';
+
 function getDate(){
     let date = new Date();
     let dateString =  date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
@@ -16,7 +18,9 @@ function getDate(){
   }
 
   export function packageChange(){
+    //reading inputs
     let packagingType = $("#packagingType").val();
+    
     if (packagingType == "FEDEX_ENVELOPE"){
       $("#package").hide();
       let lenghtRequired = $("#lenght");
@@ -26,6 +30,10 @@ function getDate(){
       lenghtRequired.removeAttr('required');
       widthRequired.removeAttr('required');
       heightRequired.removeAttr('required');
+      //Clear dimention forms
+      lenghtRequired.val("");
+      widthRequired.val("");
+      heightRequired.val("");
     }
     else{
       $("#package").show();
@@ -54,7 +62,7 @@ function getDate(){
       $("#weight").css("border", "2px solid #8bef89");
     }
   }
-
+//EVALUATING EVERY TIME THERE IS A CHANGE
   $("#shipper_postalCode").on('change',function(e){
     $("#shipper_postalCode").css("border-color", "black");
     $(".shipperPostalCodeNotFound").remove();
@@ -116,7 +124,8 @@ function getDate(){
   $("#weight").on("keyup", function(){
     weightError();
   });
-
+  
+//EVALUATING EVERY TIME A KEY IS CLICKED-UP
   $("#lenght").on("keyup", function(){
     $("#lenghtLimit").remove();
     let lenght = $("#lenght").val();

@@ -35,14 +35,14 @@
                 @if(auth()->user() != null && auth()->user()->role =='admin')
                     <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
-                    <a href="#">Envío</a>
-                    <a href="#">Rastrear</a>
+                    <a href="{{ route('shipments')}}">Envío</a>
+                    <a href="{{ route('tracking') }}">Rastrear</a>
                     <a href="{{ route('login.destroy') }}" >Log out</a>
                 @elseif(auth()->user() != null)
                     <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
-                    <a href="#">Envío</a>
-                    <a href="#">Rastrear</a>
+                    <a href="{{ route('shipments')}}">Envío</a>
+                    <a href="{{ route('tracking') }}">Rastrear</a>
                     <a href="{{ route('login.destroy') }}" >Log out</a>
                 @else
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
@@ -60,7 +60,8 @@
     @yield('content')
 
 
-    <div class="footer relative md:fixed">
+    {{-- <div class="footer relative md:fixed"> --}}
+    <div class="footer relative ">
         @yield('extra')@section('extra')
         <footer class="footer h-full">
 

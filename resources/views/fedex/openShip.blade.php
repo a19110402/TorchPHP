@@ -4,49 +4,6 @@
 @endsection
 @section('content')
 
-<div class="tabbed">
-  <ul>
-    <li>
-      <a href="#section1">Create Open Shipment</a>
-    </li>
-
-    <li>
-      <a href="#section2">Modify Open Shipment</a>
-    </li>
-
-    <li>
-      <a href="#section3">Confirm Open Shipment</a>
-    </li>
-
-    <li>
-      <a href="#section4">Modify Open Shipment Packages</a>
-    </li>
-
-    <li>
-      <a href="#section5">Add Open Shipment Packages</a>
-    </li>
-
-    <li>
-      <a href="#section6">Delete Open Shipment Packages</a>
-    </li>
-
-    <li>
-      <a href="#section7">Retrieve Open Shipment Package</a>
-    </li>
-
-    <li>
-      <a href="#section8">OpenShipmentDelete V1</a>
-    </li>
-
-    <li>
-      <a href="#section9">Retrieve Open Shipment</a>
-    </li>
-
-    <li>
-      <a href="#section10">Get Open Shipment Results</a>
-    </li>
-
-  </ul>
   <h3>Open ship API</h3>
 
   <section id="section1">

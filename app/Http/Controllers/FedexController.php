@@ -5,12 +5,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
 use app\models\User;
-
+use Illuminate\Support\Facades\Hash;
 
 class FedexController extends Controller
 {
-    protected $authToken;
-
     public function fedexOptions(Request $request){
     //    $response = $this->postToken($request);
 
@@ -770,17 +768,23 @@ class FedexController extends Controller
         $requestJson = json_decode($request->post('json'));
         $requestJson->fedex->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
         $requestJson->dhl->RateRequest->RequestedShipment->Account= env('ACCOUNT_DHL_TEST');
-        //FEDEX
+        //                  FEDEX
         $responseFedex = $this->makeFedexJsonPostRequest(
             env('RATE_AND_TRANSIT_TIMES_URL'), 
             env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
              $requestJson->fedex
         );
-        //DHL
+        //                  DHL
         $responseDhl = $this->makeDHLJsonPostRequest(
             env('RATE_REQUEST_TEST_URL_DHL'), 
             env('RATE_REQUEST_PRODUCTION_URL_DHL'),
              $requestJson->dhl
+            );
+        //                  UPS
+        $responseUps = $this->makeDHLJsonPostRequest(
+            env('RATE_REQUEST_TEST_URL_UPS'), 
+            env('RATE_REQUEST_PRODUCTION_URL_UPS'),
+             $requestJson->ups
             );
         return response()->json([
             'fedexResponse' => [
@@ -789,10 +793,9 @@ class FedexController extends Controller
             ], 
             'dhlResponse' => [
                 'response' => $responseDhl,
-                
             ],
             'upsResponse' => [
-
+                'response'  =>  $responseUps
             ]
         ]);
     }
@@ -825,50 +828,111 @@ class FedexController extends Controller
 
     public function shipmentsRequest(Request $request){
         $requestJson = json_decode($request->post('json'));
-        // $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
-        $response = $this->makeFedexJsonPostRequest(
-            env('VALIDATE_SHIP_API_URL'),
+        switch ($requestJson->delivery)
+        {
+            case 'fedex':
+                $this->setShipmentBody($request);
+                $requestJson->json->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+                   $responseFedex = $this->makeFedexJsonPostRequest(
+                        env('SHIP_API_URL'),
+                        env('SHIP_API_PRODUCTION_URL'),
+                        $requestJson->json
+                    );
+                    return response()->json([
+                        'fedexResponse' => [
+                            'response' => $responseFedex->json(),
+                            'statusCode' => $responseFedex->status()
+                        ]
+                    ]);
+                // $validateFedex = $this->makeFedexJsonPostRequest(
+                //     env('SHIP_API_URL'),
+                //     env('VALIDATE_SHIP_API_PRODUCTION_URL'),
+                //     $requestJson
+                // );
+                // if($validateFedex->status() == '200'){
+                //     $responseFedex = $this->makeDHLJsonPostRequest(
+                //         env('SHIP_API_URL'),
+                //         env('SHIP_API_PRODUCTION_URL'),
+                //         $requestJson
+                //     );
+                //     return response()->json([
+                //         'fedexResponse' => [
+                //             'response' => $responseFedex,
+                //             'statusCode' => $responseFedex->status()
+                //         ]
+                //     ]);
+                // }
+                // else{
+                //     return response()->json([
+                //         'fedexResponse' => [
+                //             'validationResponse' => $validateFedex->json(),
+                //             'statusCode' => $validateFedex->status()
+                //         ]
+                //     ]);
+                // }
+                break;
+            case 'dhl':
+                // dd("from dhl");
+                
+                break;
+            case 'ups':
+                dd("from ups");
+                break;
+        }  
+    }
+    public function cancelShipmentRequest(Request $request){
+        $requestJson = json_decode($request->post('json'));
+        $requestJson->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+        $responseFedex = $this->makeFedexJsonPutRequest(
+            env('SHIP_API_URL'),
             env('VALIDATE_SHIP_API_PRODUCTION_URL'),
             $requestJson
         );
-        if($response->status() == '200'){
-            $response = $this->makeFedexJsonPostRequest(
-                env('SHIP_API_URL'), 
-                env('SHIP_API_PRODUCTION_URL'),
-                 $requestJson
-            );
-            return response()->json([
-                'response'=>$response->json(),
-                'statusCode'=>$response->status()
-            ]);
-            // return response()->json([
-            //     'shipAPI' => $response->json(),
-            //     'statusCode'=> $response->status(),
-            //     'cookie'=>$requestJson,
-            //     'TEST'=>''
-            // ]);
-        }
-        else{
-            return response()->json([
-                'shipAPI' => $response->json(),
-                'statusCode'=> $response->status(),
-                'cookie'=>$requestJson,
-                'TEST'=>'FROM DEFAULT'
-            ]);
-        }
+        return response()->json([
+            'fedexResponse' => [
+                'response' => $responseFedex->json(),
+                'statusCode' => $responseFedex->status()
+            ]
+        ]);
     }
 
     //API TRACKING
 
     public function tracking()
     {
-
+        return view('fedex.tracking');
     }
-    public function trackingRequest()
+    public function trackingRequest(Request $request)
     {
-
+        $requestJson = json_decode($request->post('json'));
+        switch ($requestJson->companyName)
+        {
+            case 'fedex':
+                $body = [
+                    "includeDetailedScans" => true,
+                    "trackingInfo" => [
+                        [
+                        "trackingNumberInfo"=> [
+                            "trackingNumber"=> $requestJson->trackingNumber,
+                        ]
+                    ]
+                    ]
+                        ];
+                $responseFedex = $this->makeFedexJsonPostRequest(
+                    env('TRACKING_API_URL'),
+                    env('TRACKING_API_PRODUCTION_URL'),
+                    $body
+                );
+                return response()->json([
+                    'fedexResponse' =>[
+                        'trackingResponse' => $responseFedex->json(),
+                        'statusCode' => $responseFedex->status()
+                    ] 
+                ]);
+                break;
+        }
     }
-    //FEDEX JSON POST/////////////////////////////////////////////////////////////////////
+    //|**********FEDEX JSON POST**********|
     public function resendFedexJsonPostRequest($urlTest, $urlProduction, $jsonArray, $token) {
         return $response = HTTP::withHeaders([
             'content-type'=>'application/json',
@@ -888,36 +952,24 @@ class FedexController extends Controller
             'authorization'=> Cookie::get('token_type')." ".Cookie::get('access_token_fedex'),
         ])->put(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray);
     }
-    public function getTokenValidation($request){
-        $request = json_decode($request);
-        $responseToken = $this->postToken($request);
-        if ($responseToken->status() == '200'){
-            $response = $this->makeFedexJsonPostRequest(
-                env('ALTER_PACKAGES_OPEN_SHIP_TEST_URL'),
-                env('ALTER_PACKAGES_SHIP_PRODUCTION_URL'),
-                $request
-            );
-            return response() -> json([
-                'addOpenShipmentPackages'=>$response->json(),
-                'statusCode'=> $response->status(),
-                'cookie'=> $response
-            ]);
-        }
-        else{
-            return response()->json([
-                'Response' => $responseToken,
-                'AuthenticationProblem' => 'true'
-            ]);
-        }
-    }
 
-    //DHL JSON POST
+    //|**********DHL JSON POST**********|
     public function makeDHLJsonPostRequest($urlTest, $urlProduction, $jsonArray)
     {
         return HTTP::withBasicAuth(
             env('PRODUCTION_ENV') ? env('USER_DHL_PRODUCTION'): env('USER_DHL_TEST'), 
             env('PRODUCTION_ENV') ? env('PASS_DHL_PRODUCTION'): env('PASS_DHL_TEST')
         )->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray)->json();
+    }
+    //|**********UPS JSON POST**********|
+    public function makeUPSJsonPostRequest($urlTest, $urlProduction, $jsonArray)
+    {
+        return HTTP::withBasicAuth([
+            'Content-Type'=>'application/json',
+            'Username'=>'ufaAPI',
+            'Password'=>'Greetings@ups',
+            'AccessLicenseNumber'=>'8DBB81E907AB4875'
+        ])->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray)->json();
     }
     //functions for forms//////////////////////////////////////////////////////////////
     public function getAccountShipmentNumber()
@@ -1255,4 +1307,82 @@ class FedexController extends Controller
             "Indicates the pickup specific to an Express tag or Ground call tag pickup request." =>"TAG",
         ];
     }
+
+    public function setShipmentBody(Request $request)
+    {
+        $requestJson = json_decode($request->post('json'));
+        switch($requestJson->delivery)
+        {
+            case 'fedex':
+                $bodyFedex = [
+                    "accountNumber" => [
+                        "value" => ""
+                    ],
+                    "labelResponseOptions" => "URL_ONLY",
+                    "requestedShipment" => [
+                        "shipper" => [
+                            "contact" => [
+                                "personName" => '',
+                                "phoneNumber"=> '',
+                            ],
+                            "address" => [
+                                "streetLines" => [
+                                '',
+                                ''
+                                ],
+                                "city" => '',
+                                "stateOrProvinceCode" => '',
+                                "postalCode" => '',
+                                "countryCode" =>  ''
+                        ]   
+                    ]
+                            ],
+                            "recipients" => [
+                                "contact" => [
+                                "personName" => '',
+                                "phoneNumber"=> '',
+                                // "companyName": ""
+                                ],
+                                "address" => [
+                                "streetLines" => [
+                                    '',
+                                    ''
+                                ],
+                                "city" => '',
+                                "stateOrProvinceCode" => '',
+                                "postalCode" => '',
+                                "countryCode" => ''
+                            ]
+                            ],
+                            [
+                                "shipDatestamp" => '',
+                                "serviceType" => '',
+                                "packagingType" => '',
+                                "pickupType" => '',
+                                "shippingChargesPayment" => [
+                                "paymentType" => "SENDER"
+                            ],
+                                
+                                "labelSpecification" => [
+                                "imageType" => "PDF",
+                                "labelStockType" => "PAPER_85X11_TOP_HALF_LABEL"
+                            ],
+                                "requestedPackageLineItems" => [
+                                [
+                                    "weight" => [
+                                    "units" => 'LB',
+                                    "value" => 10
+                                ]
+                                ]
+                                ]
+                            ]
+                        ];
+                break;
+            case 'dhl':
+                break;
+            case 'ups':
+                break;
+        }
+    }
 }
+
