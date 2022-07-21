@@ -831,12 +831,11 @@ class FedexController extends Controller
         switch ($requestJson->delivery)
         {
             case 'fedex':
-                $this->setShipmentBody($request);
-                $requestJson->json->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+                $body = $this->setShipmentBody($request);
                    $responseFedex = $this->makeFedexJsonPostRequest(
                         env('SHIP_API_URL'),
                         env('SHIP_API_PRODUCTION_URL'),
-                        $requestJson->json
+                        $body
                     );
                     return response()->json([
                         'fedexResponse' => [
@@ -872,8 +871,92 @@ class FedexController extends Controller
                 // }
                 break;
             case 'dhl':
-                // dd("from dhl");
-                
+                $body = $this->setShipmentBody($request);
+                $responseDhl = $this->makeDHLJsonPostRequest(
+                    env('SHIPMENT_REQUEST_TEST_URL_DHL'),
+                    env('SHIPMENT_REQUEST_PRODUCTION_URL_DHL'),
+                    $body
+                );
+                return response()->json([
+                    'dhlResponse' => [
+                        'response' => $responseDhl->json(),
+                        'statusCode' => $responseDhl->status()
+                    ]
+                ]);
+                //////////////////////////////////////////
+                // {
+                //     "ShipmentRequest": {
+                //        "RequestedShipment": {
+                //           "ShipmentInfo": {
+                //                "DropOffType": "REGULAR_PICKUP",
+                //              "ServiceType": "N",
+                //              "Account": 999999999,
+                //              "Currency": "MXN",
+                //              "UnitOfMeasurement": "SI",
+                //              "PackagesCount": 1,
+                //             "LabelOptions": {
+                //               "RequestWaybillDocument": "Y",
+                //               "HideAccountInWaybillDocument": "Y"
+                //             },
+                //              "LabelType": "ZPL"
+                //           },
+                //           "ShipTimestamp": "2020-09-03T17:00:00GMT-06:00",
+                //           "PaymentInfo": "DDU",
+                //           "InternationalDetail": {
+                //              "Commodities": {
+                //                 "NumberOfPieces": 1,
+                //                 "Description": "Test"
+                //              },
+                //             "Content" : "NON_DOCUMENTS"
+                //           },
+                //           "Ship": {
+                //              "Shipper": {
+                //                 "Contact": {
+                //                    "PersonName": "TEST",
+                //                    "CompanyName": "TEST",
+                //                    "PhoneNumber": "55-55-55-55",
+                //                    "EmailAddress": "test@gmail.com"
+                //                 },
+                //                 "Address": {
+                //                    "StreetLines": "Prolongacion Hidalgo",
+                //                    "City": "Mexico",
+                //                    "PostalCode": "58741",
+                //                    "CountryCode": "MX"
+                //                 }
+                //              },
+                //              "Recipient": {
+                //                 "Contact": {
+                //                    "PersonName": "TEST",
+                //                    "CompanyName": "TEST",
+                //                    "PhoneNumber": "11-11-11-11",
+                //                    "EmailAddress": "test@gmail.com"
+                //                 },
+                //                 "Address": {
+                //                    "StreetLines": "Mariano Escobedo",
+                //                    "City": "Mexico",
+                //                    "PostalCode": "59920",
+                //                    "CountryCode": "MX"
+                //                 }
+                //              }
+                //           },
+                //           "Packages": {
+                //              "RequestedPackages": {
+                //                 "@number": 1,
+                //                 "InsuredValue": 10,
+                //                 "Weight": 10,
+                //                 "Dimensions": {
+                //                    "Length": 10,
+                //                    "Width": 10,
+                //                    "Height": 10
+                //                 },
+                //                 "CustomerReferences": "FOLIO WMS 12345678"
+                //              }
+                //           }
+                //        }
+                //     }
+                //  }
+
+                //////////////////////////////////////////
                 break;
             case 'ups':
                 dd("from ups");
@@ -959,7 +1042,7 @@ class FedexController extends Controller
         return HTTP::withBasicAuth(
             env('PRODUCTION_ENV') ? env('USER_DHL_PRODUCTION'): env('USER_DHL_TEST'), 
             env('PRODUCTION_ENV') ? env('PASS_DHL_PRODUCTION'): env('PASS_DHL_TEST')
-        )->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray)->json();
+        )->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray);
     }
     //|**********UPS JSON POST**********|
     public function makeUPSJsonPostRequest($urlTest, $urlProduction, $jsonArray)
@@ -1311,54 +1394,56 @@ class FedexController extends Controller
     public function setShipmentBody(Request $request)
     {
         $requestJson = json_decode($request->post('json'));
-        switch($requestJson->delivery)
+        $delivery = $requestJson->delivery;
+        $requestJson = $requestJson->json;
+        switch($delivery)
         {
             case 'fedex':
-                $bodyFedex = [
+                $body = [
                     "accountNumber" => [
-                        "value" => ""
+                        "value" => env('SHIPPER_ACCOUNT_TEST')
                     ],
                     "labelResponseOptions" => "URL_ONLY",
                     "requestedShipment" => [
                         "shipper" => [
                             "contact" => [
-                                "personName" => '',
-                                "phoneNumber"=> '',
+                                "personName" => $requestJson->shipper->contact->personName,
+                                "phoneNumber"=> $requestJson->shipper->contact->phoneNumber,
                             ],
                             "address" => [
                                 "streetLines" => [
-                                '',
+                                    $requestJson->shipper->address->streetLines,
                                 ''
                                 ],
-                                "city" => '',
-                                "stateOrProvinceCode" => '',
-                                "postalCode" => '',
-                                "countryCode" =>  ''
+                                "city" => $requestJson->shipper->address->city,
+                                "stateOrProvinceCode" => $requestJson->shipper->address->stateOrProvinceCode,
+                                "postalCode" => $requestJson->shipper->address->postalCode,
+                                "countryCode" =>  $requestJson->shipper->address->countryCode
                         ]   
                     ]
                             ],
                             "recipients" => [
                                 "contact" => [
-                                "personName" => '',
-                                "phoneNumber"=> '',
+                                "personName" => $requestJson->recipients[0]->contact->personName,
+                                "phoneNumber"=> $requestJson->recipients[0]->contact->phoneNumber,
                                 // "companyName": ""
                                 ],
                                 "address" => [
                                 "streetLines" => [
-                                    '',
+                                    $requestJson->recipients[0]->address->streetLines,
                                     ''
                                 ],
-                                "city" => '',
-                                "stateOrProvinceCode" => '',
-                                "postalCode" => '',
-                                "countryCode" => ''
+                                "city" => $requestJson->recipients[0]->address->city,
+                                "stateOrProvinceCode" => $requestJson->recipients[0]->address->stateOrProvinceCode,
+                                "postalCode" => $requestJson->recipients[0]->address->postalCode,
+                                "countryCode" => $requestJson->recipients[0]->address->countryCode
                             ]
                             ],
-                            [
-                                "shipDatestamp" => '',
-                                "serviceType" => '',
-                                "packagingType" => '',
-                                "pickupType" => '',
+                            
+                                "shipDatestamp" => $requestJson->shipDatestamp,
+                                "serviceType" => $requestJson->serviceType,
+                                "packagingType" => $requestJson->packagingType,
+                                "pickupType" => $requestJson->pickupType,
                                 "shippingChargesPayment" => [
                                 "paymentType" => "SENDER"
                             ],
@@ -1370,19 +1455,100 @@ class FedexController extends Controller
                                 "requestedPackageLineItems" => [
                                 [
                                     "weight" => [
-                                    "units" => 'LB',
-                                    "value" => 10
+                                    "units" => $requestJson->requestedPackageLineItems[0]->weight->units,
+                                    "value" => $requestJson->requestedPackageLineItems[0]->weight->value
                                 ]
                                 ]
                                 ]
-                            ]
+                            
                         ];
                 break;
             case 'dhl':
+                $UnitOfMeasurement = '';
+                if($requestJson->requestedPackageLineItems[0]->weight->units == 'KG')
+                {
+                    $UnitOfMeasurement = "SI";
+                }
+                else if($requestJson->requestedPackageLineItems[0]->weight->units == 'LB')
+                {
+                    $UnitOfMeasurement = "SU";
+                }
+                $body = [
+                    "ShipmentRequest" => [
+                        "RequestedShipment" => [
+                            "ShipmentInfo" => [
+                                "DropOffType" => "REGULAR_PICKUP",
+                                "ServiceType" => "N",
+                                "Account" => env("ACCOUNT_DHL_TEST"),
+                                "Currency" => "MXN",
+                                "UnitOfMeasurement" => $UnitOfMeasurement,
+                                "PackagesCount" => 1,
+                            "LabelOptions" => [
+                                "RequestWaybillDocument" => "Y",
+                                "HideAccountInWaybillDocument" => "Y"
+                            ],
+                                "LabelType" => "ZPL"
+                        ],
+                            "ShipTimestamp" => $requestJson->shipDatestamp,
+                            "PaymentInfo" => "DDU",
+                            "InternationalDetail" => [
+                                "Commodities" => [
+                                    "NumberOfPieces" => 1,
+                                    "Description" => "Test"
+                                ],
+                            "Content"  => "NON_DOCUMENTS"
+                        ],
+                            "Ship" => [
+                                "Shipper" => [
+                                "Contact" => [
+                                    "PersonName" => $requestJson->shipper->contact->personName,
+                                    "CompanyName" => $requestJson->shipper->contact->company,
+                                    "PhoneNumber" => $requestJson->shipper->contact->phoneNumber,
+                                    "EmailAddress" => $requestJson->shipper->contact->shipperEmail
+                                ],
+                                "Address" => [
+                                    "StreetLines" => $requestJson->shipper->address->streetLines[0],
+                                    "City" => $requestJson->shipper->address->city,
+                                    "PostalCode" => $requestJson->shipper->address->postalCode,
+                                    "CountryCode" => $requestJson->shipper->address->countryCode
+                                ]
+                            ],
+                                "Recipient" => [
+                                "Contact" => [
+                                    "PersonName" =>  $requestJson->recipients[0]->contact->personName,
+                                    "CompanyName" => $requestJson->recipients[0]->contact->company,
+                                    "PhoneNumber" => $requestJson->recipients[0]->contact->phoneNumber,
+                                    "EmailAddress" => $requestJson->recipients[0]->contact->recipientEmail
+                                ],
+                                "Address" => [
+                                    "StreetLines" => $requestJson->recipients[0]->address->streetLines[0],
+                                    "City" => $requestJson->recipients[0]->address->city,
+                                    "PostalCode" => $requestJson->recipients[0]->address->postalCode,
+                                    "CountryCode" => $requestJson->recipients[0]->address->countryCode
+                                ]
+                                ]
+                        ],
+                            "Packages" => [
+                                "RequestedPackages" => [
+                                "@number" => 1,
+                                "InsuredValue" => 10,
+                                "Weight" => $requestJson->requestedPackageLineItems[0]->weight->value,
+                                "Dimensions" => [
+                                    "Length" => $requestJson->requestedPackageLineItems[0]->dimensions->lenght,
+                                    "Width" => $requestJson->requestedPackageLineItems[0]->dimensions->width,
+                                    "Height" => $requestJson->requestedPackageLineItems[0]->dimensions->height
+                                ],
+                                "CustomerReferences" => "FOLIO WMS 12345678"
+                            ]
+                            ]
+                ]
+                            ]
+                            ];
                 break;
             case 'ups':
                 break;
         }
+        return $body;
     }
 }
 
