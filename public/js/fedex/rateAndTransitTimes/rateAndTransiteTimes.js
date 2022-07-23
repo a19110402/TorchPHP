@@ -189,83 +189,87 @@ function (){
             }
           }
     },
-    "ups":{
-        "RateRequest":{
-        "Request":{
-        "SubVersion":"1703",
-        "TransactionReference":{
-        "CustomerContext":" "
-        }
-        },
-        "Shipment":{
-        "ShipmentRatingOptions":{
-        "UserLevelDiscountIndicator":"TRUE"
-        },
-        "Shipper":{
-        "Name":"Billy Blanks",
-        "ShipperNumber":" ",
-        "Address":{
-        "AddressLine":"366 Robin LN SE",
-        "City":"Marietta",
-        "StateProvinceCode":"GA",
-        "PostalCode":"30067",
-        "CountryCode":"US"
-        }
-        },
-        "ShipTo":{
-        "Name":"Sarita Lynn",
-        "Address":{
-        "AddressLine":"355 West San Fernando Street",
-        "City":"San Jose",
-        "StateProvinceCode":"CA",
-        "PostalCode":"95113",
-        "CountryCode":"US"
-        }
-        },
-        "ShipFrom":{
-        "Name":"Billy Blanks",
-        "Address":{
-        "AddressLine":"366 Robin LN SE",
-        "City":"Marietta",
-        "StateProvinceCode":"GA",
-        "PostalCode":"30067",
-        "CountryCode":"US"
-        }
-        },
-        "Service":{
-        "Code":"03",
-        "Description":"Ground"
-        },
-        "ShipmentTotalWeight":{
-        "UnitOfMeasurement":{
-        "Code":"LBS",
-        "Description":"Pounds"
-        },
-        "Weight":"10"
-       },
-        "Package":{
-        "PackagingType":{
-        "Code":"02",
-        "Description":"Package"
-        },
-        "Dimensions":{
-        "UnitOfMeasurement":{
-        "Code":"IN"
-        },
-        "Length":"10",
-        "Width":"7",
-        "Height":"5"
-        },
-        "PackageWeight":{
-        "UnitOfMeasurement":{
-        "Code":"LBS"
-        },
-        "Weight":"7"
-        }
-        }
-        }
-        }         
+    "ups":
+
+    {
+      "RateRequest":{
+      "Request":{
+      "SubVersion":"1703",
+      "TransactionReference":{
+      "CustomerContext":" "
+      }
+      },
+      "Shipment":{
+      "ShipmentRatingOptions":{
+      "UserLevelDiscountIndicator":"TRUE"
+      },
+      "Shipper":{
+      "Name":"Billy Blanks",
+      "ShipperNumber":" ",
+      "Address":{
+      "AddressLine":"366 Robin LN SE",
+      "City":"Marietta",
+      "StateProvinceCode":"GA",
+      "PostalCode":"30067",
+      "CountryCode":"US"
+      }
+      },
+      "ShipTo":{
+      "Name":"Sarita Lynn",
+      "Address":{
+      "AddressLine":"355 West San Fernando Street",
+      "City":"San Jose",
+      "StateProvinceCode":"CA",
+      "PostalCode":"95113",
+      "CountryCode":"US"
+      }
+      },
+      "ShipFrom":{
+      "Name":"Billy Blanks",
+      "Address":{
+      "AddressLine":"366 Robin LN SE",
+      "City":"Marietta",
+      "StateProvinceCode":"GA",
+      "PostalCode":"30067",
+      "CountryCode":"US"
+      }
+      },
+      "Service":{
+      "Code":"03",
+      "Description":"Ground"
+      },
+      "ShipmentTotalWeight":{
+      "UnitOfMeasurement":{
+      "Code":"LBS",
+      "Description":"Pounds"
+      },
+      "Weight":"10"
     },
+    "Package":{
+    "PackagingType":{
+    "Code":"02",
+    "Description":"Package"
+    },
+    "Dimensions":{
+    "UnitOfMeasurement":{
+    "Code":"IN"
+    },
+    "Length":"10",
+    "Width":"7",
+    "Height":"5"
+    },
+    "PackageWeight":{
+    "UnitOfMeasurement":{
+    "Code":"LBS"
+    },
+    "Weight":"7"
+    }
+    }
+    }
+    }
+   }
+   
+
     });
     console.log(JSON.parse(input));
     request(url, input);
@@ -276,7 +280,7 @@ function (){
       data.then(function(response){
         $('#id-rateRequest').after("<div id='rates'></div>");
         $("#rates").css("display", "flex").css("justify-content", "space-evenly");
-        console.log(response.dhlResponse);
+        console.log(response);
         //adapting dhlResponse to validate de statusCode of the response of the API
         let responseDhl = JSON.stringify(response.dhlResponse.response.RateResponse.Provider[0].Notification[0]);
         let codeDhl = responseDhl.replace("@", "");
@@ -305,7 +309,7 @@ function (){
             console.log(response);
         }
         //DHL   
-        showDhl(response, codeDhl.code);     
+        showDhl(response, codeDhl.code);   
         // switch (codeDhl.code){
         //   case '0':
         //     showDhl(response, codeDhl.code);
@@ -322,7 +326,7 @@ function (){
         //UPS
         switch (response.upsResponse.statusCode){
           case 200:
-            showFedex(response);
+            showUps(response.upsResponse);
             console.log("Cool");
             console.log(JSON.stringify(response));
             break;
@@ -388,7 +392,18 @@ function showDhl(data, code){
 function showUps(data){
   $("#showRates").show();
     //UPS
-    // $('#rates').append("<div id='ratesUps'></div>");
+    // if(data.statusCode == 200)
+    // {
+    //   console.log("ups: " + JSON.stringify(data.statusCode));
+    //   $("#createShipUps").before("<div id='upsRate'></div>");
+    //   $("#upsRate").append("<p> Tipo de servicio:" + data.response.FreightRateResponse.TotalShipmentCharge.MonetaryValue*20 + "</p>");
+    //   $("#upsRate").append("<p> Tarifa: $" + data.response.FreightRateResponse.TotalShipmentCharge.MonetaryValue*20 + "</p>");
+
+    // }
+    // else{
+    //   $("#upsRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
+    // }
+    // // $('#rates').append("<div id='ratesUps'></div>");
     // $("#ratesUps").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
     // $("#ratesUps").append("<h2 id='ups'>UPS</h2>");
   }

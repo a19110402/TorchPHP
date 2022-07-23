@@ -202,7 +202,7 @@
             <div class="flex flex-col p-20" id="ratesUps">
                 <h2 class="text-6xl">UPS</h2>
                 <form class="flex flex-col justify-center" action="/fedex/shipments">
-                    <input value="Enviar con UPS" class="cursor-pointer border-2 border-violet-700 rounded-lg p-2 bg-transparent bg-indigo-300" type="submit" class="" id="createShip">
+                    <input value="Enviar con UPS" class="cursor-pointer border-2 border-violet-700 rounded-lg p-2 bg-transparent bg-indigo-300" type="submit" class="" id="createShipUps">
                 </form>
             </div>
         </div>

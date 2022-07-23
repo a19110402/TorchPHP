@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
 use app\models\User;
 use Illuminate\Support\Facades\Hash;
+use stdClass;
 
 class FedexController extends Controller
 {
@@ -781,21 +782,24 @@ class FedexController extends Controller
              $requestJson->dhl
             );
         //                  UPS
-        $responseUps = $this->makeDHLJsonPostRequest(
+        $responseUps = $this->makeUPSJsonPostRequest(
             env('RATE_REQUEST_TEST_URL_UPS'), 
             env('RATE_REQUEST_PRODUCTION_URL_UPS'),
-             $requestJson->ups
-            );
+            $requestJson->ups
+        );
+        // dd(json_encode($responseUps));
+        
         return response()->json([
             'fedexResponse' => [
                 'response' => $responseFedex ->json(),
                 'statusCode' => $responseFedex->status()
             ], 
             'dhlResponse' => [
-                'response' => $responseDhl,
+                'response' => $responseDhl->json(),
             ],
             'upsResponse' => [
-                'response'  =>  $responseUps
+                'response'  =>  $responseUps->json(),
+                'statusCode' => $responseUps->status()
             ]
         ]);
     }
@@ -878,7 +882,7 @@ class FedexController extends Controller
                     $body
                 );
                 return response()->json([
-                    'dhlResponse' => [
+                    'fedexResponse' => [
                         'response' => $responseDhl->json(),
                         'statusCode' => $responseDhl->status()
                     ]
@@ -1047,12 +1051,14 @@ class FedexController extends Controller
     //|**********UPS JSON POST**********|
     public function makeUPSJsonPostRequest($urlTest, $urlProduction, $jsonArray)
     {
-        return HTTP::withBasicAuth([
-            'Content-Type'=>'application/json',
-            'Username'=>'ufaAPI',
+        return HTTP::withHeaders([
+            'AccessLicenseNumber'=>'8DBB81E907AB4875',
             'Password'=>'Greetings@ups',
-            'AccessLicenseNumber'=>'8DBB81E907AB4875'
-        ])->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray)->json();
+            'Content-Type'=>'application/json',
+            'transId' => 'Tran123',
+            'transactionSrc' => 'XOLT',
+            'Username'=>'ufaAPI'
+        ])->post(env('PRODUCTION_ENV') ? $urlProduction: $urlTest, $jsonArray);
     }
     //functions for forms//////////////////////////////////////////////////////////////
     public function getAccountShipmentNumber()
@@ -1399,10 +1405,110 @@ class FedexController extends Controller
         switch($delivery)
         {
             case 'fedex':
-                $body = [
-                    "accountNumber" => [
-                        "value" => env('SHIPPER_ACCOUNT_TEST')
-                    ],
+                // $body = json_encode([
+                //     "labelResponseOptions" => "URL_ONLY",
+                //     "requestedShipment" => [
+                //         "shipper" => [
+                //             "contact" => [
+                //                 "personName" => "",
+                //             ]
+                //         ],
+                //         "recipients" => array([
+                //             "contact" => [
+                //                 "personName" => "",
+                //             ]
+                //     ]),
+                //         "shipDatestamp" => "2020-12-30",
+                //       "serviceType" => "STANDARD_OVERNIGHT",
+                //       "packagingType" => "FEDEX_SMALL_BOX",
+                //       "pickupType" => "USE_SCHEDULED_PICKUP",
+                //       "blockInsightVisibility" => false,
+                //       "shippingChargesPayment" =>[
+                //           "paymentType" => "SENDER"
+                //       ],
+                //       "shipmentSpecialServices" => [
+                //           "specialServiceTypes" => array(
+                //               "FEDEX_ONE_RATE"
+                //           )
+                //       ],
+                //       "labelSpecification" => [
+                //           "imageType" => "PDF",
+                //           "labelStockType" => "PAPER_85X11_TOP_HALF_LABEL"
+                //       ],
+                //       "requestedPackageLineItems" => array(
+                //         []
+                //       )
+                //      ],
+                //     "accountNumber" => [
+                //         "value" => env("SHIPPER_ACCOUNT_TEST ")
+                //     ]
+                // ]);
+                // $body = json_decode($body);
+                // $body = json_decode('{
+                //     "labelResponseOptions": "URL_ONLY",
+                //     "requestedShipment": {
+                //       "shipper": {
+                //         "contact": {
+                //           "personName": "SHIPPER NAME",
+                //           "phoneNumber": 1234567890,
+                //           "companyName": "Shipper Company Name"
+                //         },
+                //         "address": {
+                //           "streetLines": [
+                //             "SHIPPER STREET LINE 1"
+                //           ],
+                //           "city": "HARRISON",
+                //           "stateOrProvinceCode": "AR",
+                //           "postalCode": 72601,
+                //           "countryCode": "US"
+                //         }
+                //       },
+                //       "recipients": [
+                //         {
+                //           "contact": {
+                //             "personName": "RECIPIENT NAME",
+                //             "phoneNumber": 1234567890,
+                //             "companyName": "Recipient Company Name"
+                //           },
+                //           "address": {
+                //             "streetLines": [
+                //               "RECIPIENT STREET LINE 1",
+                //               "RECIPIENT STREET LINE 2"
+                //             ],
+                //             "city": "Collierville",
+                //             "stateOrProvinceCode": "TN",
+                //             "postalCode": 38017,
+                //             "countryCode": "US"
+                //           }
+                //         }
+                //       ],
+                //       "shipDatestamp": "2020-12-30",
+                //       "serviceType": "STANDARD_OVERNIGHT",
+                //       "packagingType": "FEDEX_SMALL_BOX",
+                //       "pickupType": "USE_SCHEDULED_PICKUP",
+                //       "blockInsightVisibility": false,
+                //       "shippingChargesPayment": {
+                //         "paymentType": "SENDER"
+                //       },
+                //       "shipmentSpecialServices": {
+                //         "specialServiceTypes": [
+                //           "FEDEX_ONE_RATE"
+                //         ]
+                //       },
+                //       "labelSpecification": {
+                //         "imageType": "PDF",
+                //         "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+                //       },
+                //       "requestedPackageLineItems": [
+                //         {}
+                //       ]
+                //     },
+                //     "accountNumber": {
+                //       "value": "740561073"
+                //     }
+                //   }');
+                $body = json_encode([
+                    
                     "labelResponseOptions" => "URL_ONLY",
                     "requestedShipment" => [
                         "shipper" => [
@@ -1412,33 +1518,30 @@ class FedexController extends Controller
                             ],
                             "address" => [
                                 "streetLines" => [
-                                    $requestJson->shipper->address->streetLines,
-                                ''
+                                    $requestJson->shipper->address->streetLines
                                 ],
                                 "city" => $requestJson->shipper->address->city,
                                 "stateOrProvinceCode" => $requestJson->shipper->address->stateOrProvinceCode,
                                 "postalCode" => $requestJson->shipper->address->postalCode,
                                 "countryCode" =>  $requestJson->shipper->address->countryCode
                         ]   
-                    ]
+                        ],
+                        "recipients" => array ([
+                            "contact" => [
+                            "personName" => $requestJson->recipients[0]->contact->personName,
+                            "phoneNumber"=> $requestJson->recipients[0]->contact->phoneNumber,
+                            // "companyName": ""
                             ],
-                            "recipients" => [
-                                "contact" => [
-                                "personName" => $requestJson->recipients[0]->contact->personName,
-                                "phoneNumber"=> $requestJson->recipients[0]->contact->phoneNumber,
-                                // "companyName": ""
-                                ],
-                                "address" => [
-                                "streetLines" => [
-                                    $requestJson->recipients[0]->address->streetLines,
-                                    ''
-                                ],
-                                "city" => $requestJson->recipients[0]->address->city,
-                                "stateOrProvinceCode" => $requestJson->recipients[0]->address->stateOrProvinceCode,
-                                "postalCode" => $requestJson->recipients[0]->address->postalCode,
-                                "countryCode" => $requestJson->recipients[0]->address->countryCode
-                            ]
+                            "address" => [
+                            "streetLines" => [
+                                $requestJson->recipients[0]->address->streetLines
                             ],
+                            "city" => $requestJson->recipients[0]->address->city,
+                            "stateOrProvinceCode" => $requestJson->recipients[0]->address->stateOrProvinceCode,
+                            "postalCode" => $requestJson->recipients[0]->address->postalCode,
+                            "countryCode" => $requestJson->recipients[0]->address->countryCode
+                        ]
+                         ]),
                             
                                 "shipDatestamp" => $requestJson->shipDatestamp,
                                 "serviceType" => $requestJson->serviceType,
@@ -1452,16 +1555,18 @@ class FedexController extends Controller
                                 "imageType" => "PDF",
                                 "labelStockType" => "PAPER_85X11_TOP_HALF_LABEL"
                             ],
-                                "requestedPackageLineItems" => [
-                                [
+                                "requestedPackageLineItems" => array([
                                     "weight" => [
                                     "units" => $requestJson->requestedPackageLineItems[0]->weight->units,
                                     "value" => $requestJson->requestedPackageLineItems[0]->weight->value
                                 ]
-                                ]
-                                ]
-                            
-                        ];
+                                ])
+                        ],
+                "accountNumber" => [
+                    "value" => env('SHIPPER_ACCOUNT_TEST')
+                ],
+                ]);
+                $body  = json_decode($body);
                 break;
             case 'dhl':
                 $UnitOfMeasurement = '';
