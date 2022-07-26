@@ -20,13 +20,21 @@
                 @if (\Session::has('success'))
                     <div class="alert alert-success text-green-500">
                         <ul>
-                            <p>{!! \Session::get('success') !!}</p>
+                            <p>{!! \Session::get('success') !!}{!! \Session::get('account') !!}</p>
                         </ul>
                     </div>
                 @endif
 
                 <div class="card-body hover:text-azul-primario hover:underline">
-                    <a href="{{route('corpAccount')}}">Cambiar a cuenta corporativa</a>
+                    <a href="{{url('/upgrade-account')}}">Cambiar a cuenta corporativa</a>
+                </div>
+
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{route('create.account')}}">Creación de cuenta</a>
+                </div>
+
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{route('watch.account')}}">Ver cuentas</a>
                 </div>
             </div>
         </div>

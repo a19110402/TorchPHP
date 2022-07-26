@@ -15,7 +15,7 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in and you are admin!') }}
+                    {{ __('You are logged in and you are corp!') }}
                 </div>
 
                 {{-- Mensaje de creación de usuario exitoso --}}
@@ -29,13 +29,20 @@
 
                 {{-- Boton para creación de usuario --}}
                 <div class="card-body hover:text-azul-primario hover:underline">
-                    <a href="{{route('registerUser')}}">Creación de usario nuevo</a>
+                    <a href="{{route('registerUser')}}">Creación de usario</a>
                 </div>
                 
                 <div class="card-body hover:text-azul-primario hover:underline">
-                    <a href="{{url('/users')}}">Ver usuarios creados</a>
+                    <a href="{{url('/users')}}">Ver usuarios</a>
                 </div>
 
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{route('create.account')}}">Creación de cuenta</a>
+                </div>
+
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{route('watch.account')}}">Ver cuentas</a>
+                </div>
             </div>
         </div>
     </div>

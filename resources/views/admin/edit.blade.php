@@ -87,8 +87,8 @@
 
                         <select name="role" id="role" class="form-control formato-entrada bg-white" required  placeholder="Tipo de usuario">
                               <option selected hidden>{{$user->role}}</option>
-                              <option value="client">client</option>
-                              <option value="admin">admin</option>
+                              <option value="sucursal">sucursal</option>
+                              <option value="cliente">cliente</option>
                         </select>
                         
                         @error('role')

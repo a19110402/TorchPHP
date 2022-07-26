@@ -108,29 +108,39 @@ Route::get('/home', 'HomeController@index')->middleware('verified')->name('home'
 Route::get('/home/admin', 'AdminController@index')->middleware('auth.admin','verified')->name('admin.index');
 
 //Cambio a cuenta corporativa
-Route::get('/upgrade-account', 'UpgradeController@index')->middleware('verified')->name('corpAccount');
-Route::get('/upgrade-account/{id}', 'UpgradeController@edit')->name('editAccount');
-Route::patch('/upgrade-account{id}', 'UpgradeController@upgrade')->name('upgradeAccount');
+Route::get('/upgrade-account', 'Auth\UpgradeController@index')->middleware('verified')->name('corpAccount');
+// Route::get('/upgrade-account/{id}', 'UpgradeController@edit')->name('editAccount');
+Route::post('/upgrade-account', 'Auth\UpgradeController@upgrade')->name('upgradeAccount');
 
 //Confirmación de contraseña
 Route::get('/password/confirm', 'Auth\ConfirmPasswordController@show')->middleware('auth')->name('password.confirm');
 Route::post('/password/confirm', 'Auth\ConfirmPasswordController@store')->middleware('auth');
 
-//Creación de usuario estando loggeado
+//Creación de cuenta para usuario normal
+Route::get('/create-account', 'Auth\CreateAccountController@show')->middleware('auth')->name('create.account');
+Route::post('/create-account', 'Auth\CreateAccountController@store')->middleware('auth');
+//Visualización de cuenta para usuario normal
+Route::get('/accounts', 'Auth\CreateAccountController@watchAccount')->middleware('auth')->name('watch.account');
+//Edición de cuenta para usuario normal
+Route::get('/accounts/{id}', 'Auth\CreateAccountController@editAccount')->middleware('auth')->name('edit.account');
+//Actualizar cuenta para usuario normal
+Route::patch('/accounts/{id}', 'Auth\CreateAccountController@updateAccount')->middleware('auth')->name('update.account');
+//Eliminar una cuenta para usuario normal
+Route::delete('/accounts/{id}', 'Auth\CreateAccountController@deleteAccount')->middleware('auth')->name('delete.account');
+
+
+//Creación de usuario para corporativos
 Route::get('/registerUser', 'Auth\RegisterByUserController@userCreation')->middleware('auth.admin', 'password.confirm')->name('registerUser');
 Route::post('/registerUser', 'Auth\RegisterByUserController@register')->middleware('auth.admin', 'password.confirm');
-
-//Visualización de usuarios creados
-Route::get('/users','AdminController@watchUsers')->middleware('password.confirm')->name('users');
-
-//Editar un usuario
+//Visualización de usuarios para corporativos
+Route::get('/users','AdminController@watchUsers')->middleware('password.confirm', 'auth.admin')->name('users');
+//Editar un usuario para corporativos
 Route::get('/users/{id}', 'AdminController@editUser')->name('editUser');
-
-//Actualizar usuario
+//Actualizar usuario para corporativos
 Route::patch('/users/{id}', 'AdminController@updateUser')->name('updateUser');
-
-//Eliminar un usuario
+//Eliminar un usuario para corporativos
 Route::delete('/users/{id}', 'AdminController@deleteUser')->name('deleteUser');
+
 
 //Página nosotros
 Route::get('/nosotros', 'IndexController@nosotros')->name('nosotros');

@@ -32,7 +32,7 @@
             {{-- <div class="navegacion-principal md:flex items-center"> --}}
             <div class="flex flex-col items-center w-full  md:flex md:flex-row md:justify-evenly">
 
-                @if(auth()->user() != null && auth()->user()->role =='admin')
+                @if(auth()->user() != null && auth()->user()->type =='corp')
                     <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
                     <a href="#">Envío</a>

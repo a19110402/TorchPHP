@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-
-
+use App\Http\Controllers\Controller;
 
 class UpgradeController extends Controller
 {
@@ -36,12 +35,6 @@ class UpgradeController extends Controller
         ]);
     }
 
-      /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
     protected function create(array $data)
     {
         return User::create([
@@ -50,41 +43,19 @@ class UpgradeController extends Controller
     }
 
     public function index(){
-
         return view('admin/corp');
     }
 
-    public function edit($id){
-        $user = User::find($id);
-
-        return view('admin/corp', ['user' => $user]);
-    }
-
-    public function upgrade(Request $request, $id){
+    public function upgrade(Request $request){
         
         $this->validator($request->all())->validate();
 
-        $user = User::find($id);
+        $user = Auth::user($request);
         $user->corporation = $request->corporation;
-
+        $user->type = 'corp';
         $user->save();
 
         return redirect()->route('home')->with('success', 'Ahora eres cuenta corporativa');
 
-        // return redirect()->to('/home')->with('success', 'Ahora eres cuenta corporativa');
-
     }
-
-    // public function updateUser(Request $request, $id){
-    //     $user = User::find($id);
-    //     $user->name = $request->name;
-    //     $user->lastname = $request->lastname;
-    //     $user->phone = $request->phone;
-    //     $user->createdBy = $request->createdBy;
-    //     $user->role = $request->role;
-
-    //     $user->save();
-
-    //     return redirect()->route('users')->with('success', 'Usuario actualizado');
-    // }
 }

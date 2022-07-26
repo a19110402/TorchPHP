@@ -7,10 +7,9 @@
     <div class="contenedor">
         
         <div class="centrado estilo-titulo">Datos de la empresa</div>
-
+        
         <div>
-            <form method="POST" action="{{ route('upgradeAccount', ['id' => $user->id])}}" class="cont-form">
-                @method('PATCH')
+            <form method="POST" action="{{ route('upgradeAccount')}}" class="cont-form">
                 @csrf
 
                 <div class="row mb-3">
@@ -35,6 +34,7 @@
                 </div>
             </form>
         </div>
+
     </div>
 </div>
 @endsection

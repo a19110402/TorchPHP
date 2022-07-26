@@ -47,7 +47,8 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <input id="phone" type="text" class="formato-entrada" name="phone" required placeholder="Teléfono">
+                        <input id="phone" type="text" class="formato-entrada" name="phone" required placeholder="Teléfono"
+                        value="{{ old('phone') }}">
 
                         @error('phone')
                             <span class="invalid-feedback" role="alert">
@@ -77,15 +78,17 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        {{-- <input id="role" type="text" class="form-control formato-entrada" name="role" required placeholder="Tipo de usuario"> --}}
+                        <select name="corporation" id="corporation" class="form-control formato-entrada bg-white"  placeholder="Compañía">
+                              <option selected disabled hidden>Select corporation</option>
 
-                        <select name="role" id="role" class="form-control formato-entrada bg-white" required  placeholder="Tipo de usuario">
-                              <option selected disabled hidden>Select role</option>
-                              <option value="client">client</option>
-                              <option value="admin">admin</option>
+                                @foreach($users as $user)
+                                    @if ($user->type == 'corp' && auth()->user()->name == $user->name) 
+                                        <option value="{{$user->corporation}}">{{$user->corporation}}</option>
+                                    @endif
+                                @endforeach 
                         </select>
                         
-                        @error('role')
+                        @error('corporation')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
