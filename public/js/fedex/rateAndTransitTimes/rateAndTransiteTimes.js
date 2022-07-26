@@ -111,6 +111,23 @@ function (){
   let height = $('input[name="height"]').val();
   //shipment
   let carrierCodes = $('select[name="carrierCodes"]').val();
+  let carrierFedex = '';
+  let carrierUps = '';
+  let upsServiceDescription = '';
+
+  switch(carrierCodes)
+  {
+    case 'express':
+      carrierFedex = 'FDXE';
+      carrierUps = '07';
+      upsServiceDescription = 'express';
+      break;
+      case 'ground':
+      carrierFedex = 'FDXG';
+      carrierUps = '03';
+      upsServiceDescription = 'ground';
+      break;
+  }
   $('#rates').remove();
     let url = $(this).attr('data-action');
     let input = JSON.stringify({
@@ -149,7 +166,7 @@ function (){
           }
         }]
       },
-      "carrierCode": carrierCodes
+      "carrierCode": carrierFedex
     },
     "dhl": {
         "RateRequest": {
@@ -190,86 +207,63 @@ function (){
           }
     },
     "ups":
-
     {
-      "RateRequest":{
-      "Request":{
-      "SubVersion":"1703",
-      "TransactionReference":{
-      "CustomerContext":" "
+      "RateRequest": {
+        "Request": {
+          "SubVersion": "1703",
+          "TransactionReference": {
+            "CustomerContext": " "
+          }
+        },
+        "Shipment": {
+          "ShipmentRatingOptions": {
+            "UserLevelDiscountIndicator": "TRUE"
+          },
+          "Shipper": {
+            "Address": {
+              "PostalCode": shipperPostalCode,
+              "CountryCode": shipperCountrCode
+            }
+          },
+          "ShipTo": {
+            "Address": {
+              "PostalCode": recipientPostalCode,
+              "CountryCode": recipientCountryCode
+            }
+          },
+          "Service": {
+            "Code": carrierUps
+          },
+          "ShipmentTotalWeight": {
+            "UnitOfMeasurement": {
+              "Code": "kgs",
+              "Description": "kilograms"
+            },
+            "Weight": "10"
+          },
+          "Package": {
+            "PackagingType": {
+              "Code": "02",
+              "Description": "Package"
+            },
+            "Dimensions": {
+              "UnitOfMeasurement": {
+                "Code": "cm"
+              },
+              "Length": "10",
+              "Width": "7",
+              "Height": "5"
+            },
+            "PackageWeight": {
+              "UnitOfMeasurement": {
+                "Code": "kgs"
+              },
+              "Weight": "7"
+            }
+          }
+        }
       }
-      },
-      "Shipment":{
-      "ShipmentRatingOptions":{
-      "UserLevelDiscountIndicator":"TRUE"
-      },
-      "Shipper":{
-      "Name":"Billy Blanks",
-      "ShipperNumber":" ",
-      "Address":{
-      "AddressLine":"366 Robin LN SE",
-      "City":"Marietta",
-      "StateProvinceCode":"GA",
-      "PostalCode":"30067",
-      "CountryCode":"US"
-      }
-      },
-      "ShipTo":{
-      "Name":"Sarita Lynn",
-      "Address":{
-      "AddressLine":"355 West San Fernando Street",
-      "City":"San Jose",
-      "StateProvinceCode":"CA",
-      "PostalCode":"95113",
-      "CountryCode":"US"
-      }
-      },
-      "ShipFrom":{
-      "Name":"Billy Blanks",
-      "Address":{
-      "AddressLine":"366 Robin LN SE",
-      "City":"Marietta",
-      "StateProvinceCode":"GA",
-      "PostalCode":"30067",
-      "CountryCode":"US"
-      }
-      },
-      "Service":{
-      "Code":"03",
-      "Description":"Ground"
-      },
-      "ShipmentTotalWeight":{
-      "UnitOfMeasurement":{
-      "Code":"LBS",
-      "Description":"Pounds"
-      },
-      "Weight":"10"
-    },
-    "Package":{
-    "PackagingType":{
-    "Code":"02",
-    "Description":"Package"
-    },
-    "Dimensions":{
-    "UnitOfMeasurement":{
-    "Code":"IN"
-    },
-    "Length":"10",
-    "Width":"7",
-    "Height":"5"
-    },
-    "PackageWeight":{
-    "UnitOfMeasurement":{
-    "Code":"LBS"
-    },
-    "Weight":"7"
-    }
-    }
-    }
-    }
-   }
-   
-
+    } 
     });
     console.log(JSON.parse(input));
     request(url, input);
@@ -392,17 +386,17 @@ function showDhl(data, code){
 function showUps(data){
   $("#showRates").show();
     //UPS
-    // if(data.statusCode == 200)
-    // {
-    //   console.log("ups: " + JSON.stringify(data.statusCode));
-    //   $("#createShipUps").before("<div id='upsRate'></div>");
-    //   $("#upsRate").append("<p> Tipo de servicio:" + data.response.FreightRateResponse.TotalShipmentCharge.MonetaryValue*20 + "</p>");
-    //   $("#upsRate").append("<p> Tarifa: $" + data.response.FreightRateResponse.TotalShipmentCharge.MonetaryValue*20 + "</p>");
+    if(data.statusCode == 200)
+    {
+      console.log("ups: " + JSON.stringify(data.statusCode));
+      $("#createShipUps").before("<div id='upsRate'></div>");
+      $("#upsRate").append("<p> Tipo de servicio" + "</p>");
+      $("#upsRate").append("<p> Tarifa " + upsServiceDescription + ": $" + data.response.RateResponse.RatedShipment.TotalCharges.MonetaryValue*20 + "</p>");
 
-    // }
-    // else{
-    //   $("#upsRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
-    // }
+    }
+    else{
+      $("#upsRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
+    }
     // // $('#rates').append("<div id='ratesUps'></div>");
     // $("#ratesUps").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
     // $("#ratesUps").append("<h2 id='ups'>UPS</h2>");

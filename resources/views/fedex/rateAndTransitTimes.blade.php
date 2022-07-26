@@ -110,8 +110,8 @@
                         </div>
                         <div>
                             <select class="border-black border rounded-r-md" name="carrierCodes">
-                                <option value="FDXE ">Express </option>
-                                <option value="FDXG">Terrestre</option>>
+                                <option value="express">Express </option>
+                                <option value="ground">Terrestre</option>>
                             </select>
                             
                         </div>

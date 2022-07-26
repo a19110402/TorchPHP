@@ -769,18 +769,19 @@ class FedexController extends Controller
         $requestJson = json_decode($request->post('json'));
         $requestJson->fedex->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
         $requestJson->dhl->RateRequest->RequestedShipment->Account= env('ACCOUNT_DHL_TEST');
+        // dd($requestJson->ups);
         //                  FEDEX
         $responseFedex = $this->makeFedexJsonPostRequest(
             env('RATE_AND_TRANSIT_TIMES_URL'), 
             env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
              $requestJson->fedex
-        );
+            );
         //                  DHL
         $responseDhl = $this->makeDHLJsonPostRequest(
             env('RATE_REQUEST_TEST_URL_DHL'), 
             env('RATE_REQUEST_PRODUCTION_URL_DHL'),
-             $requestJson->dhl
-            );
+            $requestJson->dhl
+        );
         //                  UPS
         $responseUps = $this->makeUPSJsonPostRequest(
             env('RATE_REQUEST_TEST_URL_UPS'), 
