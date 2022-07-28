@@ -1,7 +1,7 @@
 //THE AJAX FUNCTION IS A JS FILE WHICH ITS FUNCTIONALITY START AN AJAX PETITION
 import ajax from '../../ajax.js';
 
-function getDate(){
+export function getDate(){
     let date = new Date();
     let dateString =  date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
     return dateString;

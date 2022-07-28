@@ -1,88 +1,6 @@
 import ajax from '../../ajax.js';
 import { packageChange } from './validations.js';
-// $("#fedEx").hide();
-
-
-// function getDate(){
-//   let date = new Date();
-//   let dateString =  date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
-//   return dateString;
-// }
-
-// function validatePostalCode(postalCodeAPI){
-//   let response = '';
-//   let x;
-//   response = ajax('POST', '/validatePostalCode', postalCodeAPI, $('input[name="_token"]').val() );
-//   response.then(function(answer){
-//     x = answer.fedexResponse.statusCode;
-//   });
-//   return response;
-// }
-
-// $("#shipper_postalCode").on('change',function(e){
-//   $("#shipper_postalCode").css("border-color", "black");
-//   $(".shipperPostalCodeNotFound").remove();
-//   let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
-//   let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
-//   // let shipperCity = $('input[name="shipper_city"]').val();
-//   let postalCodeAPI = JSON.stringify({
-//     "carrierCode": "FDXG",
-//     "countryCode": shipperCountrCode,
-//     "postalCode": shipperPostalCode,
-//     "shipDate": getDate()
-// });
-//   let myPromise = new Promise(function(resolve){
-//     let response = validatePostalCode(postalCodeAPI);
-//     resolve(response);
-//   });
-
-//   myPromise.then(function(response){
-//     switch(response.fedexResponse.statusCode){
-//         case 200:
-//           $("#shipper_postalCode").css("border", "2px solid #8bef89");  
-//           break;
-//         case 400:
-//           $("#shipper_postalCode").css("border", "2px solid red").after("<p class='shipperPostalCodeNotFound'>No pudimos encontrar el código postal</p>");  
-//           $(".shipperPostalCodeNotFound").css("font-size", "1rem");
-//         }
-//   });
-   
-//   // let response = validatePostalCode(postalCodeAPI);
-//   // switch(response.fedexResponse.statusCode){
-//   //   case 200:
-//   //     $("#shipper_postalCode").css("border", "2px solid green");  
-//   //     break;
-//   // }
-// });
-
-// $("#recipient_postalCode").on('change',function(e){
-//   $("#recipient_postalCode").css("border-color", "black");
-//   let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
-//   let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
-//   $(".recipientPostalCodeNotFound").remove();
-//   // let recipientCity = $('input[name="recipient_city"]').val();
-//   let postalCodeAPI = JSON.stringify({
-//     "carrierCode": "FDXG",
-//     "countryCode": recipientCountryCode,
-//     "postalCode": recipientPostalCode,
-//     "shipDate": getDate()
-// });
-// let myPromise = new Promise(function(resolve){
-//   let response = validatePostalCode(postalCodeAPI);
-//   resolve(response);
-// });
-
-// myPromise.then(function(response){
-//   switch(response.fedexResponse.statusCode){
-//       case 200:
-//         $("#recipient_postalCode").css("border", "2px solid #8bef89");  
-//         break;
-//       case 400:
-//         $("#recipient_postalCode").css("border", "2px solid red").after("<p class='recipientPostalCodeNotFound'>No pudimos encontrar el código postal</p>");   
-//         $(".recipientPostalCodeNotFound").css("font-size", "1rem");
-//       }
-// });
-// });
+import { getDate } from './validations.js';
 $(function(){
   packageChange();
   $("#showRates").hide();
@@ -103,17 +21,27 @@ function (){
   let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
   let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
   //package
+  let unitOfMeasurement = $('select[name="unitOfMeasurement"]').val();
   let pickupType = $('select[name="pickupType"]').val();
   let packagingType = $('select[name="subPackagingType"]').val();
   let weight = $('input[name="weight"]').val();
   let lenght = $('input[name="lenght"]').val();
   let width = $('input[name="width"]').val();
   let height = $('input[name="height"]').val();
-  //shipment
+  //shipmentVariables
   let carrierCodes = $('select[name="carrierCodes"]').val();
+  //[__Fedex__]
+  let upsServiceDescription = '';
   let carrierFedex = '';
   let carrierUps = '';
-  let upsServiceDescription = '';
+  let fedexUnitOfMeasurement = '';
+  let fedexUnitOfLenght = ''
+  let dhlUnitOfMeasurement = '';
+  let dhlUnitOfLenght = '';
+  let upsUnitOfMeasurement = '';
+  let upsUnitOfLenght = '';
+  let date = getDate();
+  
 
   switch(carrierCodes)
   {
@@ -128,6 +56,24 @@ function (){
       upsServiceDescription = 'ground';
       break;
   }
+  switch(unitOfMeasurement)
+  {
+    case 'SI':
+      fedexUnitOfMeasurement = 'KG';
+      fedexUnitOfLenght = 'CM';
+      dhlUnitOfMeasurement = 'SI';
+      upsUnitOfMeasurement = 'KBS';
+      upsUnitOfLenght = 'CM';
+      break;
+      case 'SU':
+      fedexUnitOfMeasurement = 'LB';
+      fedexUnitOfLenght = 'IN';
+      dhlUnitOfMeasurement = 'SU';
+      upsUnitOfMeasurement = 'LBS';
+      upsUnitOfLenght = 'IN';
+      break;
+  }
+
   $('#rates').remove();
     let url = $(this).attr('data-action');
     let input = JSON.stringify({
@@ -155,14 +101,14 @@ function (){
         "requestedPackageLineItems": [{
           "packagingType": packagingType,
           "weight": {
-            "units": "KG",
+            "units": fedexUnitOfMeasurement,
             "value": weight,
           },
           "dimensions": {
             "length": lenght,
             "width": width,
             "height": height,
-            "units": "CM"
+            "units": fedexUnitOfLenght
           }
         }]
       },
@@ -236,8 +182,7 @@ function (){
           },
           "ShipmentTotalWeight": {
             "UnitOfMeasurement": {
-              "Code": "kgs",
-              "Description": "kilograms"
+              "Code": upsUnitOfMeasurement
             },
             "Weight": "10"
           },
@@ -248,7 +193,7 @@ function (){
             },
             "Dimensions": {
               "UnitOfMeasurement": {
-                "Code": "cm"
+                "Code": upsUnitOfLenght
               },
               "Length": "10",
               "Width": "7",
@@ -325,6 +270,7 @@ function (){
             console.log(JSON.stringify(response));
             break;
           case 400:
+            showUps(response.upsResponse);
             console.log("Some information is missing");
             console.log(response);
             break;
@@ -353,7 +299,8 @@ function (){
           });
         }  
         else{
-          $("#ratesFedex").append("<p id='fedexRate'>Servicio no disponible</p>");      
+          $("#createShipFedex").before("<div id='fedexRate'></div>");
+          $("#fedexRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
         }
       } 
 function showDhl(data, code){
@@ -380,6 +327,7 @@ function showDhl(data, code){
     }
   }
   else{
+    $("#createShipDhl").before("<div id='dhlRate'></div>");
     $("#dhlRate").append("<p id='dhlRate'>Servicio no disponible</p>");  
   }
 }
@@ -395,6 +343,7 @@ function showUps(data){
 
     }
     else{
+      $("#createShipUps").before("<div id='upsRate'></div>");
       $("#upsRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
     }
     // // $('#rates').append("<div id='ratesUps'></div>");

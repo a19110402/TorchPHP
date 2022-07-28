@@ -7,25 +7,7 @@
     <div class="flex justify-center m-20" id="id-rateRequest">  
         <form class="w-min border-2 border-stone-500 p-20 rounded-3xl" action="javascript:void(0)" data-action="{{ route('rateAndTransitTimes') }}" method="POST" id="requestRate">
             @csrf
-                <div class="flex-col items-center justify-center m">
-                    
-                    <div class="m-4 justify-center md:columns-2" >
-                        <div>
-                            <label class="m-0" for="shipper_postalCode">Origen</label>
-                        </div>
-                        <div>
-                            <input required class="focus:outline-none border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode" placeholder="Código postal...">
-                        </div>
-                    </div>
-                    
-                    {{-- <div class="m-4 justify-center md:columns-2" >
-                        <div>
-                            <label for="">City of shipper</label>
-                        </div>
-                        <div>
-                            <input value="" class="border border-black rounded" type="text" name="shipper_city">
-                        </div>
-                    </div> --}}
+                <div class="flex-col items-center justify-center">
 
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
@@ -46,26 +28,15 @@
                             
                         </div>
                     </div>
-                    <div class="md:columns-2 m-4 justify-center">
-                        <div>
-                            <label class="m-0" for="recipient_postalCode">Destino</label>
-                            
-                        </div>
-                        
-                        <div>
-                            <input required  class="focus:outline-none border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode" placeholder="Código postal...">
-                        </div>
-    
-                    </div>
 
-                    {{-- <div class="m-4 justify-center md:columns-2" >
+                    <div class="m-4 justify-center md:columns-2" >
                         <div>
-                            <label for="">City of recipient</label>
+                            <label class="m-0" for="shipper_postalCode">Origen</label>
                         </div>
                         <div>
-                            <input value="" class="border border-black rounded" type="text" name="recipient_city">
+                            <input required class="focus:outline-none border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode" placeholder="Código postal...">
                         </div>
-                    </div> --}}
+                    </div>
 
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
@@ -87,6 +58,19 @@
                         </div>
     
                     </div>
+
+                    <div class="md:columns-2 m-4 justify-center">
+                        <div>
+                            <label class="m-0" for="recipient_postalCode">Destino</label>
+                            
+                        </div>
+                        
+                        <div>
+                            <input required  class="focus:outline-none border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode" placeholder="Código postal...">
+                        </div>
+    
+                    </div>
+
                     <div class="md:columns-2 justify-center">
                         <div>
                             <label class="m-0" for="pickupType">Tipo de recolección</label>
@@ -132,12 +116,23 @@
     
                     <div class="md:columns-2" >
                         <div>
-                            <label class="m-0" for="weight">Peso</label>
-                            
+                            <label class="m-0" for="weight">Sistema de medida</label>
                         </div>
+                        <div class="flex flex-row gap-2">
+                            <select class="focus:outline-none border border-black rounded w-3/12" name="unitOfMeasurement">
+                                <option value="SI">Kg/cm</option>
+                                <option value="SU">lb/in</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="md:columns-2" >
                         <div>
-                            <input required  class="focus:outline-none border border-black rounded" type="text" name="weight" id="weight" placeholder="kg...">
-                            
+                            <label class="m-0" for="weight">Peso</label>
+                        </div>
+                        <div class="flex flex-row gap-2">
+                            <input required  class="focus:outline-none border border-black rounded w-3/12" type="text" name="weight" id="weight" placeholder="">
+
                         </div>
                     </div>
 
@@ -149,7 +144,7 @@
                                 
                             </div>
                             <div>
-                                <input   class="focus:outline-none border border-black rounded" type="text" name="lenght" id="lenght" placeholder="cm...">
+                                <input   class="focus:outline-none border border-black rounded w-3/12" type="text" name="lenght" id="lenght" placeholder="">
                                 
                             </div>
                         </div>
@@ -160,7 +155,7 @@
                                 
                             </div>
                             <div>
-                                <input   class="focus:outline-none border border-black rounded" type="text" name="width" id="width" placeholder="cm...">
+                                <input   class="focus:outline-none border border-black rounded w-3/12" type="text" name="width" id="width" placeholder="">
                                 
                             </div>
                         </div>
@@ -171,7 +166,7 @@
                                 
                             </div>
                             <div>
-                                <input   class="focus:outline-none border border-black rounded" type="text" name="height" id="height" placeholder="cm...">
+                                <input   class="focus:outline-none border border-black rounded w-3/12" type="text" name="height" id="height" placeholder="">
                                 
                             </div>
                         </div>
