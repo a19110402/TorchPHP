@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(auth()->user()->role == 'admin'){
+        if(auth()->user()->type == 'corp'){
             return redirect()->route('admin.index');
         }
         else{

@@ -3,6 +3,7 @@
 namespace Illuminate\Auth;
 
 use Illuminate\Auth\Notifications\VerifyEmail;
+use App\Http\Controllers\Auth\VerificationController;
 
 trait MustVerifyEmail
 {

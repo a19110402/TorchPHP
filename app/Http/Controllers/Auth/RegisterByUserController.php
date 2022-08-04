@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\DB;
 
 
 class RegisterByUserController extends Controller
@@ -51,9 +52,8 @@ class RegisterByUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['required', 'string', 'size:9'],
+            'phone' => ['required', 'string', 'size:10'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string'],
         ]);
     }
 
@@ -71,13 +71,17 @@ class RegisterByUserController extends Controller
             'email' => $data['email'],
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
-            'role' => $data['role'],
+            'role' => 'user',
+            'type' => 'normal',
             'createdBy' => auth()->user()->name,
+            'corporation' => $data['corporation'],
         ]);
     }
 
     public function userCreation(){
-        return view('admin/register');
+        $users = User::all();
+
+        return view('admin/register', ['users' => $users]);
     }
 
     public function register(Request $request)

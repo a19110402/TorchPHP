@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Foundation\Auth\ConfirmsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ConfirmPasswordController extends Controller
 {
@@ -13,9 +17,9 @@ class ConfirmPasswordController extends Controller
     | Confirm Password Controller
     |--------------------------------------------------------------------------
     |
-    | This controller is responsible for handling password confirmations and
-    | uses a simple trait to include the behavior. You're free to explore
-    | this trait and override any functions that require customization.
+    | This controller is responsible for handling password confirmations
+    | and uses a simple trait to include this behavior. You're free to
+    | explore this trait and override any methods you wish to tweak.
     |
     */
 
@@ -33,8 +37,25 @@ class ConfirmPasswordController extends Controller
      *
      * @return void
      */
+
     public function __construct()
     {
         $this->middleware('auth');
+    }
+    
+    public function show()
+    {
+        return view('auth/passwords/confirm');
+    }
+
+    public function store(Request $request)
+    {
+        if (!Hash::check(request()->password, auth()->user()->password)) {
+            return back()->withErrors(['password' => 'The provided password does not match our records.']);
+        }
+
+        session()->passwordConfirmed();
+
+        return redirect()->intended($redirectTo = RouteServiceProvider::HOME);
     }
 }
