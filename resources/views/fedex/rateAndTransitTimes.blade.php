@@ -125,7 +125,6 @@
                             </select>
                         </div>
                     </div>
-                    
                     <div class="md:columns-2" >
                         <div>
                             <label class="m-0" for="weight">Peso</label>

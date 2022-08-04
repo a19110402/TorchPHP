@@ -515,13 +515,13 @@ Ensure the default browser behavior of the `hidden` attribute.
 .w-7\/12 {
   width: 58.333333%;
 }
+.w-3\/12 {
+  width: 25%;
+}
 .w-max {
   width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
-}
-.w-3\/12 {
-  width: 25%;
 }
 .w-3\/6 {
   width: 50%;
@@ -567,12 +567,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .gap-8 {
   gap: 2rem;
-}
-.gap-5 {
-  gap: 1.25rem;
-}
-.gap-y-5 {
-  row-gap: 1.25rem;
 }
 .rounded-3xl {
   border-radius: 1.5rem;
@@ -638,10 +632,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
 }
 .align-baseline {
   vertical-align: baseline;

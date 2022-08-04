@@ -65,7 +65,7 @@ export function getDate(){
 //EVALUATING EVERY TIME THERE IS A CHANGE
   $("#shipper_postalCode").on('change',function(e){
     $("#shipper_postalCode").css("border-color", "black");
-    $(".shipperPostalCodeNotFound").remove();
+    $("#shipperPostalCodeNotFound").remove();
     let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
     let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
     // let shipperCity = $('input[name="shipper_city"]').val();
@@ -76,6 +76,8 @@ export function getDate(){
       "shipDate": getDate()
   });
     let myPromise = new Promise(function(resolve){
+      $("#shipper_postalCode").css("border", "2px solid #33AFFF"); 
+      $("#validatingPostalCode").css('font-size', "1rem");
       let response = validatePostalCode(postalCodeAPI);
       resolve(response);
     });
@@ -96,7 +98,7 @@ export function getDate(){
     $("#recipient_postalCode").css("border-color", "black");
     let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
     let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
-    $(".recipientPostalCodeNotFound").remove();
+    $("#recipientPostalCodeNotFound").remove();
     // let recipientCity = $('input[name="recipient_city"]').val();
     let postalCodeAPI = JSON.stringify({
       "carrierCode": "FDXG",
@@ -105,6 +107,8 @@ export function getDate(){
       "shipDate": getDate()
   });
   let myPromise = new Promise(function(resolve){
+    $("#recipient_postalCode").css("border", "2px solid #33AFFF");  
+    $("#validatingPostalCode").css('font-size', "1rem");
     let response = validatePostalCode(postalCodeAPI);
     resolve(response);
   });
@@ -115,7 +119,7 @@ export function getDate(){
           $("#recipient_postalCode").css("border", "2px solid #8bef89");  
           break;
         case 400:
-          $("#recipient_postalCode").css("border", "2px solid red").after("<p id='recipientPostalCodeNotFound'>No pudimos encontrar el código postal</p>");   
+          $("#recipient_postalCode").css("border", "2px solid red").after("<p id='recipientPostalCodNotFound'>No pudimos encontrar el código postal</p>");   
           $("#recipientPostalCodeNotFound").css("font-size", "1rem");
         }
   });
