@@ -20,7 +20,7 @@ export default async function ajax(verb, url, json, csrf){
                         resolve(data);
                         break;
                     case 401:
-                        let response = getAuth('POST', 'http://127.0.0.1:8000/fedex/authKey', '',csrf);
+                        let response = getAuth('POST', '/fedex/authKey', '',csrf);
                         response.then(function(){
                             console.log("token ready, resending");
                             resolve(ajax(verb, url, json, csrf));

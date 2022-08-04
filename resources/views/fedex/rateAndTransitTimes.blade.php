@@ -125,20 +125,15 @@
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="md:columns-2" >
-                        <div>
-                            <label class="m-0" for="weight">Peso</label>
-                        </div>
-                        <div class="flex flex-row gap-2">
-                            <input required  class="focus:outline-none border border-black rounded w-3/12" type="text" name="weight" id="weight" placeholder="">
-
-                        </div>
-                    </div>
-
-                    <div id="package">
-
-                        <div class="md:columns-2" >
+                    <div class="">
+                        <div class="flex">
+                            <div>
+                                <label class="m-0" for="weight">Peso</label>
+                            </div>
+                            <div class="">
+                                <input required  class="focus:outline-none border border-black rounded w-3/12" type="text" name="weight" id="weight" placeholder="">
+    
+                            </div>
                             <div>
                                 <label class="m-0" for="lenght">Largo</label>
                                 
@@ -147,20 +142,13 @@
                                 <input   class="focus:outline-none border border-black rounded w-3/12" type="text" name="lenght" id="lenght" placeholder="">
                                 
                             </div>
-                        </div>
-    
-                        <div class="md:columns-2" >
                             <div>
                                 <label class="m-0" for="width">Ancho</label>
-                                
                             </div>
                             <div>
                                 <input   class="focus:outline-none border border-black rounded w-3/12" type="text" name="width" id="width" placeholder="">
                                 
                             </div>
-                        </div>
-    
-                        <div class="md:columns-2" >
                             <div>
                                 <label class="m-0" for="height">Alto</label>
                                 
@@ -169,6 +157,17 @@
                                 <input   class="focus:outline-none border border-black rounded w-3/12" type="text" name="height" id="height" placeholder="">
                                 
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="package">
+                        <div class="md:columns-2" >
+                        </div>
+    
+                        <div class="md:columns-2" >
+                        </div>
+    
+                        <div class="md:columns-2" >
                         </div>
 
                     </div>

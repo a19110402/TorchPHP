@@ -21,6 +21,7 @@ function (){
   let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
   let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
   //package
+  let totalPackageCount = $('input[name="totalPackages"]').val();
   let unitOfMeasurement = $('select[name="unitOfMeasurement"]').val();
   let pickupType = $('select[name="pickupType"]').val();
   let packagingType = $('select[name="subPackagingType"]').val();
@@ -97,6 +98,7 @@ function (){
           }
         },
         "pickupType": pickupType,
+        "totalPackageCount": totalPackageCount,
         "rateRequestType":["LIST", "ACCOUNT"],
         "requestedPackageLineItems": [{
           "packagingType": packagingType,
@@ -120,7 +122,7 @@ function (){
           "RequestedShipment": {
               "DropOffType": "REQUEST_COURIER",
               "ShipTimestamp": "2022-06-01T09:10:09",
-              "UnitOfMeasurement": "SI",
+              "UnitOfMeasurement": dhlUnitOfMeasurement,
               "Content": "NON_DOCUMENTS",
               "PaymentInfo": "DDU",
             "Account": "",
@@ -297,10 +299,12 @@ function (){
             $("#fedexRate").append("<p>Servicio por: " + element.serviceName+ "</p>");
             $("#fedexRate").append("<p>Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55 + "</p>");     
           });
+          $('#createShipFedex').show();
         }  
         else{
           $("#createShipFedex").before("<div id='fedexRate'></div>");
           $("#fedexRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
+          $('#createShipFedex').hide();
         }
       } 
 function showDhl(data, code){
@@ -311,13 +315,13 @@ function showDhl(data, code){
   // $("#ratesDhl").append("<h2 id='dhl'>DHL</h2>");
   if(code == "0"){
     $("#createShipDhl").before("<div id='dhlRate'></div>");
+    $('#createShipDhl').show();
     if(data.dhlResponse.response.RateResponse.Provider[0].Service.length > 0){
       data.dhlResponse.response.RateResponse.Provider[0].Service.forEach(element =>{
-        if(element.Charges !== undefined){
+        if(element.Charges != undefined && element.Charges.Charge.length != undefined){
           $("#dhlRate").append("<p id='dhlRate'>Tipo de servicio:" + element.Charges.Charge[0].ChargeType + "</p>");
           $("#dhlRate").append("<p id='dhlRate'>Tarifa dhl: $" + element.TotalNet.Amount + "</p>");
-        }
-       
+        }    
       });
       
     }
@@ -327,6 +331,7 @@ function showDhl(data, code){
     }
   }
   else{
+    $('#createShipDhl').hide();
     $("#createShipDhl").before("<div id='dhlRate'></div>");
     $("#dhlRate").append("<p id='dhlRate'>Servicio no disponible</p>");  
   }
@@ -336,13 +341,15 @@ function showUps(data){
     //UPS
     if(data.statusCode == 200)
     {
+      $('#createShipUps').show();
       console.log("ups: " + JSON.stringify(data.statusCode));
       $("#createShipUps").before("<div id='upsRate'></div>");
       $("#upsRate").append("<p> Tipo de servicio" + "</p>");
-      $("#upsRate").append("<p> Tarifa " + upsServiceDescription + ": $" + data.response.RateResponse.RatedShipment.TotalCharges.MonetaryValue*20 + "</p>");
+      $("#upsRate").append("<p> Tarifa " + upsServiceDescription + ": $" + data.response.RateResponse.RatedShipment.TotalCharges.MonetaryValue + "</p>");
 
     }
     else{
+      $('#createShipUps').hide();
       $("#createShipUps").before("<div id='upsRate'></div>");
       $("#upsRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
     }
