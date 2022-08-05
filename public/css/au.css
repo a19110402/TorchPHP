@@ -11,6 +11,7 @@
 html {
   font-size: 62.5%;
   box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
 }
 
 *, *:before, *:after {
@@ -18,10 +19,11 @@ html {
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
   font-size: 1.6rem;
   line-height: 1.8;
   padding: 0;
+  width: 100%;
+  height: auto;
 }
 
 p {
@@ -59,16 +61,11 @@ h4 {
   font-size: 2.6rem;
 }
 
-header .navegacion-principal a {
-  margin-left: 2rem;
-  font-weight: 700;
-  color: var(--negro);
-}
-
-header .navegacion-principal a:hover{
+.links a:hover{
   color: var(--azul-primario);
+  border-bottom: 1px solid var(--azul-primario);
+  padding-bottom: 3px;
 }
-
 
 header .logo {
   max-width: 20rem;
@@ -119,7 +116,7 @@ main {
 .contenedor-baseline{
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding-bottom: 2rem;
   padding-top: 2rem;

@@ -427,22 +427,28 @@ Ensure the default browser behavior of the `hidden` attribute.
 .container {
   width: 100%;
 }
-@media (min-width: 640px) {
+@media (min-width: 576px) {
 
   .container {
-    max-width: 640px;
+    max-width: 576px;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 960px) {
 
   .container {
-    max-width: 768px;
+    max-width: 960px;
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 1044px) {
 
   .container {
-    max-width: 1024px;
+    max-width: 1044px;
+  }
+}
+@media (min-width: 1200px) {
+
+  .container {
+    max-width: 1200px;
   }
 }
 @media (min-width: 1280px) {
@@ -469,14 +475,14 @@ Ensure the default browser behavior of the `hidden` attribute.
 .m-4 {
   margin: 1rem;
 }
+.mb-7 {
+  margin-bottom: 1.75rem;
+}
 .mb-3 {
   margin-bottom: 0.75rem;
 }
 .mb-0 {
   margin-bottom: 0px;
-}
-.mb-7 {
-  margin-bottom: 1.75rem;
 }
 .mt-7 {
   margin-top: 1.75rem;
@@ -506,11 +512,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: -moz-max-content;
   width: max-content;
 }
-.w-full {
-  width: 100%;
-}
 .w-6\/12 {
   width: 50%;
+}
+.w-full {
+  width: 100%;
 }
 .cursor-pointer {
   cursor: pointer;
@@ -599,7 +605,7 @@ Ensure the default browser behavior of the `hidden` attribute.
   -webkit-text-decoration-line: underline;
           text-decoration-line: underline;
 }
-@media (min-width: 768px) {
+@media (min-width: 960px) {
 
   .md\:fixed {
     position: fixed;
@@ -609,12 +615,16 @@ Ensure the default browser behavior of the `hidden` attribute.
     display: flex;
   }
 
+  .md\:w-6\/12 {
+    width: 50%;
+  }
+
   .md\:w-auto {
     width: auto;
   }
 
-  .md\:w-6\/12 {
-    width: 50%;
+  .md\:max-w-sm {
+    max-width: 24rem;
   }
 
   .md\:columns-2 {
@@ -626,12 +636,14 @@ Ensure the default browser behavior of the `hidden` attribute.
     flex-direction: row;
   }
 
-  .md\:justify-between {
-    justify-content: space-between;
-  }
-
   .md\:justify-evenly {
     justify-content: space-evenly;
+  }
+}
+@media (min-width: 1044px) {
+
+  .md2\:flex {
+    display: flex;
   }
 }
 

@@ -37,13 +37,10 @@ grid-column: 2/3;
 
 .cont-boton{
 min-width: 150px;
-}
-.cont-boton-reg{
-min-width: 150px;
-border: var(--azul-primario) solid 3px;
-border-radius: 20px;
-padding: 1px;
-box-shadow: -2px 8px 10px -1px var(--negro);
+background-color: var(--azul-primario);
+color: var(--blanco);
+border-radius: 5px;
+padding: 10px;
 }
 
 .cont-botones{
@@ -52,21 +49,7 @@ flex-direction: row;
 justify-content: center;
 align-items: center;
 height: 5rem;
-}
-
-.boton-inicia{
-background-color: var(--azul-primario);
-color: var(--blanco);
-text-transform: uppercase;
-border-radius: 20px;
-padding: 0.85rem;
-box-shadow: -2px 8px 10px -1px var(--negro);
-}
-
-.boton-registro{
-background-color: var(--blanco);
-color: var(--negro);
-text-transform: uppercase;
+gap: 2rem;
 }
 
 .linea-divisora{
