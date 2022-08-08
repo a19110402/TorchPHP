@@ -2,49 +2,113 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Routing\Controller;
+use Illuminate\Routing\Pipeline;
+use App\Actions\Fortify\AttemptToAuthenticate;
+use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
+use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
+use App\Actions\Fortify\RedirectIfTwoFactorAuthenticatable;
+use App\Http\Responses\LoginResponse;
+use Laravel\Fortify\Contracts\LoginViewResponse;
+use Laravel\Fortify\Contracts\LogoutResponse;
+use Laravel\Fortify\Features;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Requests\LoginRequest;
 
 class AdminController extends Controller
 {
-    public function index(){
+    /**
+     * The guard implementation.
+     *
+     * @var \Illuminate\Contracts\Auth\StatefulGuard
+     */
+    protected $guard;
 
-        return view('admin/index');
+    /**
+     * Create a new controller instance.
+     *
+     * @param  \Illuminate\Contracts\Auth\StatefulGuard  $guard
+     * @return void
+     */
+    public function __construct(StatefulGuard $guard)
+    {
+        $this->guard = $guard;
+         
     }
 
-    public function watchUsers(){
-        $users = User::all();
-
-        return view('admin/users', ['users' => $users]);
+    public function loginForm(){
+    	return view('auth.admin_login', ['guard' => 'admin']);
     }
 
-    public function editUser($id){
-        $user = User::find($id);
-
-        return view('admin/edit', ['user' => $user]);
-    } 
-
-    public function updateUser(Request $request, $id){
-        $user = User::find($id);
-        $user->name = $request->name;
-        $user->lastname = $request->lastname;
-        $user->phone = $request->phone;
-        $user->createdBy = $request->createdBy;
-        $user->role = $request->role;
-
-        $user->save();
-
-        return redirect()->route('users')->with('success', 'Usuario actualizado');
+    /**
+     * Show the login view.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Laravel\Fortify\Contracts\LoginViewResponse
+     */
+    public function create(Request $request): LoginViewResponse
+    {
+        return app(LoginViewResponse::class);
     }
 
-    public function deleteUser($id){
-        $user = User::find($id);
-        $user->delete();
+    /**
+     * Attempt to authenticate a new session.
+     *
+     * @param  \Laravel\Fortify\Http\Requests\LoginRequest  $request
+     * @return mixed
+     */
+    public function store(LoginRequest $request)
+    {
+        return $this->loginPipeline($request)->then(function ($request) {
+            return app(LoginResponse::class);
+        });
+    }
 
-        return redirect()->route('users')->with('success', 'Usuario eliminado');
+    /**
+     * Get the authentication pipeline instance.
+     *
+     * @param  \Laravel\Fortify\Http\Requests\LoginRequest  $request
+     * @return \Illuminate\Pipeline\Pipeline
+     */
+    protected function loginPipeline(LoginRequest $request)
+    {
+        if (Fortify::$authenticateThroughCallback) {
+            return (new Pipeline(app()))->send($request)->through(array_filter(
+                call_user_func(Fortify::$authenticateThroughCallback, $request)
+            ));
+        }
 
+        if (is_array(config('fortify.pipelines.login'))) {
+            return (new Pipeline(app()))->send($request)->through(array_filter(
+                config('fortify.pipelines.login')
+            ));
+        }
+
+        return (new Pipeline(app()))->send($request)->through(array_filter([
+            config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
+            Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
+            AttemptToAuthenticate::class,
+            PrepareAuthenticatedSession::class,
+        ]));
+    }
+
+    /**
+     * Destroy an authenticated session.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Laravel\Fortify\Contracts\LogoutResponse
+     */
+    public function destroy(Request $request): LogoutResponse
+    {
+        $this->guard->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return app(LogoutResponse::class);
     }
 }
+

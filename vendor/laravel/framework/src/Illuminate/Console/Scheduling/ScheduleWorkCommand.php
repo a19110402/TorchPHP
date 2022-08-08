@@ -4,10 +4,8 @@ namespace Illuminate\Console\Scheduling;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Process\Process;
 
-#[AsCommand(name: 'schedule:work')]
 class ScheduleWorkCommand extends Command
 {
     /**
@@ -16,17 +14,6 @@ class ScheduleWorkCommand extends Command
      * @var string
      */
     protected $name = 'schedule:work';
-
-    /**
-     * The name of the console command.
-     *
-     * This name is used to identify the command during lazy loading.
-     *
-     * @var string|null
-     *
-     * @deprecated
-     */
-    protected static $defaultName = 'schedule:work';
 
     /**
      * The console command description.
@@ -42,7 +29,7 @@ class ScheduleWorkCommand extends Command
      */
     public function handle()
     {
-        $this->components->info('Running schedule tasks every minute.');
+        $this->info('Schedule worker started successfully.');
 
         [$lastExecutionStartedAt, $keyOfLastExecutionWithOutput, $executions] = [null, null, []];
 
@@ -63,10 +50,18 @@ class ScheduleWorkCommand extends Command
             }
 
             foreach ($executions as $key => $execution) {
-                $output = $execution->getIncrementalOutput().
-                          $execution->getIncrementalErrorOutput();
+                $output = trim($execution->getIncrementalOutput()).
+                          trim($execution->getIncrementalErrorOutput());
 
-                $this->output->write(ltrim($output, "\n"));
+                if (! empty($output)) {
+                    if ($key !== $keyOfLastExecutionWithOutput) {
+                        $this->info(PHP_EOL.'['.date('c').'] Execution #'.($key + 1).' output:');
+
+                        $keyOfLastExecutionWithOutput = $key;
+                    }
+
+                    $this->output->writeln($output);
+                }
 
                 if (! $execution->isRunning()) {
                     unset($executions[$key]);

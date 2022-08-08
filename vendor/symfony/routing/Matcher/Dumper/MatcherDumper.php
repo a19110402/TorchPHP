@@ -20,7 +20,7 @@ use Symfony\Component\Routing\RouteCollection;
  */
 abstract class MatcherDumper implements MatcherDumperInterface
 {
-    private RouteCollection $routes;
+    private $routes;
 
     public function __construct(RouteCollection $routes)
     {
@@ -30,7 +30,7 @@ abstract class MatcherDumper implements MatcherDumperInterface
     /**
      * {@inheritdoc}
      */
-    public function getRoutes(): RouteCollection
+    public function getRoutes()
     {
         return $this->routes;
     }

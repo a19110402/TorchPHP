@@ -114,7 +114,7 @@ class MigrateMakeCommand extends BaseCommand
             $file = pathinfo($file, PATHINFO_FILENAME);
         }
 
-        $this->components->info(sprintf('Created migration [%s].', $file));
+        $this->line("<info>Created Migration:</info> {$file}");
     }
 
     /**

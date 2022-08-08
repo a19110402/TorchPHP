@@ -16,17 +16,10 @@ trait HasTimestamps
     /**
      * Update the model's update timestamp.
      *
-     * @param  string|null  $attribute
      * @return bool
      */
-    public function touch($attribute = null)
+    public function touch()
     {
-        if ($attribute) {
-            $this->$attribute = $this->freshTimestamp();
-
-            return $this->save();
-        }
-
         if (! $this->usesTimestamps()) {
             return false;
         }
@@ -39,7 +32,7 @@ trait HasTimestamps
     /**
      * Update the creation and update timestamps.
      *
-     * @return $this
+     * @return void
      */
     public function updateTimestamps()
     {
@@ -56,8 +49,6 @@ trait HasTimestamps
         if (! $this->exists && ! is_null($createdAtColumn) && ! $this->isDirty($createdAtColumn)) {
             $this->setCreatedAt($time);
         }
-
-        return $this;
     }
 
     /**

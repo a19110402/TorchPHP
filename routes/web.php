@@ -2,9 +2,29 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\Auth;
-use App\Http\Controllers\FedexController;
+use App\Http\Controllers\Backend\AdminProfileController;
+use App\Http\Controllers\Backend\AdminSliderController;
+use App\Http\Controllers\Backend\BrandController;
+use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\CODController;
+use App\Http\Controllers\Backend\CouponController;
+use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\ShippingAreaController;
+use App\Http\Controllers\Backend\ShippingDistrictController;
+use App\Http\Controllers\Backend\ShippingStateController;
+use App\Http\Controllers\Backend\StripeController;
+use App\Http\Controllers\Backend\SubCategoryController;
+use App\Http\Controllers\Backend\SubSubCategoryController;
+use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\CartPageController;
+use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\FrontendPageController;
+use App\Http\Controllers\Frontend\FrontendUserProfileController;
+use App\Http\Controllers\Frontend\LanguageController;
+use App\Http\Controllers\User\OrderDetailsController;
+use App\Http\Controllers\User\OrderHistoryController;
+use App\Http\Controllers\User\WishlistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,125 +36,168 @@ use App\Http\Controllers\FedexController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
-Route::get('/', function () {
-    return view('welcome');
-});
-*/
+// Frontend customer/user logout, profile, change password routes
 
 
-Route::get('/rateAndTransitTimes', 'mainController@getRateView');
-Route::post('/rateAndTransitTimes', 'mainController@rate');
+Route::middleware(['auth:web'])->group(function(){
 
+    Route::middleware(['auth:sanctum, web', 'verified'])->get('/dashboard',[FrontendUserProfileController::class, 'userdashboard'])->name('dashboard');
 
+    Route::prefix('/user')->group(function () {
+        Route::get('/logout', [FrontendUserProfileController::class, 'userlogout'])->name('user.logout');
+        Route::get('/profile', [FrontendUserProfileController::class, 'userprofile'])->name('user.profile');
+        Route::post('/profile', [FrontendUserProfileController::class, 'userprofileupdate'])->name('user.profile');
+        Route::get('/password/change', [FrontendUserProfileController::class, 'userpasswordchange'])->name('user.change.password');
+        Route::post('/password/update', [FrontendUserProfileController::class, 'userpasswordupdate'])->name('user.update.password');
 
-Route::get('/', 'IndexController@index');
-//API Index Fedex
-Route::get('/fedex', 'FedexController@index');
-//API Get Token
-// Route::get('/fedex/auth', 'FedexController@auth');
-Route::post('/fedex/authKey', 'FedexController@postToken');
-//API Validation Address
-// Route::get('/fedex/addresValidationForm', 'FedexController@addresValidation');
-Route::post('/fedex/addresValidationRequest', 'FedexController@validationFedexRequest');
-//API Find Location
-// Route::get('/fedex/findLocationForm', 'FedexController@findLocationForm');
-Route::post('/fedex/findLocationRequest', 'FedexController@findLocationRequest');
-//API Global Trade
-// Route::get('/fedex/globalTradeForm', 'FedexController@globalTradeForm');
-Route::post('/fedex/globalTradeRequest', 'FedexController@globalTradeRequest');
-//API Ground End Day 
-// Route::get('/fedex/GroundDayCloseForm', 'FedexController@GroundDayCloseForm');
-Route::post('/fedex/GroundDayCloseRequest', 'FedexController@GroundDayCloseRequest');
-Route::post('/fedex/ReprintDayCloseRequest', 'FedexController@reprintDayCloseRequest');
-//API Open Ship
-// Route::get('/fedex/options', [FedexController::class, 'fedexOptions'])->name('fedexOptions');
-// Route::get('/fedex/openShip', 'FedexController@openShip');
-Route::post('/fedex/openShip', 'FedexController@createOpenShipmentRequest');
-Route::post('/fedex/confirmOpenShipment', 'FedexController@confirmOpenShipmentRequest');
-Route::post('/fedex/addOpenShipmentPackages', 'FedexController@addOpenShipmentPackagesRequest');
-Route::post('/fedex/retrieveOpenShipmentPackage', 'FedexController@retriveOpenShipmentPackagesRequest');
-Route::post('/fedex/retrieveOpenShipment', 'FedexController@retriveOpenShipmentRequest');
-Route::post('/fedex/getOpenShipment', 'FedexController@getOpenShipmentResultsRequest');
-Route::put('/fedex/modifyOpenShip', 'FedexController@modifyOpenShipmentRequest');
-Route::put('/fedex/modifyOpenShipPackage', 'FedexController@modifyOpenShipmentPackagesRequest');
-// Route::post('/fedex/createOpenShipmentRequest', 'FedexController@createOpenShipmentRequest');
-//API RATE AND TRANSIT TIMES
-Route::get('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimes')->name('rateAndTransitTimes')->middleware('auth');
-Route::post('/fedex/rateAndTransitTimes', 'FedexController@rateAndTransitTimesRequest');
-//API Postal Code Validation
-Route::post('/validatePostalCode','FedexController@validatePostalCodeRequest')->name('validatePostalCodeRequest');
-//API SHIPMENTS
-Route::get('/fedex/shipments', [FedexController::class, 'shipments'])->name('shipments') -> middleware('auth');
-Route::post('/fedex/shipments', 'FedexController@shipmentsRequest');
-//TRACKING API
-// Route::get('fedex/tracking', 'FedexController@tracking')->name('tracking');
-// Route::get('fedex/tracking', 'FedexController@trackingRequest');
-// Service Availability API
-Route::get('/fedex/ServiceAvailabilityForm', 'FedexController@serviceAvailabilityForm');
-Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailabilityRequest');
-
-
-
-//Route::post('/test', 'TestController@index');
-
-//Login
-// Auth::routes(); //Conjunto de rutas,  ya no funcionaba
-// Auth Routes...
-Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::post('login', 'Auth\LoginController@login');
-Route::get('/logout', 'Auth\LogoutController@destroy')->name('login.destroy');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-
-// Registration Routes...
-// Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::get('/register', 'Auth\RegisterController@createNew')->name('register');
-Route::post('register', 'Auth\RegisterController@register');
-
-// Password Reset Routes...
-Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
-
-//Homepage
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/home/admin', 'AdminController@index')->middleware('auth.admin')->name('admin.index');
-
-//Creación de usuario estando loggeado
-Route::get('/registerUser', 'Auth\RegisterByUserController@userCreation')->name('registerUser');
-Route::post('registerUser', 'Auth\RegisterByUserController@register');
-
-//Visualización de usuarios creados
-Route::get('/users','AdminController@watchUsers')->name('users');
-
-//Editar un usuario
-Route::get('/users/{id}', 'AdminController@editUser')->name('editUser');
-Route::patch('/users/{id}', 'AdminController@updateUser')->name('updateUser');
-
-//Eliminar un usuario
-Route::delete('/users/{id}', 'AdminController@deleteUser')->name('deleteUser');
-
-//Página nosotros
-Route::get('/nosotros', 'IndexController@nosotros')->name('nosotros');
-
-
-Route::get('/adminlte', function(){
-    return view('adminlte'); 
+        // user order history
+        Route::get('/orders/history', [OrderHistoryController::class, 'orderHistory'])->name('user.orders');
+    });
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+// Frontend Pages routes
+Route::get('/', [FrontendPageController::class,'home'])->name('home');
+Route::get('/category', [FrontendPageController::class,'category'])->name('category');
+
+Route::get('/product/detail/{id}/{slug}', [FrontendPageController::class,'productDeatil'])->name('frontend-product-details');
+Route::get('/english/language', [LanguageController::class, 'englishLoad'])->name('english.language');
+Route::get('/bangla/language', [LanguageController::class, 'banglaLoad'])->name('bangla.language');
+
+// Tags wise products route
+Route::get('/product/tag/{tag}', [FrontendPageController::class, 'tagwiseProduct'])->name('product.tag');
+//subcategory wise products route
+Route::get('/subcategory/{id}/{slug}', [FrontendPageController::class,'subcategoryProducts'])->name('subcategory.products');
+//subsubcategory wise products route
+Route::get('/subsubcategory/{id}/{slug}', [FrontendPageController::class,'subsubcategoryProducts'])->name('subsubcategory.products');
+// AJAX Product data route
+Route::get('/product/view/modal/{id}',[FrontendPageController::class,'productviewAjax'])->name('productModalview');
+
+// Cart routes
+// Add to cart Product route
+Route::post('/cart/data/store/{id}', [CartController::class,'addToCart'])->name('productaddToCart');
+// mini cart product data get route
+Route::get('/product/mini/cart', [CartController::class,'getMiniCart'])->name('getMiniCartProduct');
+// remove item from mini cart route
+Route::get('/minicart/product-remove/{rowId}', [CartController::class,'removeMiniCart'])->name('removeMiniCartProduct');
+
+//Wishlist routes
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'user'], 'namespace' => 'User'], function()
+{
+    // add to wishlist route
+    Route::post('/add/product/to-wishlist/{product_id}',[WishlistController::class,'addToWishlist'])->name('addtoWishlist');
+    // list wishlist route
+    Route::get('/list/wishlists', [WishlistController::class,'listWishList'])->name('listWishlist');
+    // remove from wishlist
+    Route::get('/remove/from-wishlist/{wish_id}', [WishlistController::class,'removefromWishList'])->name('removefromWishList');
+
+    //stripe payment route
+    Route::post('/stripe/v1/payment', [StripeController::class,'stripeOrder'])->name('stripe.order');
+
+    // User order deatils route
+    Route::get('/order-details/{order_id}', [OrderDetailsController::class, 'userOrderDetails'])->name('order-deatils');
+    // Download Invoice - user route
+    Route::get('/invoice-download/{order_id}', [OrderDetailsController::class, 'userInvoiceDownload'])->name('invoice-download');
+    // Return order route
+    Route::post('/return/order/{order_id}', [OrderDetailsController::class, 'returnOrder'])->name('return.order');
+    // Return Order list route
+    Route::get('/return/orders/list', [OrderDetailsController::class, 'returnOrderList'])->name('user.return-orders');
+    // Cancel order list route
+    Route::get('/cancel/orders/list', [OrderDetailsController::class, 'cancelOrderList'])->name('user.cancel-orders');
+
+    // Cash on Delivery route
+    Route::post('/cod/v1/payment', [CODController::class, 'codOrder'])->name('cod.order');
 });
-/* Route::middleware(['auth:sanctum', 'verified'])->group(function(){     */
-    Route::resource('products', ProductController::class);
-    Route::get('/dashboard', function(){
-        return view('dashboard');
-    })->name('dashboard');
-/* }); */
+
+// Cart page routes
+Route::get('/my-cart',[CartPageController::class,'myCartView'])->name('myCartView');
+Route::get('/my-cart/list',[CartPageController::class,'showmyCartList'])->name('showmyCartList');
+Route::get('/remove/from-cart/{rowId}',[CartPageController::class,'removeFromCart'])->name('removeFromCart');
+Route::get('/add/in-cart/{rowId}',[CartPageController::class,'addQtyToCart'])->name('addQtyToCart');
+Route::get('/reduce/from-cart/{rowId}',[CartPageController::class,'reduceQtyFromCart'])->name('reduceQtyFromCart');
+
+//Frontend apply Coupon routes
+Route::post('/coupon/apply/',[CartPageController::class,'applyCoupon'])->name('applyCoupon');
+Route::get('/coupon-calculation',[CartPageController::class,'couponCalculation'])->name('couponCalculation');
+Route::get('/coupon-remove',[CartPageController::class,'couponRemove'])->name('couponRemove');
+
+// Checkout Page routes
+Route::get('/checkout-page',[CheckoutController::class,'checkoutPage'])->name('checkout-page');
+Route::get('/division/district/ajax/{division_id}', [CheckoutController::class, 'getDistrict']);
+Route::get('/district/state/ajax/{district_id}', [CheckoutController::class, 'getState']);
+Route::post('/checkout-store',[CheckoutController::class, 'checkoutStore'])->name('checkout.store');
+
+
+
+
+
+
+
+
+// Admin Login routes
+	Route::get('/1wire_rty/login',[AdminController::class, 'loginForm']);
+	Route::post('/login',[AdminController::class, 'store'])->name('admin.login');
+
+    // Admin Dashboard routes
+    Route::middleware(['auth:sanctum,admin', 'verified'])->get('/admin/dashboard', function () {
+        return view('admin.index');
+    })->name('admin.dashboard');
+Route::middleware(['auth:admin'])->group(function(){
+
+    // Admin Logout/password change and profile routes
+    Route::prefix('/admin')->group(function () {
+        Route::get('/logout',[AdminController::class, 'destroy'])->name('admin.logout');
+        Route::resource('/profile', AdminProfileController::class);
+        Route::get('/edit/profile',[AdminProfileController::class, 'AdminProfileEdit'])->name('admin.profile.edit');
+        Route::get('/change/password',[AdminProfileController::class, 'AdminPasswordChange'])->name('admin.change.password');
+        Route::post('/change/password',[AdminProfileController::class, 'AdminPasswordUpdate'])->name('admin.password.update');
+    });
+
+
+    // Admin Dashboard all functionality/features routes
+    Route::prefix('/admin')->group(function(){
+        Route::resource('/brands',BrandController::class);
+        Route::resource('/categories',CategoryController::class);
+        Route::resource('/subcategories', SubCategoryController::class);
+        Route::resource('/subsubcategories', SubSubCategoryController::class);
+
+        Route::get('/category/subcategory/ajax/{category_id}', [SubSubCategoryController::class, 'getSubCategory']);
+        Route::get('/category/subsubcategory/ajax/{subcategory_id}', [SubSubCategoryController::class, 'getSubSubCategory']);
+
+        // update multi-image route
+        Route::post('/products/image/update', [ProductController::class, 'MultiImageUpdate'])->name('update-product-image');
+        Route::resource('/products', ProductController::class);
+        Route::get('/changestatus', [ProductController::class, 'changeStatus'])->name('change-product-status');
+
+        // slider routes
+        Route::resource('/slider', AdminSliderController::class);
+        Route::get('/changesliderstatus', [AdminSliderController::class, 'changeSliderStatus'])->name('change-product-status');
+
+        // coupon routes
+        Route::resource('/coupons', CouponController::class);
+        Route::get('/change/coupon/status', [CouponController::class, 'changeCouponStatus'])->name('change-coupon-status');
+
+        // shipping routes
+        Route::resource('/division', ShippingAreaController::class);
+        Route::resource('/district', ShippingDistrictController::class);
+        Route::resource('/state', ShippingStateController::class);
+
+        Route::get('/division/district/ajax/{division_id}', [ShippingStateController::class, 'getDistrict']);
+        Route::get('/district/state/ajax/{district_id}', [ShippingStateController::class, 'getState']);
+
+
+        // Orders routes
+        Route::resource('/orders', OrderController::class);
+        Route::get('/orders/pending/index', [OrderController::class, 'pendingOrderIndex'])->name('pending.orders');
+        Route::get('/orders/confirmed/index', [OrderController::class, 'confirmedOrderIndex'])->name('confirmed.orders');
+        Route::get('/orders/processing/index', [OrderController::class, 'processingOrderIndex'])->name('processing.orders');
+        Route::get('/orders/picked/index', [OrderController::class, 'pickedOrderIndex'])->name('picked.orders');
+        Route::get('/orders/shipped/index', [OrderController::class, 'shippedOrderIndex'])->name('shipped.orders');
+        Route::get('/orders/delivered/index', [OrderController::class, 'deliveredOrderIndex'])->name('delivered.orders');
+        Route::get('/orders/cancel/index', [OrderController::class, 'cancelOrderIndex'])->name('cancel.orders');
+        Route::get('/orders/return/index', [OrderController::class, 'returnOrderIndex'])->name('return.orders');
+
+        Route::get('/orders/status/update/{order_id}/{status}', [OrderController::class, 'orderStatusUpdate'])->name('order-status.update');
+        // Download Invoice route - admin
+        Route::get('/invoice-download/{order_id}', [OrderController::class, 'adminInvoiceDownload'])->name('admin-invoice-download');
+    });
+});

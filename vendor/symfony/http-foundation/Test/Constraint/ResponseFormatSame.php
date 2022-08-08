@@ -22,8 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class ResponseFormatSame extends Constraint
 {
-    private Request $request;
-    private ?string $format;
+    private $request;
+    private $format;
 
     public function __construct(Request $request, ?string $format)
     {

@@ -27,8 +27,8 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactoryInter
  */
 final class ArgumentResolver implements ArgumentResolverInterface
 {
-    private ArgumentMetadataFactoryInterface $argumentMetadataFactory;
-    private iterable $argumentValueResolvers;
+    private $argumentMetadataFactory;
+    private $argumentValueResolvers;
 
     /**
      * @param iterable<mixed, ArgumentValueResolverInterface> $argumentValueResolvers

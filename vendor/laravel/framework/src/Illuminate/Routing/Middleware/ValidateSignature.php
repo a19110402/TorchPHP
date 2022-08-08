@@ -8,15 +8,6 @@ use Illuminate\Routing\Exceptions\InvalidSignatureException;
 class ValidateSignature
 {
     /**
-     * The names of the parameters that should be ignored.
-     *
-     * @var array<int, string>
-     */
-    protected $ignore = [
-        //
-    ];
-
-    /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -28,7 +19,7 @@ class ValidateSignature
      */
     public function handle($request, Closure $next, $relative = null)
     {
-        if ($request->hasValidSignatureWhileIgnoring($this->ignore, $relative !== 'relative')) {
+        if ($request->hasValidSignature($relative !== 'relative')) {
             return $next($request);
         }
 

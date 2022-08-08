@@ -19,8 +19,8 @@ use Symfony\Component\Stopwatch\Stopwatch;
  */
 class TraceableArgumentResolver implements ArgumentResolverInterface
 {
-    private ArgumentResolverInterface $resolver;
-    private Stopwatch $stopwatch;
+    private $resolver;
+    private $stopwatch;
 
     public function __construct(ArgumentResolverInterface $resolver, Stopwatch $stopwatch)
     {
@@ -31,7 +31,7 @@ class TraceableArgumentResolver implements ArgumentResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getArguments(Request $request, callable $controller): array
+    public function getArguments(Request $request, callable $controller)
     {
         $e = $this->stopwatch->start('controller.get_arguments');
 

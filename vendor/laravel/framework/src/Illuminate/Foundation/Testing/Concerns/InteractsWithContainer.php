@@ -4,18 +4,10 @@ namespace Illuminate\Foundation\Testing\Concerns;
 
 use Closure;
 use Illuminate\Foundation\Mix;
-use Illuminate\Foundation\Vite;
 use Mockery;
 
 trait InteractsWithContainer
 {
-    /**
-     * The original Vite handler.
-     *
-     * @var \Illuminate\Foundation\Vite|null
-     */
-    protected $originalVite;
-
     /**
      * The original Laravel Mix handler.
      *
@@ -99,62 +91,6 @@ trait InteractsWithContainer
     }
 
     /**
-     * Register an empty handler for Vite in the container.
-     *
-     * @return $this
-     */
-    protected function withoutVite()
-    {
-        if ($this->originalVite == null) {
-            $this->originalVite = app(Vite::class);
-        }
-
-        $this->swap(Vite::class, new class
-        {
-            public function __invoke()
-            {
-                return '';
-            }
-
-            public function __call($name, $arguments)
-            {
-                return '';
-            }
-
-            public function useIntegrityKey()
-            {
-                return $this;
-            }
-
-            public function useScriptTagAttributes()
-            {
-                return $this;
-            }
-
-            public function useStyleTagAttributes()
-            {
-                return $this;
-            }
-        });
-
-        return $this;
-    }
-
-    /**
-     * Restore Vite in the container.
-     *
-     * @return $this
-     */
-    protected function withVite()
-    {
-        if ($this->originalVite) {
-            $this->app->instance(Vite::class, $this->originalVite);
-        }
-
-        return $this;
-    }
-
-    /**
      * Register an empty handler for Laravel Mix in the container.
      *
      * @return $this
@@ -173,7 +109,7 @@ trait InteractsWithContainer
     }
 
     /**
-     * Restore Laravel Mix in the container.
+     * Register an empty handler for Laravel Mix in the container.
      *
      * @return $this
      */

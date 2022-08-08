@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use SplFileInfo;
 use stdClass;
-use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\VarDumper\VarDumper;
 
 trait InteractsWithInput
@@ -61,7 +60,7 @@ trait InteractsWithInput
         if ($position !== false) {
             $header = substr($header, $position + 7);
 
-            return str_contains($header, ',') ? strstr($header, ',', true) : $header;
+            return strpos($header, ',') !== false ? strstr($header, ',', true) : $header;
         }
     }
 
@@ -285,30 +284,6 @@ trait InteractsWithInput
     }
 
     /**
-     * Retrieve input from the request as a Stringable instance.
-     *
-     * @param  string  $key
-     * @param  mixed  $default
-     * @return \Illuminate\Support\Stringable
-     */
-    public function str($key, $default = null)
-    {
-        return $this->string($key, $default);
-    }
-
-    /**
-     * Retrieve input from the request as a Stringable instance.
-     *
-     * @param  string  $key
-     * @param  mixed  $default
-     * @return \Illuminate\Support\Stringable
-     */
-    public function string($key, $default = null)
-    {
-        return str($this->input($key, $default));
-    }
-
-    /**
      * Retrieve input as a boolean value.
      *
      * Returns true when value is "1", "true", "on", and "yes". Otherwise, returns false.
@@ -341,25 +316,6 @@ trait InteractsWithInput
         }
 
         return Date::createFromFormat($format, $this->input($key), $tz);
-    }
-
-    /**
-     * Retrieve input from the request as an enum.
-     *
-     * @param  string  $key
-     * @param  string  $enumClass
-     * @return mixed|null
-     */
-    public function enum($key, $enumClass)
-    {
-        if ($this->isNotFilled($key) ||
-            ! function_exists('enum_exists') ||
-            ! enum_exists($enumClass) ||
-            ! method_exists($enumClass, 'tryFrom')) {
-            return null;
-        }
-
-        return $enumClass::tryFrom($this->input($key));
     }
 
     /**
@@ -549,10 +505,6 @@ trait InteractsWithInput
     {
         if (is_null($key)) {
             return $this->$source->all();
-        }
-
-        if ($this->$source instanceof InputBag) {
-            return $this->$source->all()[$key] ?? $default;
         }
 
         return $this->$source->get($key, $default);

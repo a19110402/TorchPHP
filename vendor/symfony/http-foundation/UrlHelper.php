@@ -20,8 +20,8 @@ use Symfony\Component\Routing\RequestContext;
  */
 final class UrlHelper
 {
-    private RequestStack $requestStack;
-    private ?RequestContext $requestContext;
+    private $requestStack;
+    private $requestContext;
 
     public function __construct(RequestStack $requestStack, RequestContext $requestContext = null)
     {
@@ -31,7 +31,7 @@ final class UrlHelper
 
     public function getAbsoluteUrl(string $path): string
     {
-        if (str_contains($path, '://') || str_starts_with($path, '//')) {
+        if (str_contains($path, '://') || '//' === substr($path, 0, 2)) {
             return $path;
         }
 
@@ -60,7 +60,7 @@ final class UrlHelper
 
     public function getRelativePath(string $path): string
     {
-        if (str_contains($path, '://') || str_starts_with($path, '//')) {
+        if (str_contains($path, '://') || '//' === substr($path, 0, 2)) {
             return $path;
         }
 

@@ -5,9 +5,7 @@ namespace Illuminate\Foundation\Console;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Encryption\Encrypter;
-use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'key:generate')]
 class KeyGenerateCommand extends Command
 {
     use ConfirmableTrait;
@@ -20,17 +18,6 @@ class KeyGenerateCommand extends Command
     protected $signature = 'key:generate
                     {--show : Display the key instead of modifying files}
                     {--force : Force the operation to run when in production}';
-
-    /**
-     * The name of the console command.
-     *
-     * This name is used to identify the command during lazy loading.
-     *
-     * @var string|null
-     *
-     * @deprecated
-     */
-    protected static $defaultName = 'key:generate';
 
     /**
      * The console command description.
@@ -61,7 +48,7 @@ class KeyGenerateCommand extends Command
 
         $this->laravel['config']['app.key'] = $key;
 
-        $this->components->info('Application key set successfully.');
+        $this->info('Application key set successfully.');
     }
 
     /**

@@ -23,9 +23,16 @@ use Symfony\Component\Routing\RouteCollection;
 class AnnotationDirectoryLoader extends AnnotationFileLoader
 {
     /**
+     * Loads from annotations from a directory.
+     *
+     * @param string      $path A directory path
+     * @param string|null $type The resource type
+     *
+     * @return RouteCollection
+     *
      * @throws \InvalidArgumentException When the directory does not exist or its routes cannot be parsed
      */
-    public function load(mixed $path, string $type = null): ?RouteCollection
+    public function load($path, string $type = null)
     {
         if (!is_dir($dir = $this->locator->locate($path))) {
             return parent::supports($path, $type) ? parent::load($path, $type) : new RouteCollection();
@@ -37,7 +44,7 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
             new \RecursiveCallbackFilterIterator(
                 new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
                 function (\SplFileInfo $current) {
-                    return !str_starts_with($current->getBasename(), '.');
+                    return '.' !== substr($current->getBasename(), 0, 1);
                 }
             ),
             \RecursiveIteratorIterator::LEAVES_ONLY
@@ -67,9 +74,9 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
     /**
      * {@inheritdoc}
      */
-    public function supports(mixed $resource, string $type = null): bool
+    public function supports($resource, string $type = null)
     {
-        if (\in_array($type, ['annotation', 'attribute'], true)) {
+        if ('annotation' === $type) {
             return true;
         }
 
@@ -79,7 +86,7 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
 
         try {
             return is_dir($this->locator->locate($resource));
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             return false;
         }
     }

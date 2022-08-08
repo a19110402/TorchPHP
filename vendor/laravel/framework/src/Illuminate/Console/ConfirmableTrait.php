@@ -13,7 +13,7 @@ trait ConfirmableTrait
      * @param  \Closure|bool|null  $callback
      * @return bool
      */
-    public function confirmToProceed($warning = 'Application In Production', $callback = null)
+    public function confirmToProceed($warning = 'Application In Production!', $callback = null)
     {
         $callback = is_null($callback) ? $this->getDefaultConfirmCallback() : $callback;
 
@@ -24,14 +24,12 @@ trait ConfirmableTrait
                 return true;
             }
 
-            $this->components->alert($warning);
+            $this->alert($warning);
 
-            $confirmed = $this->components->confirm('Do you really wish to run this command?');
+            $confirmed = $this->confirm('Do you really wish to run this command?');
 
             if (! $confirmed) {
-                $this->newLine();
-
-                $this->components->warn('Command canceled.');
+                $this->comment('Command Canceled!');
 
                 return false;
             }

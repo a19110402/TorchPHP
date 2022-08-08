@@ -3,64 +3,34 @@
 namespace Illuminate\View\Compilers;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 abstract class Compiler
 {
     /**
-     * The filesystem instance.
+     * The Filesystem instance.
      *
      * @var \Illuminate\Filesystem\Filesystem
      */
     protected $files;
 
     /**
-     * The cache path for the compiled views.
+     * Get the cache path for the compiled views.
      *
      * @var string
      */
     protected $cachePath;
 
     /**
-     * The base path that should be removed from paths before hashing.
-     *
-     * @var string
-     */
-    protected $basePath;
-
-    /**
-     * Determines if compiled views should be cached.
-     *
-     * @var bool
-     */
-    protected $shouldCache;
-
-    /**
-     * The compiled view file extension.
-     *
-     * @var string
-     */
-    protected $compiledExtension = 'php';
-
-    /**
      * Create a new compiler instance.
      *
      * @param  \Illuminate\Filesystem\Filesystem  $files
      * @param  string  $cachePath
-     * @param  string  $basePath
-     * @param  bool  $shouldCache
-     * @param  string  $compiledExtension
      * @return void
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(
-        Filesystem $files,
-        $cachePath,
-        $basePath = '',
-        $shouldCache = true,
-        $compiledExtension = 'php')
+    public function __construct(Filesystem $files, $cachePath)
     {
         if (! $cachePath) {
             throw new InvalidArgumentException('Please provide a valid cache path.');
@@ -68,9 +38,6 @@ abstract class Compiler
 
         $this->files = $files;
         $this->cachePath = $cachePath;
-        $this->basePath = $basePath;
-        $this->shouldCache = $shouldCache;
-        $this->compiledExtension = $compiledExtension;
     }
 
     /**
@@ -81,7 +48,7 @@ abstract class Compiler
      */
     public function getCompiledPath($path)
     {
-        return $this->cachePath.'/'.sha1('v2'.Str::after($path, $this->basePath)).'.'.$this->compiledExtension;
+        return $this->cachePath.'/'.sha1('v2'.$path).'.php';
     }
 
     /**
@@ -92,10 +59,6 @@ abstract class Compiler
      */
     public function isExpired($path)
     {
-        if (! $this->shouldCache) {
-            return true;
-        }
-
         $compiled = $this->getCompiledPath($path);
 
         // If the compiled file doesn't exist we will indicate that the view is expired

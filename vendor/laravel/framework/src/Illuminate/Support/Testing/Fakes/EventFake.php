@@ -53,7 +53,7 @@ class EventFake implements Dispatcher
      * Assert if an event has a listener attached to it.
      *
      * @param  string  $expectedEvent
-     * @param  string|array  $expectedListener
+     * @param  string  $expectedListener
      * @return void
      */
     public function assertListening($expectedEvent, $expectedListener)
@@ -62,16 +62,8 @@ class EventFake implements Dispatcher
             $actualListener = (new ReflectionFunction($listenerClosure))
                         ->getStaticVariables()['listener'];
 
-            if (is_string($actualListener) && Str::contains($actualListener, '@')) {
-                $actualListener = Str::parseCallback($actualListener);
-
-                if (is_string($expectedListener)) {
-                    if (Str::contains($expectedListener, '@')) {
-                        $expectedListener = Str::parseCallback($expectedListener);
-                    } else {
-                        $expectedListener = [$expectedListener, 'handle'];
-                    }
-                }
+            if (is_string($actualListener) && Str::endsWith($actualListener, '@handle')) {
+                $actualListener = Str::parseCallback($actualListener)[0];
             }
 
             if ($actualListener === $expectedListener ||
@@ -180,11 +172,13 @@ class EventFake implements Dispatcher
             return collect();
         }
 
-        $callback = $callback ?: fn () => true;
+        $callback = $callback ?: function () {
+            return true;
+        };
 
-        return collect($this->events[$event])->filter(
-            fn ($arguments) => $callback(...$arguments)
-        );
+        return collect($this->events[$event])->filter(function ($arguments) use ($callback) {
+            return $callback(...$arguments);
+        });
     }
 
     /**

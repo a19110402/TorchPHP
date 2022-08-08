@@ -7,15 +7,10 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Events\VendorTagPublished;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
+use League\Flysystem\Adapter\Local as LocalAdapter;
 use League\Flysystem\Filesystem as Flysystem;
-use League\Flysystem\Local\LocalFilesystemAdapter as LocalAdapter;
 use League\Flysystem\MountManager;
-use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
-use League\Flysystem\Visibility;
-use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'vendor:publish')]
 class VendorPublishCommand extends Command
 {
     /**
@@ -44,23 +39,10 @@ class VendorPublishCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'vendor:publish
-                    {--existing : Publish and overwrite only the files that have already been published}
-                    {--force : Overwrite any existing files}
+    protected $signature = 'vendor:publish {--force : Overwrite any existing files}
                     {--all : Publish assets for all service providers without prompt}
                     {--provider= : The service provider that has assets you want to publish}
                     {--tag=* : One or many tags that have assets you want to publish}';
-
-    /**
-     * The name of the console command.
-     *
-     * This name is used to identify the command during lazy loading.
-     *
-     * @var string|null
-     *
-     * @deprecated
-     */
-    protected static $defaultName = 'vendor:publish';
 
     /**
      * The console command description.
@@ -94,6 +76,8 @@ class VendorPublishCommand extends Command
         foreach ($this->tags ?: [null] as $tag) {
             $this->publishTag($tag);
         }
+
+        $this->info('Publishing complete.');
     }
 
     /**
@@ -123,7 +107,7 @@ class VendorPublishCommand extends Command
      */
     protected function promptForProviderOrTag()
     {
-        $choice = $this->components->choice(
+        $choice = $this->choice(
             "Which provider or tag's files would you like to publish?",
             $choices = $this->publishableChoices()
         );
@@ -144,8 +128,8 @@ class VendorPublishCommand extends Command
     {
         return array_merge(
             ['<comment>Publish files from all providers and tags listed below</comment>'],
-            preg_filter('/^/', '<fg=gray>Provider:</> ', Arr::sort(ServiceProvider::publishableProviders())),
-            preg_filter('/^/', '<fg=gray>Tag:</> ', Arr::sort(ServiceProvider::publishableGroups()))
+            preg_filter('/^/', '<comment>Provider: </comment>', Arr::sort(ServiceProvider::publishableProviders())),
+            preg_filter('/^/', '<comment>Tag: </comment>', Arr::sort(ServiceProvider::publishableGroups()))
         );
     }
 
@@ -178,23 +162,16 @@ class VendorPublishCommand extends Command
 
         $pathsToPublish = $this->pathsToPublish($tag);
 
-        if ($publishing = count($pathsToPublish) > 0) {
-            $this->components->info(sprintf(
-                'Publishing %sassets',
-                $tag ? "[$tag] " : '',
-            ));
-        }
-
         foreach ($pathsToPublish as $from => $to) {
             $this->publishItem($from, $to);
+
+            $published = true;
         }
 
-        if ($publishing === false) {
-            $this->components->info('No publishable resources for tag ['.$tag.'].');
+        if ($published === false) {
+            $this->comment('No publishable resources for tag ['.$tag.'].');
         } else {
             $this->laravel['events']->dispatch(new VendorTagPublished($tag, $pathsToPublish));
-
-            $this->newLine();
         }
     }
 
@@ -226,7 +203,7 @@ class VendorPublishCommand extends Command
             return $this->publishDirectory($from, $to);
         }
 
-        $this->components->error("Can't locate path: <{$from}>");
+        $this->error("Can't locate path: <{$from}>");
     }
 
     /**
@@ -238,25 +215,12 @@ class VendorPublishCommand extends Command
      */
     protected function publishFile($from, $to)
     {
-        if ((! $this->option('existing') && (! $this->files->exists($to) || $this->option('force')))
-            || ($this->option('existing') && $this->files->exists($to))) {
+        if (! $this->files->exists($to) || $this->option('force')) {
             $this->createParentDirectory(dirname($to));
 
             $this->files->copy($from, $to);
 
-            $this->status($from, $to, 'file');
-        } else {
-            if ($this->option('existing')) {
-                $this->components->twoColumnDetail(sprintf(
-                    'File [%s] does not exist',
-                    str_replace(base_path().'/', '', $to),
-                ), '<fg=yellow;options=bold>SKIPPED</>');
-            } else {
-                $this->components->twoColumnDetail(sprintf(
-                    'File [%s] already exists',
-                    str_replace(base_path().'/', '', realpath($to)),
-                ), '<fg=yellow;options=bold>SKIPPED</>');
-            }
+            $this->status($from, $to, 'File');
         }
     }
 
@@ -269,14 +233,12 @@ class VendorPublishCommand extends Command
      */
     protected function publishDirectory($from, $to)
     {
-        $visibility = PortableVisibilityConverter::fromArray([], Visibility::PUBLIC);
-
         $this->moveManagedFiles(new MountManager([
             'from' => new Flysystem(new LocalAdapter($from)),
-            'to' => new Flysystem(new LocalAdapter($to, $visibility)),
+            'to' => new Flysystem(new LocalAdapter($to)),
         ]));
 
-        $this->status($from, $to, 'directory');
+        $this->status($from, $to, 'Directory');
     }
 
     /**
@@ -288,16 +250,8 @@ class VendorPublishCommand extends Command
     protected function moveManagedFiles($manager)
     {
         foreach ($manager->listContents('from://', true) as $file) {
-            $path = Str::after($file['path'], 'from://');
-
-            if (
-                $file['type'] === 'file'
-                && (
-                    (! $this->option('existing') && (! $manager->fileExists('to://'.$path) || $this->option('force')))
-                    || ($this->option('existing') && $manager->fileExists('to://'.$path))
-                )
-            ) {
-                $manager->write('to://'.$path, $manager->read($file['path']));
+            if ($file['type'] === 'file' && (! $manager->has('to://'.$file['path']) || $this->option('force'))) {
+                $manager->put('to://'.$file['path'], $manager->read('from://'.$file['path']));
             }
         }
     }
@@ -325,15 +279,10 @@ class VendorPublishCommand extends Command
      */
     protected function status($from, $to, $type)
     {
-        $from = str_replace(base_path().'/', '', realpath($from));
+        $from = str_replace(base_path(), '', realpath($from));
 
-        $to = str_replace(base_path().'/', '', realpath($to));
+        $to = str_replace(base_path(), '', realpath($to));
 
-        $this->components->task(sprintf(
-            'Copying %s [%s] to [%s]',
-            $type,
-            $from,
-            $to,
-        ));
+        $this->line('<info>Copied '.$type.'</info> <comment>['.$from.']</comment> <info>To</info> <comment>['.$to.']</comment>');
     }
 }

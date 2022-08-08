@@ -23,10 +23,10 @@ class CollectionConfigurator
     use Traits\HostTrait;
     use Traits\RouteTrait;
 
-    private RouteCollection $parent;
-    private ?CollectionConfigurator $parentConfigurator;
-    private ?array $parentPrefixes;
-    private string|array|null $host = null;
+    private $parent;
+    private $parentConfigurator;
+    private $parentPrefixes;
+    private $host;
 
     public function __construct(RouteCollection $parent, string $name, self $parentConfigurator = null, array $parentPrefixes = null)
     {
@@ -38,7 +38,10 @@ class CollectionConfigurator
         $this->parentPrefixes = $parentPrefixes;
     }
 
-    public function __sleep(): array
+    /**
+     * @return array
+     */
+    public function __sleep()
     {
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }
@@ -75,7 +78,7 @@ class CollectionConfigurator
      *
      * @return $this
      */
-    final public function prefix(string|array $prefix): static
+    final public function prefix($prefix): self
     {
         if (\is_array($prefix)) {
             if (null === $this->parentPrefixes) {
@@ -108,7 +111,7 @@ class CollectionConfigurator
      *
      * @return $this
      */
-    final public function host(string|array $host): static
+    final public function host($host): self
     {
         $this->host = $host;
 
