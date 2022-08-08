@@ -11,6 +11,7 @@ use Illuminate\Broadcasting\Broadcasters\NullBroadcaster;
 use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 use Illuminate\Broadcasting\Broadcasters\RedisBroadcaster;
 use Illuminate\Contracts\Broadcasting\Factory as FactoryContract;
+use Illuminate\Contracts\Broadcasting\ShouldBeUnique;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Contracts\Bus\Dispatcher as BusDispatcherContract;
 use Illuminate\Contracts\Foundation\CachesRoutes;
@@ -56,7 +57,7 @@ class BroadcastManager implements FactoryContract
     }
 
     /**
-     * Register the routes for handling broadcast authentication and sockets.
+     * Register the routes for handling broadcast channel authentication and sockets.
      *
      * @param  array|null  $attributes
      * @return void
@@ -75,6 +76,41 @@ class BroadcastManager implements FactoryContract
                 '\\'.BroadcastController::class.'@authenticate'
             )->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
         });
+    }
+
+    /**
+     * Register the routes for handling broadcast user authentication.
+     *
+     * @param  array|null  $attributes
+     * @return void
+     */
+    public function userRoutes(array $attributes = null)
+    {
+        if ($this->app instanceof CachesRoutes && $this->app->routesAreCached()) {
+            return;
+        }
+
+        $attributes = $attributes ?: ['middleware' => ['web']];
+
+        $this->app['router']->group($attributes, function ($router) {
+            $router->match(
+                ['get', 'post'], '/broadcasting/user-auth',
+                '\\'.BroadcastController::class.'@authenticateUser'
+            )->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+        });
+    }
+
+    /**
+     * Register the routes for handling broadcast authentication and sockets.
+     *
+     * Alias of "routes" method.
+     *
+     * @param  array|null  $attributes
+     * @return void
+     */
+    public function channelRoutes(array $attributes = null)
+    {
+        return $this->routes($attributes);
     }
 
     /**
@@ -131,7 +167,10 @@ class BroadcastManager implements FactoryContract
         }
 
         $this->app->make('queue')->connection($event->connection ?? null)->pushOn(
-            $queue, new BroadcastEvent(clone $event)
+            $queue,
+            $event instanceof ShouldBeUnique
+                    ? new UniqueBroadcastEvent(clone $event)
+                    : new BroadcastEvent(clone $event)
         );
     }
 

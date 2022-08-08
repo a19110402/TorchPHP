@@ -24,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Terminal;
+
 use function Symfony\Component\String\s;
 
 /**
@@ -405,7 +406,7 @@ class QuestionHelper extends Helper
             $exe = __DIR__.'/../Resources/bin/hiddeninput.exe';
 
             // handle code running from a phar
-            if ('phar:' === substr(__FILE__, 0, 5)) {
+            if (str_starts_with(__FILE__, 'phar:')) {
                 $tmpExe = sys_get_temp_dir().'/hiddeninput.exe';
                 copy($exe, $tmpExe);
                 $exe = $tmpExe;

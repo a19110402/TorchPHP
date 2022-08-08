@@ -542,7 +542,7 @@ class Request
 
         $request = ['g' => $_GET, 'p' => $_POST, 'c' => $_COOKIE];
 
-        $requestOrder = ini_get('request_order') ?: ini_get('variables_order');
+        $requestOrder = \ini_get('request_order') ?: \ini_get('variables_order');
         $requestOrder = preg_replace('#[^cgp]#', '', strtolower($requestOrder)) ?: 'gp';
 
         $_REQUEST = [[]];
@@ -690,6 +690,8 @@ class Request
 
     /**
      * Gets the Session.
+     *
+     * @throws SessionNotFoundException When session is not set properly
      */
     public function getSession(): SessionInterface
     {
@@ -1873,7 +1875,7 @@ class Request
             if (class_exists(\Locale::class, false)) {
                 \Locale::setDefault($locale);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
     }
 

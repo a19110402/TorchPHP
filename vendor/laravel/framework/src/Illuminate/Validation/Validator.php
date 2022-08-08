@@ -381,9 +381,7 @@ class Validator implements ValidatorContract
      */
     public function after($callback)
     {
-        $this->after[] = function () use ($callback) {
-            return $callback($this);
-        };
+        $this->after[] = fn () => $callback($this);
 
         return $this;
     }
@@ -818,9 +816,11 @@ class Validator implements ValidatorContract
 
             $messages = $messages ? (array) $messages : [get_class($rule)];
 
-            foreach ($messages as $message) {
-                $this->messages->add($attribute, $this->makeReplacements(
-                    $message, $attribute, get_class($rule), []
+            foreach ($messages as $key => $message) {
+                $key = is_string($key) ? $key : $attribute;
+
+                $this->messages->add($key, $this->makeReplacements(
+                    $message, $key, get_class($rule), []
                 ));
             }
         }
@@ -867,6 +867,8 @@ class Validator implements ValidatorContract
             $this->passes();
         }
 
+        $attributeWithPlaceholders = $attribute;
+
         $attribute = str_replace(
             [$this->dotPlaceholder, '__asterisk__'],
             ['.', '*'],
@@ -878,7 +880,7 @@ class Validator implements ValidatorContract
         }
 
         $this->messages->add($attribute, $this->makeReplacements(
-            $this->getMessage($attribute, $rule), $attribute, $rule, $parameters
+            $this->getMessage($attributeWithPlaceholders, $rule), $attribute, $rule, $parameters
         ));
 
         $this->failedRules[$attribute][$rule] = $parameters;

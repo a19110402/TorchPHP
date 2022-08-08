@@ -8,6 +8,8 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Conditionable;
@@ -17,6 +19,8 @@ use Throwable;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
+ *
+ * @method $this trashed()
  */
 abstract class Factory
 {
@@ -276,7 +280,7 @@ abstract class Factory
     /**
      * Create a collection of models and persist them to the database without dispatching any model events.
      *
-     * @param  array<string, mixed>  $attributes
+     * @param  (callable(array<string, mixed>): array<string, mixed>)|array<string, mixed>  $attributes
      * @param  \Illuminate\Database\Eloquent\Model|null  $parent
      * @return \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model|TModel>|\Illuminate\Database\Eloquent\Model|TModel
      */
@@ -296,9 +300,7 @@ abstract class Factory
      */
     public function lazy(array $attributes = [], ?Model $parent = null)
     {
-        return function () use ($attributes, $parent) {
-            return $this->create($attributes, $parent);
-        };
+        return fn () => $this->create($attributes, $parent);
     }
 
     /**
@@ -449,21 +451,28 @@ abstract class Factory
      */
     protected function expandAttributes(array $definition)
     {
-        return collect($definition)->map(function ($attribute, $key) use (&$definition) {
-            if (is_callable($attribute) && ! is_string($attribute) && ! is_array($attribute)) {
-                $attribute = $attribute($definition);
-            }
+        return collect($definition)
+            ->map($evaluateRelations = function ($attribute) {
+                if ($attribute instanceof self) {
+                    $attribute = $attribute->create()->getKey();
+                } elseif ($attribute instanceof Model) {
+                    $attribute = $attribute->getKey();
+                }
 
-            if ($attribute instanceof self) {
-                $attribute = $attribute->create()->getKey();
-            } elseif ($attribute instanceof Model) {
-                $attribute = $attribute->getKey();
-            }
+                return $attribute;
+            })
+            ->map(function ($attribute, $key) use (&$definition, $evaluateRelations) {
+                if (is_callable($attribute) && ! is_string($attribute) && ! is_array($attribute)) {
+                    $attribute = $attribute($definition);
+                }
 
-            $definition[$key] = $attribute;
+                $attribute = $evaluateRelations($attribute);
 
-            return $attribute;
-        })->all();
+                $definition[$key] = $attribute;
+
+                return $attribute;
+            })
+            ->all();
     }
 
     /**
@@ -560,7 +569,7 @@ abstract class Factory
     /**
      * Define an attached relationship for the model.
      *
-     * @param  \Illuminate\Database\Eloquent\Factories\Factory|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Model  $factory
+     * @param  \Illuminate\Database\Eloquent\Factories\Factory|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Model|array  $factory
      * @param  (callable(): array<string, mixed>)|array<string, mixed>  $pivot
      * @param  string|null  $relationship
      * @return static
@@ -832,6 +841,12 @@ abstract class Factory
     {
         if (static::hasMacro($method)) {
             return $this->macroCall($method, $parameters);
+        }
+
+        if ($method === 'trashed' && in_array(SoftDeletes::class, class_uses_recursive($this->modelName()))) {
+            return $this->state([
+                $this->newModel()->getDeletedAtColumn() => $parameters[0] ?? Carbon::now()->subDay(),
+            ]);
         }
 
         if (! Str::startsWith($method, ['for', 'has'])) {

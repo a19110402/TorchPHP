@@ -46,6 +46,7 @@
                     <a href="{{ route('login.destroy') }}" >Log out</a>
                 @else
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
+                    <a href="{{ route('products.index') }}">Products</a>
                     <a href="#">Rastreo</a>
                     <a href="#">Logística</a>
                     <a href="#">Promociones</a>

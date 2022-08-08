@@ -5,7 +5,9 @@ namespace Illuminate\Queue\Console;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'queue:table')]
 class TableCommand extends Command
 {
     /**
@@ -73,7 +75,7 @@ class TableCommand extends Command
             $this->createBaseMigration($table), $table
         );
 
-        $this->info('Migration created successfully.');
+        $this->components->info('Migration created successfully.');
 
         $this->composer->dumpAutoloads();
     }

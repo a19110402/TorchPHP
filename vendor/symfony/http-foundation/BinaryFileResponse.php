@@ -34,6 +34,7 @@ class BinaryFileResponse extends Response
     protected $offset = 0;
     protected $maxlen = -1;
     protected $deleteFileAfterSend = false;
+    protected $chunkSize = 8 * 1024;
 
     /**
      * @param \SplFileInfo|string $file               The file to stream
@@ -99,6 +100,22 @@ class BinaryFileResponse extends Response
     public function getFile(): File
     {
         return $this->file;
+    }
+
+    /**
+     * Sets the response stream chunk size.
+     *
+     * @return $this
+     */
+    public function setChunkSize(int $chunkSize): static
+    {
+        if ($chunkSize < 1 || $chunkSize > \PHP_INT_MAX) {
+            throw new \LogicException('The chunk size of a BinaryFileResponse cannot be less than 1 or greater than PHP_INT_MAX.');
+        }
+
+        $this->chunkSize = $chunkSize;
+
+        return $this;
     }
 
     /**
@@ -202,7 +219,7 @@ class BinaryFileResponse extends Response
                 $parts = HeaderUtils::split($request->headers->get('X-Accel-Mapping', ''), ',=');
                 foreach ($parts as $part) {
                     [$pathPrefix, $location] = $part;
-                    if (substr($path, 0, \strlen($pathPrefix)) === $pathPrefix) {
+                    if (str_starts_with($path, $pathPrefix)) {
                         $path = $location.substr($path, \strlen($pathPrefix));
                         // Only set X-Accel-Redirect header if a valid URI can be produced
                         // as nginx does not serve arbitrary file paths.
@@ -282,7 +299,23 @@ class BinaryFileResponse extends Response
         $out = fopen('php://output', 'w');
         $file = fopen($this->file->getPathname(), 'r');
 
-        stream_copy_to_stream($file, $out, $this->maxlen, $this->offset);
+        ignore_user_abort(true);
+
+        if (0 !== $this->offset) {
+            fseek($file, $this->offset);
+        }
+
+        $length = $this->maxlen;
+        while ($length && !feof($file)) {
+            $read = ($length > $this->chunkSize) ? $this->chunkSize : $length;
+            $length -= $read;
+
+            stream_copy_to_stream($file, $out, $read);
+
+            if (connection_aborted()) {
+                break;
+            }
+        }
 
         fclose($out);
         fclose($file);

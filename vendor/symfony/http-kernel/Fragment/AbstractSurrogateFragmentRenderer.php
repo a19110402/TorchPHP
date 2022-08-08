@@ -24,9 +24,9 @@ use Symfony\Component\HttpKernel\UriSigner;
  */
 abstract class AbstractSurrogateFragmentRenderer extends RoutableFragmentRenderer
 {
-    private $surrogate;
-    private $inlineStrategy;
-    private $signer;
+    private ?SurrogateInterface $surrogate;
+    private FragmentRendererInterface $inlineStrategy;
+    private ?UriSigner $signer;
 
     /**
      * The "fallback" strategy when surrogate is not available should always be an
@@ -89,9 +89,11 @@ abstract class AbstractSurrogateFragmentRenderer extends RoutableFragmentRendere
     private function containsNonScalars(array $values): bool
     {
         foreach ($values as $value) {
-            if (\is_array($value)) {
-                return $this->containsNonScalars($value);
-            } elseif (!is_scalar($value) && null !== $value) {
+            if (\is_scalar($value) || null === $value) {
+                continue;
+            }
+
+            if (!\is_array($value) || $this->containsNonScalars($value)) {
                 return true;
             }
         }

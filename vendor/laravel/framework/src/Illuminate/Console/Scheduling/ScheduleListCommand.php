@@ -2,6 +2,7 @@
 
 namespace Illuminate\Console\Scheduling;
 
+use Closure;
 use Cron\CronExpression;
 use DateTimeZone;
 use Illuminate\Console\Application;
@@ -9,8 +10,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use ReflectionClass;
 use ReflectionFunction;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Terminal;
 
+#[AsCommand(name: 'schedule:list')]
 class ScheduleListCommand extends Command
 {
     /**
@@ -19,6 +22,17 @@ class ScheduleListCommand extends Command
      * @var string
      */
     protected $signature = 'schedule:list {--timezone= : The timezone that times should be displayed in}';
+
+    /**
+     * The name of the console command.
+     *
+     * This name is used to identify the command during lazy loading.
+     *
+     * @var string|null
+     *
+     * @deprecated
+     */
+    protected static $defaultName = 'schedule:list';
 
     /**
      * The console command description.
@@ -47,7 +61,7 @@ class ScheduleListCommand extends Command
         $events = collect($schedule->events());
 
         if ($events->isEmpty()) {
-            $this->comment('No scheduled tasks have been defined.');
+            $this->components->info('No scheduled tasks have been defined.');
 
             return;
         }
@@ -100,7 +114,7 @@ class ScheduleListCommand extends Command
             ));
 
             // Highlight the parameters...
-            $command = preg_replace("#(=['\"]?)([^'\"]+)(['\"]?)#", '$1<fg=yellow;options=bold>$2</>$3', $command);
+            $command = preg_replace("#(php artisan [\w\-:]+) (.+)#", '$1 <fg=yellow;options=bold>$2</>', $command);
 
             return [sprintf(
                 '  <fg=yellow>%s</>  %s<fg=#6C7280>%s %s%s %s</>',
@@ -160,15 +174,25 @@ class ScheduleListCommand extends Command
      */
     private function getClosureLocation(CallbackEvent $event)
     {
-        $function = new ReflectionFunction(tap((new ReflectionClass($event))->getProperty('callback'))
+        $callback = tap((new ReflectionClass($event))->getProperty('callback'))
                         ->setAccessible(true)
-                        ->getValue($event));
+                        ->getValue($event);
 
-        return sprintf(
-            '%s:%s',
-            str_replace($this->laravel->basePath().DIRECTORY_SEPARATOR, '', $function->getFileName() ?: ''),
-            $function->getStartLine()
-        );
+        if ($callback instanceof Closure) {
+            $function = new ReflectionFunction($callback);
+
+            return sprintf(
+                '%s:%s',
+                str_replace($this->laravel->basePath().DIRECTORY_SEPARATOR, '', $function->getFileName() ?: ''),
+                $function->getStartLine()
+            );
+        }
+
+        if (is_array($callback)) {
+            return sprintf('%s::%s', $callback[0]::class, $callback[1]);
+        }
+
+        return sprintf('%s::__invoke', $callback::class);
     }
 
     /**

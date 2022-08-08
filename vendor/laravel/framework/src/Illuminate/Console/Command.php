@@ -2,8 +2,8 @@
 
 namespace Illuminate\Console;
 
+use Illuminate\Console\View\Components\Factory;
 use Illuminate\Support\Traits\Macroable;
-use ReflectionClass;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -88,40 +88,6 @@ class Command extends SymfonyCommand
     }
 
     /**
-     * Return the command name.
-     *
-     * @return string|null
-     */
-    public static function getDefaultName(): ?string
-    {
-        $class = static::class;
-
-        $signature = (new ReflectionClass($class))->getDefaultProperties()['signature'] ?? null;
-
-        if (isset($signature)) {
-            return Parser::parse($signature)[0];
-        }
-
-        $name = (new ReflectionClass($class))->getDefaultProperties()['name'] ?? null;
-
-        return $name ?: parent::getDefaultName();
-    }
-
-    /**
-     * Return the command description.
-     *
-     * @return string|null
-     */
-    public static function getDefaultDescription(): ?string
-    {
-        $class = static::class;
-
-        $description = (new ReflectionClass($class))->getDefaultProperties()['description'] ?? null;
-
-        return $description ?: parent::getDefaultDescription();
-    }
-
-    /**
      * Configure the console command using a fluent definition.
      *
      * @return void
@@ -151,6 +117,8 @@ class Command extends SymfonyCommand
         $this->output = $this->laravel->make(
             OutputStyle::class, ['input' => $input, 'output' => $output]
         );
+
+        $this->components = $this->laravel->make(Factory::class, ['output' => $this->output]);
 
         return parent::run(
             $this->input = $input, $this->output

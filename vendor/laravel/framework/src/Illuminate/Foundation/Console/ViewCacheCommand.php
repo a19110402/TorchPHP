@@ -4,9 +4,11 @@ namespace Illuminate\Foundation\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
+#[AsCommand(name: 'view:cache')]
 class ViewCacheCommand extends Command
 {
     /**
@@ -41,13 +43,13 @@ class ViewCacheCommand extends Command
      */
     public function handle()
     {
-        $this->call('view:clear');
+        $this->callSilent('view:clear');
 
         $this->paths()->each(function ($path) {
             $this->compileViews($this->bladeFilesIn([$path]));
         });
 
-        $this->info('Blade templates cached successfully.');
+        $this->components->info('Blade templates cached successfully.');
     }
 
     /**

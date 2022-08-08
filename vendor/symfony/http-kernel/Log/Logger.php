@@ -62,7 +62,7 @@ class Logger extends AbstractLogger
         }
 
         $this->minLevelIndex = self::LEVELS[$minLevel];
-        $this->formatter = $formatter instanceof \Closure ? $formatter : \Closure::fromCallable($formatter ?? [$this, 'format']);
+        $this->formatter = null !== $formatter ? $formatter(...) : $this->format(...);
         if ($output && false === $this->handle = \is_resource($output) ? $output : @fopen($output, 'a')) {
             throw new InvalidArgumentException(sprintf('Unable to open "%s".', $output));
         }
@@ -94,7 +94,7 @@ class Logger extends AbstractLogger
         if (str_contains($message, '{')) {
             $replacements = [];
             foreach ($context as $key => $val) {
-                if (null === $val || is_scalar($val) || $val instanceof \Stringable) {
+                if (null === $val || \is_scalar($val) || $val instanceof \Stringable) {
                     $replacements["{{$key}}"] = $val;
                 } elseif ($val instanceof \DateTimeInterface) {
                     $replacements["{{$key}}"] = $val->format(\DateTime::RFC3339);

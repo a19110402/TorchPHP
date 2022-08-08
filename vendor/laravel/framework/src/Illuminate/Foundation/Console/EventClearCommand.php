@@ -4,7 +4,9 @@ namespace Illuminate\Foundation\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'event:clear')]
 class EventClearCommand extends Command
 {
     /**
@@ -63,6 +65,6 @@ class EventClearCommand extends Command
     {
         $this->files->delete($this->laravel->getCachedEventsPath());
 
-        $this->info('Cached events cleared successfully.');
+        $this->components->info('Cached events cleared successfully.');
     }
 }

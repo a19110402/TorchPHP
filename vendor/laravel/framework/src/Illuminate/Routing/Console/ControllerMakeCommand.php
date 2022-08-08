@@ -5,8 +5,10 @@ namespace Illuminate\Routing\Console;
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
 use InvalidArgumentException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputOption;
 
+#[AsCommand(name: 'make:controller')]
 class ControllerMakeCommand extends GeneratorCommand
 {
     use CreatesMatchingTest;
@@ -138,7 +140,7 @@ class ControllerMakeCommand extends GeneratorCommand
         $parentModelClass = $this->parseModel($this->option('parent'));
 
         if (! class_exists($parentModelClass) &&
-            $this->confirm("A {$parentModelClass} model does not exist. Do you want to generate it?", true)) {
+            $this->components->confirm("A {$parentModelClass} model does not exist. Do you want to generate it?", true)) {
             $this->call('make:model', ['name' => $parentModelClass]);
         }
 
@@ -165,7 +167,7 @@ class ControllerMakeCommand extends GeneratorCommand
     {
         $modelClass = $this->parseModel($this->option('model'));
 
-        if (! class_exists($modelClass) && $this->confirm("A {$modelClass} model does not exist. Do you want to generate it?", true)) {
+        if (! class_exists($modelClass) && $this->components->confirm("A {$modelClass} model does not exist. Do you want to generate it?", true)) {
             $this->call('make:model', ['name' => $modelClass]);
         }
 

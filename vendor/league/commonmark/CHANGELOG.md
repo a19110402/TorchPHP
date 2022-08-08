@@ -6,6 +6,55 @@ Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) princi
 
 ## [Unreleased][unreleased]
 
+## [2.3.5] - 2022-07-29
+
+### Fixed
+
+- Fixed error using `InlineParserEngine` when no inline parsers are registered in the `Environment` (#908)
+
+## [2.3.4] - 2022-07-17
+
+### Changed
+
+- Made a number of small tweaks to the embed extension's parsing behavior to fix #898:
+    - Changed `EmbedStartParser` to always capture embed-like lines in container blocks, regardless of parent block type
+    - Changed `EmbedProcessor` to also remove `Embed` blocks that aren't direct children of the `Document`
+    - Increased the priority of `EmbedProcessor` to `1010`
+
+### Fixed
+
+- Fixed `EmbedExtension` not parsing embeds following a list block (#898)
+
+## [2.3.3] - 2022-06-07
+
+### Fixed
+
+- Fixed `DomainFilteringAdapter` not reindexing the embed list (#884, #885)
+
+## [2.3.2] - 2022-06-03
+
+### Fixed
+
+- Fixed FootnoteExtension stripping extra characters from tab-indented footnotes (#881)
+
+## [2.2.5] - 2022-06-03
+
+### Fixed
+
+- Fixed FootnoteExtension stripping extra characters from tab-indented footnotes (#881)
+
+## [2.3.1] - 2022-05-14
+
+### Fixed
+
+- Fixed AutolinkExtension not ignoring trailing strikethrough syntax (#867)
+
+## [2.2.4] - 2022-05-14
+
+### Fixed
+
+- Fixed AutolinkExtension not ignoring trailing strikethrough syntax (#867)
+
 ## [2.3.0] - 2022-04-07
 
 ### Added
@@ -445,8 +494,15 @@ No changes were introduced since the previous release.
     - Alternative 1: Use `CommonMarkConverter` or `GithubFlavoredMarkdownConverter` if you don't need to customize the environment
     - Alternative 2: Instantiate a new `Environment` and add the necessary extensions yourself
 
-[unreleased]: https://github.com/thephpleague/commonmark/compare/2.3.0...main
+[unreleased]: https://github.com/thephpleague/commonmark/compare/2.3.5...main
+[2.3.5]: https://github.com/thephpleague/commonmark/compare/2.3.4...2.3.5
+[2.3.4]: https://github.com/thephpleague/commonmark/compare/2.3.3...2.3.4
+[2.3.3]: https://github.com/thephpleague/commonmark/compare/2.3.2...2.3.3
+[2.3.2]: https://github.com/thephpleague/commonmark/compare/2.3.2...main
+[2.3.1]: https://github.com/thephpleague/commonmark/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/thephpleague/commonmark/compare/2.2.3...2.3.0
+[2.2.5]: https://github.com/thephpleague/commonmark/compare/2.2.4...2.2.5
+[2.2.4]: https://github.com/thephpleague/commonmark/compare/2.2.3...2.2.4
 [2.2.3]: https://github.com/thephpleague/commonmark/compare/2.2.2...2.2.3
 [2.2.2]: https://github.com/thephpleague/commonmark/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/thephpleague/commonmark/compare/2.2.0...2.2.1

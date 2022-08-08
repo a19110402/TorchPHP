@@ -20,7 +20,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
 {
     private const EXPANSION_CHARACTER = '~';
 
-    private $translator;
+    private TranslatorInterface $translator;
     private bool $accents;
     private float $expansionFactor;
     private bool $brackets;
@@ -283,7 +283,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
         }
 
         $visibleLength = $this->strlen($visibleText);
-        $missingLength = (int) (ceil($visibleLength * $this->expansionFactor)) - $visibleLength;
+        $missingLength = (int) ceil($visibleLength * $this->expansionFactor) - $visibleLength;
         if ($this->brackets) {
             $missingLength -= 2;
         }

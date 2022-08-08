@@ -298,6 +298,16 @@ class Stringable implements JsonSerializable
     }
 
     /**
+     * Determine if a given string is valid JSON.
+     *
+     * @return bool
+     */
+    public function isJson()
+    {
+        return Str::isJson($this->value);
+    }
+
+    /**
      * Determine if a given string is a valid UUID.
      *
      * @return bool
@@ -379,6 +389,17 @@ class Stringable implements JsonSerializable
     public function markdown(array $options = [])
     {
         return new static(Str::markdown($this->value, $options));
+    }
+
+    /**
+     * Convert inline Markdown into HTML.
+     *
+     * @param  array  $options
+     * @return static
+     */
+    public function inlineMarkdown(array $options = [])
+    {
+        return new static(Str::inlineMarkdown($this->value, $options));
     }
 
     /**

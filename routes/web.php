@@ -117,3 +117,24 @@ Route::delete('/users/{id}', 'AdminController@deleteUser')->name('deleteUser');
 
 //Página nosotros
 Route::get('/nosotros', 'IndexController@nosotros')->name('nosotros');
+
+
+Route::get('/adminlte', function(){
+    return view('adminlte'); 
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
+/* Route::middleware(['auth:sanctum', 'verified'])->group(function(){     */
+    Route::resource('products', ProductController::class);
+    Route::get('/dashboard', function(){
+        return view('dashboard');
+    })->name('dashboard');
+/* }); */

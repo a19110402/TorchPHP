@@ -6,6 +6,7 @@ use ErrorException;
 use FilesystemIterator;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\LazyCollection;
+use Illuminate\Support\Traits\Conditionable;
 use Illuminate\Support\Traits\Macroable;
 use RuntimeException;
 use SplFileObject;
@@ -15,6 +16,7 @@ use Symfony\Component\Mime\MimeTypes;
 
 class Filesystem
 {
+    use Conditionable;
     use Macroable;
 
     /**
@@ -164,14 +166,15 @@ class Filesystem
     }
 
     /**
-     * Get the MD5 hash of the file at the given path.
+     * Get the hash of the file at the given path.
      *
      * @param  string  $path
+     * @param  string  $algorithm
      * @return string
      */
-    public function hash($path)
+    public function hash($path, $algorithm = 'md5')
     {
-        return md5_file($path);
+        return hash_file($algorithm, $path);
     }
 
     /**
@@ -475,6 +478,18 @@ class Filesystem
     public function isDirectory($directory)
     {
         return is_dir($directory);
+    }
+
+    /**
+     * Determine if the given path is a directory that does not contain any other files or directories.
+     *
+     * @param  string  $directory
+     * @param  bool  $ignoreDotFiles
+     * @return bool
+     */
+    public function isEmptyDirectory($directory, $ignoreDotFiles = false)
+    {
+        return ! Finder::create()->ignoreDotFiles($ignoreDotFiles)->in($directory)->depth(0)->hasResults();
     }
 
     /**

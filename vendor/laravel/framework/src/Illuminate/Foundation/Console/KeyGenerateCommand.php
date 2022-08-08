@@ -5,7 +5,9 @@ namespace Illuminate\Foundation\Console;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Encryption\Encrypter;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'key:generate')]
 class KeyGenerateCommand extends Command
 {
     use ConfirmableTrait;
@@ -59,7 +61,7 @@ class KeyGenerateCommand extends Command
 
         $this->laravel['config']['app.key'] = $key;
 
-        $this->info('Application key set successfully.');
+        $this->components->info('Application key set successfully.');
     }
 
     /**
