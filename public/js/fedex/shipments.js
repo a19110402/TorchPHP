@@ -1,27 +1,90 @@
 import ajax from '../ajax.js';
 
-
-$("#cancelShip").on('click', function(){
-  let input = JSON.stringify(
-    {
-      "accountNumber": {
-        "value": ""
-      },
-      "trackingNumber": "794649568011"//794649568011 79464957872
-  }
-  );
-  let response = ajax('PUT', '/cancelShipments', input, $("input[name='_token']").val());
-
-  console.log(response);
-
+$(function(){
+  $("#shipFormFull").hide();
+  $("#waitingMessage").hide();
 });
 
-$("#requestShipments").on('submit',
+$("#showServiceAvailableForm").on('click', function(){       
+  $("#serviceType").empty();
+  hideSpan();
+  $("#shipFormFull").hide();
+  $("#serviceAvailabilityValidation").show();
+});
+
+$("#validateAvailableServices").on('click', function(){
+   //shipper
+  let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
+  let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
+  //recipient
+  let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
+  let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
+  let _token = $('input[name="_token"]').val();
+  let url = '/fedex/serviceAvailability'
+  showSpan();
+  let input = JSON.stringify(
+    {
+      "requestedShipment": {
+      "shipper": {
+      "address": {
+      "postalCode": shipperPostalCode,
+      "countryCode": shipperCountrCode
+      }
+      },
+      "recipients": [
+      {
+      "address": {
+      "postalCode": recipientPostalCode,
+      "countryCode": recipientCountryCode
+      }
+      }
+      ]
+      },
+      "carrierCodes": [
+      "FDXE",
+      "FDXG"
+      ]
+      }
+  );
+  //COLOCAR MENSJE ENTRE ESTE ESPACIO DE TIEMPO EN LO QUE SE VERIFICAN LOS SERVICIOS DISPONIBLES
+    let data = ajax('POST',url, input, _token);
+      data.then(
+        function(response){
+          console.log(response);
+          switch (response.fedexResponse.statusCode)
+          {
+            case 200:
+              hideSpan();
+              $("#serviceAvailabilityValidation").hide();
+              $("#shipFormFull").show();
+              response = response.fedexResponse.validation.output;
+              response.packageOptions.forEach(element => {
+                if(element.packageType.key != "FEDEX_ENVELOPE"){
+                  $('#serviceType').append($('<option>', {
+                    value: element.serviceType.key,
+                    text: element.serviceType.displayText
+                }
+                ));
+                }
+              });
+              break;
+            case 400:
+              hideSpan();
+              $("#serviceAvailabilityValidation").show();
+              alert("Error en información")
+              break;
+            default:
+          }
+        }
+      );
+});
+
+$("#requestFedex").on('submit',
 function(){
   let delivery = $('select[name="delivery"]').val();
     let url = $(this).attr('data-action');
     let input = JSON.stringify({
-      'delivery': delivery,
+      'delivery': 'fedex',
       'json':{
           "shipper": {
             "contact": {
@@ -109,3 +172,12 @@ function(){
 
     }
 );
+
+function showSpan(){
+  $("#serviceAvailabilityValidation").hide();
+  $("#waitingMessage").show();
+}
+
+function hideSpan(){
+  $("#waitingMessage").hide();
+}

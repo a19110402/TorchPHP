@@ -339,196 +339,6 @@ class FedexController extends Controller
         ]);
     }
 
-    // Se queda por el momento en veremos
-    public function serviceAvailabilityRequest(Request $request)
-    {
-        $requestJson = json_decode($request->get('service_availability'));
-        $body = [
-            "requestedShipment" => [
-                "shipper" => [
-                    "address" => [
-                        "city"=> "Collierville",
-                        "stateOrProvinceCode"=> "TN",
-                        "postalCode"=> "38127",
-                        "countryCode"=> "US",
-                        "residential"=> false,
-                    ],
-                ],
-                "recipient"=> array(
-                    [
-                        "address"=> [
-                            "city"=> "Collierville",
-                            "stateOrProvinceCode"=> "TN",
-                            "postalCode"=> "38127",
-                            "countryCode"=> "US",
-                            "residential"=> false,
-                        ],
-                    ],
-                ),
-                "serviceType"=> "FEDEX_GROUND",
-                "shipDatestamp"=> "2021-06-16",
-                "pickupType"=> "DROPOFF_AT_FEDEX_LOCATION",
-                "shippingChargesPayment" => [
-                    "payor" => [
-                        "responsibleParty"=> [
-                            "address"=> [
-                                "city"=> "Collierville",
-                                "stateOrProvinceCode"=> "TN",
-                                "postalCode"=> "38127",
-                                "countryCode"=> "US",
-                                "residential"=> false,
-                            ],
-                            "accountNumber"=> [
-                                "value"=>  "60xxxxxx2",
-                            ],
-                        ],
-                    ],
-                    "paymentType"=> "COLLECT",
-                ],
-                "requestedPackageLineItems"=> array(
-                    [
-                        "declaredValue"=> [
-                            "amount"=> 12,
-                            "currency"=> "USD",
-                        ],
-                        "weight"=> [
-                            "units"=> "LB",
-                            "value"=> 10,
-                        ],
-                        "dimensions"=> [
-                            "length"=> 100,
-                            "width"=> 50,
-                            "height"=> 30,
-                            "units"=> "CM",
-                        ],
-                        "packageSpecialServices"=> [
-                            "specialServiceTypes"=> [
-                                "DANGEROUS_GOODS",
-                                "COD"
-                            ],
-                            "codDetail"=> [
-                                "codCollectionAmount"=> [
-                                    "amount" => 12.45,
-                                    "currency" => "USD",
-                                ],
-                            ],
-                            "dryIceWeight"=> [
-                                "units" => "LB",
-                                "value" => 10,
-                            ],
-                            "dangerousGoodsDetail"=> [
-                                "accessibility" => "ACCESSIBLE",
-                                "options"=> [
-                                    "BATTERY",
-                                ],
-                            ],
-                            "alcoholDetail"=> [
-                                "alcoholRecipientType" => "LICENSEE",
-                                "shipperAgreementType" => "retailer",
-                            ],
-                            "pieceCountVerificationBoxCount"=> 2,
-                            "batteryDetails"=> [
-                                "batteryMaterialType" => "LITHIUM_METAL",
-                                "batteryPackingType" => "CONTAINED_IN_EQUIPMENT",
-                                "batteryRegulatoryType" => "IATA_SECTION_II",
-                            ],
-                        ],
-                    ],
-                ),
-                "shipmentSpecialServices"=> [
-                    "specialServiceTypes"=> array(
-                        "BROKER_SELECT_OPTION"
-                    ),
-                    "codDetail"=> [
-                        "codCollectionAmount"=> [
-                            "amount"=> 12.45,
-                            "currency"=> "USD"
-                        ],
-                        "codCollectionType"=> "PERSONAL_CHECK",
-                    ],
-                    "internationalControlledExportDetail"=> [
-                        "type"=> "DSP_LICENSE_AGREEMENT",
-                    ],
-                    "homeDeliveryPremiumDetail"=> [
-                        "homedeliveryPremiumType"=> "EVENING",
-                    ],
-                    "holdAtLocationDetail"=> [
-                        "locationId" => "YBZA",
-                        "locationType" => "FEDEX_ONSITE",
-                        "locationContactAndAddress"=> [
-                            "contact"=> [
-                                "personName"=> "John Taylor",
-                                "emailAddress"=> "sample@company.com",
-                                "phoneNumber"=> "1234567890",
-                                "phoneExtension"=> "1234",
-                                "faxNumber"=> "1234567890",
-                                "companyName"=> "Fedex",
-                                "parsedPersonName"=> [
-                                    "firstName"=> "firstName",
-                                    "lastName"=> "lastName",
-                                    "middleName"=> "middleName",
-                                    "suffix"=> "suffix",
-                                ],
-                            ],
-                            "address"=> [
-                                "city"=> "Collierville",
-                                "stateOrProvinceCode"=> "TN",
-                                "postalCode"=> "38127",
-                                "countryCode"=> "US",
-                                "residential"=> false,
-                            ],
-                        ],
-                    ],
-                    "shipmentDryIceDetail"=> [
-                        "totalWeight"=> [
-                            "units"=> "LB",
-                            "value"=> 10,
-                        ],
-                        "packageCount" => 12,
-                    ],
-                ],
-                "customsClearanceDetail"=> [
-                    "commodities"=> array(
-                        [
-                            "description"=> "DOCUMENTS",
-                            "quantity"=> 1,
-                            "unitPrice"=> [
-                                "amount"=>  12.45,
-                                "currency"=> "USD",
-                            ],
-                            "weight"=> [
-                                "units"=> "LB",
-                                "value"=>  10,
-                            ],
-                            "customsValue"=> [
-                                "amount"=>  12.45,
-                                "currency"=> "USD",
-                            ],
-                            "numberOfPieces"=> 1,
-                            "countryOfManufacture"=> "US",
-                            "quantityUnits"=> "PCS",
-                            "name"=> "DOCUMENTS",
-                            "harmonizedCode"=> "080211",
-                            "partNumber"=> "P1",
-                        ]
-                    ),
-                ],
-            ],
-            "carrierCodes"=> array(
-                "FDXG"
-            ),
-        ];
-        $response = $this->makeFedexJsonPostRequest(
-            env('RETRIEVE_SERVICE_TRANSIT_TEST_URL'),
-            env('RETRIEVE_SERVICE_TRANSIT_PRODUCTION_URL'),
-            $body
-        ); 
-        return response()->json([
-            'validateAddressJson' => $response->json(),
-            'statusCode' => $response->status(),
-            'cookie' => $body,
-        ]);
-    }
     //OPENSHIP API FEDEX////////////////////////////////////////////////////////////////////
     public function openShip(){
         $countryCode = $this->getCountryCode();
@@ -820,9 +630,32 @@ class FedexController extends Controller
             ]
         ]);
     }
+    //API Service Availability
+    public function serviceAvailabilityRequest(Request $request)
+    {
+        $requestJson = json_decode($request->post('json'));
+        $response = $this->makeFedexJsonPostRequest(
+            env('VALIDATE_SERVICE_AVAILABILITY_TEST_URL'),
+            env('VALIDATE_SERVICE_AVAILABILITY_PRODUCTION_URL'),
+            $requestJson
+        );
+        return response()->json([
+            'fedexResponse'=> [
+                'validation' => $response->json(),
+                'statusCode'=> $response->status(),
+            ]
+        ]);
+    }
     //SHIPMENTS
+    public function proveShipments(Request $request)
+    {
+        $countryCode = $this->getCountryCode();
+        // $serviceType = $this->getServiceType();
+        $packingType = $this->getPackageType();
+        $pickupType = $this->getPickupType();
+        return view('fedex.proveShipments', compact('countryCode', 'packingType', 'pickupType'));
+    }
 
-    //CONTROLLER
     public function shipments(Request $request){
         $countryCode = $this->getCountryCode();
         // $serviceType = $this->getServiceType();
@@ -849,15 +682,15 @@ class FedexController extends Controller
                         ]
                     ]);
                 // $validateFedex = $this->makeFedexJsonPostRequest(
-                //     env('SHIP_API_URL'),
+                //     env('VALIDATE_SHIP_API_URL'),
                 //     env('VALIDATE_SHIP_API_PRODUCTION_URL'),
-                //     $requestJson
+                //     $body
                 // );
                 // if($validateFedex->status() == '200'){
-                //     $responseFedex = $this->makeDHLJsonPostRequest(
+                //     $responseFedex = $this->makeFedexJsonPostRequest(
                 //         env('SHIP_API_URL'),
                 //         env('SHIP_API_PRODUCTION_URL'),
-                //         $requestJson
+                //         $body
                 //     );
                 //     return response()->json([
                 //         'fedexResponse' => [
@@ -869,7 +702,7 @@ class FedexController extends Controller
                 // else{
                 //     return response()->json([
                 //         'fedexResponse' => [
-                //             'validationResponse' => $validateFedex->json(),
+                //             'validationResponse' => $validateFedex,
                 //             'statusCode' => $validateFedex->status()
                 //         ]
                 //     ]);
@@ -964,7 +797,14 @@ class FedexController extends Controller
                 //////////////////////////////////////////
                 break;
             case 'ups':
-                dd("from ups");
+                $body = $this->setShipmentBody($request);
+                $responseUps = $this->makeUPSJsonPostRequest(env('SHIP_API_URL_UPS'), env('SHIP_API_PRODUCTION_URL_UPS '), $body);
+                return response()->json([
+                    'upsResponse'=>[
+                        'response' => $responseUps -> json(),
+                        'statusCode' => $responseUps -> status()
+                    ]
+                ]);
                 break;
         }  
     }
@@ -1652,6 +1492,66 @@ class FedexController extends Controller
                             ];
                 break;
             case 'ups':
+                $body = [
+                    "ShipmentRequest" => [
+                       "Shipment" => [
+                            "PaymentInformation" => [
+                                "ShipmentCharge"=>[
+                                    "Type"=>"01",
+                                    "BillShipper"=>[
+                                        "AccountNumber"=> env('ACCOUNT_NUMBER_UPS')
+                                    ]
+                                ]
+                                    ],
+                            "Shipper" => [
+                                "Name" => $requestJson->shipper->contact->shipperPersonName,
+                                "Phone" => [
+                                    "Number" => $requestJson->shipper->contact->shipperPhoneNumber
+                                ],
+                          "ShipperNumber" => env('ACCOUNT_NUMBER_UPS'),
+                          "Address" => [
+                             "AddressLine" => $requestJson->shipper->address->streetLines[0],
+                             "City" => $requestJson->shipper->address->city,
+                             "PostalCode" => $requestJson->shipper->address->postalCode,
+                             "CountryCode" => $requestJson->shipper->address->countryCode
+                          ]
+                        ],
+                       "ShipTo" => [
+                          "Name" => $requestJson->recipients[0]->contact->personName,
+                          "Phone" => [
+                             "Number" => $requestJson->recipients[0]->contact->phoneNumber
+                       ],
+                       "Address" => [
+                          "AddressLine" => $requestJson->recipients[0]->address->streetLines[0],
+                          "City" => $requestJson->recipients[0]->address->city,
+                          "PostalCode" => $requestJson->recipients[0]->address->postalCode,
+                          "CountryCode" => $requestJson->recipients[0]->address->countryCode
+                       ]
+                    ],
+                       "ShipFrom" => [
+                       "Name" => $requestJson->shipper->contact->shipperPersonName,
+                       "Phone" => [
+                          "Number" => $requestJson->shipper->contact->shipperPhoneNumber
+                       ],
+                       "Address" => [
+                          "AddressLine" => $requestJson->shipper->address->streetLines[0],
+                          "City" => $requestJson->shipper->address->city,
+                          "PostalCode" => $requestJson->shipper->address->postalCode,
+                          "CountryCode" => $requestJson->shipper->address->countryCode
+                       ]
+                    ],
+                       "Service" => [
+                          "Code" => "service code",
+                          "Description" => "service Description"
+                       ],
+                       "Package" => [
+                          "Packaging" => [
+                             "Code" => "Packaging code",
+                       ]
+                       ]
+                    ]
+                ]
+                ];
                 break;
         }
         return $body;

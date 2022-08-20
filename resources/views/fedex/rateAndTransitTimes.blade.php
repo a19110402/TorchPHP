@@ -125,7 +125,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="">
+                    <div>
                         <div class="flex">
                             <div>
                                 <label class="m-0" for="weight">Peso</label>

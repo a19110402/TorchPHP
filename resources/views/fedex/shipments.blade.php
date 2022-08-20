@@ -19,7 +19,7 @@
             <!-- Shipper -->
             <div class="flex flex-col " id="shipper">
                 <label for="">Dirección origen</label>
-                <input value="Paseo del bosque" class=" h-14 border-2 border-black rounded-lg" type="text" name="shipperStreetLines">
+                <input value="Paseo del Bosque 2428" class=" h-14 border-2 border-black rounded-lg" type="text" name="shipperStreetLines">
 
                 <label for="">Exterior</label>
                 <input value="2428" class=" h-14 border-2 border-black rounded-lg" type="text" name="shipperOutlines">
@@ -63,7 +63,7 @@
             <!-- Recipient -->
             <div class="flex flex-col" id="recipient">
                 <label for="">Dirección destino</label>
-                <input value="Lopez Cotilla" class=" h-14 border-2 border-black rounded-lg" type="text" name="recipientStreetlines">
+                <input value="Lopez Cotilla 56" class=" h-14 border-2 border-black rounded-lg" type="text" name="recipientStreetlines">
 
                 <label for="">Exterior</label>
                 <input value="56" class="w-full h-14 border-2 border-black rounded-lg" type="text" name="recipientOutlines">
@@ -120,7 +120,7 @@
                 {{-- Package weight --}}
                 <label for="">Peso y unidades</label>
                 <div class="pacakgeWeight">
-                    <input class="w-6/12 h-14 border-2 border-black rounded-lg" type="text" name="weight" id="">
+                    <input class="w-6/12 h-14 border-2 border-black rounded-lg" type="text" name="weight" id="" value="10">
                     <select class="w-3/12 h-14 border-2 border-black rounded-lg" name="units" id="">
                         <option value="KG">Kg</option>
                         <option value="LB">lb</option>
@@ -135,7 +135,7 @@
                             
                         </div>
                         <div>
-                            <input   class="w-full h-14 border-2 border-black rounded-lg" type="text" name="lenght" id="lenght" placeholder="cm...">
+                            <input  value="10" class="w-full h-14 border-2 border-black rounded-lg" type="text" name="lenght" id="lenght" placeholder="cm...">
                             
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                             
                         </div>
                         <div>
-                            <input   class="w-full h-14 border-2 border-black rounded-lg" type="text" name="width" id="width" placeholder="cm...">
+                            <input  value="10" class="w-full h-14 border-2 border-black rounded-lg" type="text" name="width" id="width" placeholder="cm...">
                             
                         </div>
                     </div>
@@ -157,7 +157,7 @@
                             
                         </div>
                         <div>
-                            <input   class="w-full h-14 border-2 border-black rounded-lg" type="text" name="height" id="height" placeholder="cm...">
+                            <input  value="10" class="w-full h-14 border-2 border-black rounded-lg" type="text" name="height" id="height" placeholder="cm...">
                             
                         </div>
                     </div>
@@ -176,10 +176,6 @@
             <input class="cursor-pointer my-10 min-w-full border border-black rounded-xl" type="submit" value="submit" id="requestShip">
         </form>
         
-    </div>
-    <div class="flex flex-col justify-start gap-4">
-        <button class="border-2 border-black p-2 rounded-xl hover:bg-indigo-200" id="tracking">Rastraer un paquete</button>
-        <button class="border-2 border-black p-2 rounded-xl hover:bg-indigo-200" id="cancelShip">Cancelar una recolección</button>
     </div>
 </div>
 <div id="validateShipment">

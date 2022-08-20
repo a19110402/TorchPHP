@@ -33,7 +33,7 @@ Route::get('/', 'IndexController@index');
 //API Index Fedex
 Route::get('/fedex', 'FedexController@index');
 //API Get Token
-// Route::get('/fedex/auth', 'FedexController@auth');
+Route::get('/fedex/auth', 'FedexController@auth');
 Route::post('/fedex/authKey', 'FedexController@postToken');
 //API Validation Address
 // Route::get('/fedex/addresValidationForm', 'FedexController@addresValidation');
@@ -65,8 +65,11 @@ Route::get('/rateAndTransitTimes', [FedexController::class, 'rateAndTransitTimes
 Route::post('/rateAndTransitTimes', 'FedexController@rateAndTransitTimesRequest');
 //API Postal Code Validation
 Route::post('/validatePostalCode','FedexController@validatePostalCodeRequest')->name('validatePostalCodeRequest');
+//API Service Availability
+Route::post('/fedex/serviceAvailability', 'FedexController@serviceAvailabilityRequest');
 //API SHIPMENTS
 Route::get('/shipments', 'FedexController@shipments')->name('shipments') -> middleware('auth');
+Route::get('/proveShipments', 'FedexController@proveShipments') -> middleware('auth');
 Route::post('/shipments', 'FedexController@shipmentsRequest');
 Route::put('/cancelShipments', 'FedexController@cancelShipmentRequest');
 Route::post('/validateShipment', 'FedexController@validateShipmentRequest');
