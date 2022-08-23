@@ -1,9 +1,151 @@
 import ajax from '../ajax.js';
-
+import {recipientPostalCodeValidation, shipperPostalCodeValidation} from './rateAndTransitTimes/validations.js'
 $(function(){
-  $("#shipFormFull").hide();
+  // $("#shipFormFull").hide();
   $("#waitingMessage").hide();
 });
+
+export function getDate(){
+  let date = new Date();
+  let dateString =  date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+  return dateString;
+}
+
+function validatePostalCode(postalCodeAPI){
+  let response = '';
+  let x;
+  response = ajax('POST', '/validatePostalCode', postalCodeAPI, $('input[name="_token"]').val() );
+  response.then(function(answer){
+    x = answer.fedexResponse.statusCode;
+  });
+  return response;
+}
+//*******************************[buttons]*********************************************
+$("#validatePostalCode").on("click",function(){
+  if(shipperPostalCodeValidation == true && recipientPostalCodeValidation ==true)
+  {
+    var acc = document.getElementsByClassName("accordion");
+    acc[0].nextElementSibling.style.display = "none";
+    acc[1].nextElementSibling.style.display = "block";
+  }
+  else{
+    alert("Verifica que los códigos postales sean correctos o que correspondan con su país");
+  }
+});
+
+$("#requestShip").on('click',function(){
+  let _token = $('input[name="_token"]').val();
+  let shipperCity = $('input[name="shipperCity"]').val();
+  let shipperPostalCode = $('input[name="shipperPostalCode"]').val();
+  let shipperCountrCode = $('select[name="shipperCountryCode"]').val();
+  //recipient
+  let recipientCity = $('input[name="recipientCity"]').val();
+  let recipientPostalCode = $('input[name="recipientPostalCode"]').val();
+  let recipientCountryCode = $('select[name="recipientCountryCode"]').val();
+  //package
+  //let totalPackageCount = $('input[name="totalPackages"]').val();
+  let unitOfMeasurement = $('select[name="units"]').val();
+  let pickupType = $('select[name="pickupType"]').val();
+  let packagingType = $('select[name="subPackagingType"]').val();
+  let weight = $('input[name="weight"]').val();
+  let lenght = $('input[name="lenght"]').val();
+  let width = $('input[name="width"]').val();
+  let height = $('input[name="height"]').val();
+  //shipmentVariables
+    //[__Fedex__]
+    let carrierFedex = '';
+    let fedexUnitOfMeasurement = '';
+    let fedexUnitOfLenght = ''
+    let date = getDate();
+  
+    switch(unitOfMeasurement)
+    {
+      case 'SI':
+        fedexUnitOfMeasurement = 'KG';
+        fedexUnitOfLenght = 'CM';
+        break;
+        case 'SU':
+        fedexUnitOfMeasurement = 'LB';
+        fedexUnitOfLenght = 'IN';
+        break;
+    }
+  //let carrierCodes = $('select[name="carrierCodes"]').val();
+  let url = "/fedex/rateAndServices"
+  let input = JSON.stringify({
+    "fedex": {
+      "accountNumber": {
+        "value": ""
+      },
+      "requestedShipment": {
+        "shipper": {
+          "address": {
+            "city" : shipperCity,
+            "postalCode": shipperPostalCode,
+              "countryCode": shipperCountrCode,
+              }
+        },
+        "recipient": {
+          "address": {
+            "city" : recipientCity,
+            "postalCode": recipientPostalCode,
+            "countryCode": recipientCountryCode
+          }
+        },
+        "pickupType": pickupType,
+        // "totalPackageCount": totalPackageCount,
+        "rateRequestType":["LIST", "ACCOUNT"],
+        "requestedPackageLineItems": [{
+          "packagingType": packagingType,
+          "weight": {
+            "units": fedexUnitOfMeasurement,
+            "value": weight,
+          },
+          "dimensions": {
+            "length": lenght,
+            "width": width,
+            "height": height,
+            "units": fedexUnitOfLenght
+          }
+        }]
+      }
+    }
+    }
+  );
+    
+  let data = ajax('POST', url, input, _token);
+  data.then(
+    function(response){
+      switch(response.fedexResponse.statusCode)
+      {
+        case 200:
+          var acc = document.getElementsByClassName("accordion");
+          acc[1].nextElementSibling.style.display = "none";
+          acc[2].nextElementSibling.style.display = "block";
+
+        showFedex(response);
+          let i;
+          let text = document.querySelectorAll("#ratesFedex");
+          for (i=0 ; i<text[0].childElementCount ; i++)
+          {
+            let serviceType  = text[0].children[i].children[0].innerHTML;
+            text[0].children[i].addEventListener("click", function(){
+              alert(serviceType);
+            });
+          }
+        // let selector = $("#ratesFedex");
+        // selector.children().on('click', function(){
+        //   let text = document.getElementById("ratesFedex");
+        //   text = text.children[0].innerHTML;
+        //   console.log(text);
+        // });
+          break;
+        default:
+      }
+    }
+  );
+});
+
+
 
 $("#showServiceAvailableForm").on('click', function(){       
   $("#serviceType").empty();
@@ -13,12 +155,12 @@ $("#showServiceAvailableForm").on('click', function(){
 });
 
 $("#validateAvailableServices").on('click', function(){
-   //shipper
-  let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
-  let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
+  //shipper
+  let shipperPostalCode = $('input[name="shipperPostalCode"]').val();
+  let shipperCountrCode = $('select[name="shipperCountryCode"]').val();
   //recipient
-  let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
-  let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
+  let recipientPostalCode = $('input[name="recipientPostalCode"]').val();
+  let recipientCountryCode = $('select[name="recipientCountryCode"]').val();
   let _token = $('input[name="_token"]').val();
   let url = '/fedex/serviceAvailability'
   showSpan();
@@ -181,3 +323,82 @@ function showSpan(){
 function hideSpan(){
   $("#waitingMessage").hide();
 }
+
+var acc = document.getElementsByClassName("accordion");
+acc[0].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      if (panel.style.display === "block") {
+      panel.style.display = "none";
+      } else {
+      panel.style.display = "block";
+      }
+  });
+acc[1].addEventListener("click", function(){
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+    panel.style.display = "none";
+    } else if(recipientPostalCodeValidation == true && shipperPostalCodeValidation == true){
+    panel.style.display = "block";
+    }
+});
+// for (i = 0; i < acc.length; i++) {
+// acc[i].addEventListener("click", function() {
+//     this.classList.toggle("active");
+//     var panel = this.nextElementSibling;
+//     if (panel.style.display === "block") {
+//     panel.style.display = "none";
+//     } else {
+//     panel.style.display = "block";
+//     }
+// });
+// }
+
+function showFedex(data){
+  let cont=0;
+  let selector = '';
+        $("#showRates").show();
+        //FEDEX
+
+        // $('#rates').append("<div id='ratesFedex'></div>");
+        // $("#ratesFedex").css("display", "flex").css("flex-direction", "column").css("padding", "5rem");
+        // $("#ratesFedex").append("<h2 id='fedex'>FedEx</h2>");      
+        if(data.fedexResponse.statusCode == 200){
+          // $("#showRates").append("<div id='fedexRate'></div>");
+          data.fedexResponse.response.output.rateReplyDetails.forEach(element => {
+            selector = "#rates" + cont;
+            $("#ratesFedex").append("<div id='rates" + cont + "'></div>");
+            $(selector).append("<p hidden id='serviceType'>" + element.serviceType + "</p>");
+            $(selector).append("<p>Servicio por: " + element.serviceName+ "</p>");
+            $(selector).append("<p>Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55 + "</p>");
+            cont++;
+          });
+          // let i=0;
+          let addRates = $("#ratesFedex");
+          addRates.children().css("display", "flex");
+          addRates.children().css("flex-direction", "column");
+          addRates.children().css("border", "3px solid black");
+          addRates.children().css("padding", "5rem");
+          addRates.children().css("cursor", "pointer");
+
+          // var addRates = document.getElementById("ratesFedex");
+
+          // data.fedexResponse.response.output.rateReplyDetails.forEach(element => {
+          //   // addRates.children[i].append("Tipo de servicio: " + element.serviceType);
+          //   addRates.children[i].append("Servicio por: " + element.serviceName);
+          //   addRates.children[i].append("Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55);   
+          //   i++;
+          // });
+
+          // $("#rates").append("<p><b>Tipo de servicio: " + element.serviceType + "</b></p>");
+          // $("#rates").append("<p>Servicio por: " + element.serviceName+ "</p>");
+          // $("#rates").append("<p>Tarifa neta: " + element.ratedShipmentDetails[0].totalNetCharge*19.55 + "</p>");   
+          $('#createShipFedex').show();
+        }  
+        else{
+          $("#createShipFedex").before("<div id='fedexRate'></div>");
+          $("#fedexRate").append("<p id='fedexRate'>Servicio no disponible</p>");      
+          $('#createShipFedex').hide();
+        }
+      } 

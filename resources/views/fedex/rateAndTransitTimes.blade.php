@@ -11,11 +11,11 @@
 
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
-                            <label class="m-0" for="shipper_Country">País</label>
+                            <label class="m-0" for="shipperCountryCode">País</label>
                             
                         </div>
                         <div>
-                            <select class="border-black border rounded-r-md w-7/12" name="shipper_countryCode" id="">
+                            <select class="border-black border rounded-r-md w-7/12" name="shipperCountryCode" id="">
                                 @foreach ($countryCode as $country => $code )
                                     @if ($code == 'MX')
                                         <option selected value="{{ $code }}">{{ $country }}</option>
@@ -31,20 +31,20 @@
 
                     <div class="m-4 justify-center md:columns-2" >
                         <div>
-                            <label class="m-0" for="shipper_postalCode">Origen</label>
+                            <label class="m-0" for="shipperPostalCode">Origen</label>
                         </div>
                         <div>
-                            <input required class="focus:outline-none border border-black rounded" type="text" name="shipper_postalCode" id="shipper_postalCode" placeholder="Código postal...">
+                            <input required class="focus:outline-none border border-black rounded" type="text" name="shipperPostalCode" id="shipper_postalCode" placeholder="Código postal...">
                         </div>
                     </div>
 
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
-                            <label class="m-0" for="recipient_country">País</label>
+                            <label class="m-0" for="recipientCountryCode">País</label>
                             
                         </div>
                         <div>
-                            <select class="border-black border rounded-r-md w-7/12" name="recipient_countryCode" id="">
+                            <select class="border-black border rounded-r-md w-7/12" name="recipientCountryCode" id="">
                                 @foreach ($countryCode as $country => $code )
                                     @if ($code == 'MX')
                                         <option selected value="{{ $code }}">{{ $country }}</option>
@@ -61,12 +61,12 @@
 
                     <div class="md:columns-2 m-4 justify-center">
                         <div>
-                            <label class="m-0" for="recipient_postalCode">Destino</label>
+                            <label class="m-0" for="recipientPostalCode">Destino</label>
                             
                         </div>
                         
                         <div>
-                            <input required  class="focus:outline-none border border-black rounded" type="text" name="recipient_postalCode" id="recipient_postalCode" placeholder="Código postal...">
+                            <input required  class="focus:outline-none border border-black rounded" type="text" name="recipientPostalCode" id="recipient_postalCode" placeholder="Código postal...">
                         </div>
     
                     </div>

@@ -1,11 +1,14 @@
 //THE AJAX FUNCTION IS A JS FILE WHICH ITS FUNCTIONALITY START AN AJAX PETITION
 import ajax from '../../ajax.js';
-
-export function getDate(){
+ 
+function getDate(){
     let date = new Date();
     let dateString =  date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
     return dateString;
   }
+  let shipperPostalCodeValidation = false;
+  let recipientPostalCodeValidation = false;
+
   
   function validatePostalCode(postalCodeAPI){
     let response = '';
@@ -66,8 +69,8 @@ export function getDate(){
   $("#shipper_postalCode").on('change',function(e){
     $("#shipper_postalCode").css("border-color", "black");
     $("#shipperPostalCodeNotFound").remove();
-    let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
-    let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
+    let shipperPostalCode = $('input[name="shipperPostalCode"]').val();
+    let shipperCountrCode = $('select[name="shipperCountryCode"]').val();
     // let shipperCity = $('input[name="shipper_city"]').val();
     let postalCodeAPI = JSON.stringify({
       "carrierCode": "FDXG",
@@ -86,18 +89,20 @@ export function getDate(){
       switch(response.fedexResponse.statusCode){
           case 200:
             $("#shipper_postalCode").css("border", "2px solid #8bef89");  
+            shipperPostalCodeValidation = true;
             break;
           case 400:
             $("#shipper_postalCode").css("border", "2px solid red").after("<p id='shipperPostalCodeNotFound'>No pudimos encontrar el código postal</p>");  
             $("#shipperPostalCodeNotFound").css("font-size", "1rem");
+            shipperPostalCodeValidation = false;
           }
     });
   });
   
   $("#recipient_postalCode").on('change',function(e){
     $("#recipient_postalCode").css("border-color", "black");
-    let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
-    let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
+    let recipientPostalCode = $('input[name="recipientPostalCode"]').val();
+    let recipientCountryCode = $('select[name="recipientCountryCode"]').val();
     $("#recipientPostalCodeNotFound").remove();
     // let recipientCity = $('input[name="recipient_city"]').val();
     let postalCodeAPI = JSON.stringify({
@@ -117,10 +122,12 @@ export function getDate(){
     switch(response.fedexResponse.statusCode){
         case 200:
           $("#recipient_postalCode").css("border", "2px solid #8bef89");  
+          recipientPostalCodeValidation = true;
           break;
         case 400:
           $("#recipient_postalCode").css("border", "2px solid red").after("<p id='recipientPostalCodNotFound'>No pudimos encontrar el código postal</p>");   
           $("#recipientPostalCodeNotFound").css("font-size", "1rem");
+          recipientPostalCodeValidation = false;
         }
   });
   });
@@ -169,4 +176,8 @@ export function getDate(){
 
   $("#packagingType").on("change", function(e){
     packageChange();
-  })
+  });
+
+  export {shipperPostalCodeValidation, recipientPostalCodeValidation, getDate};
+
+

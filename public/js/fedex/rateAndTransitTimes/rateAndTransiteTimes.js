@@ -14,12 +14,12 @@ function (){
   $("#showRates").hide();
   //shipper
   let shipperCity = $('input[name="shipper_city"]').val();
-  let shipperPostalCode = $('input[name="shipper_postalCode"]').val();
-  let shipperCountrCode = $('select[name="shipper_countryCode"]').val();
+  let shipperPostalCode = $('input[name="shipperPostalCode"]').val();
+  let shipperCountrCode = $('select[name="shipperCountryCode"]').val();
   //recipient
   let recipientCity = $('input[name="recipient_city"]').val();
-  let recipientPostalCode = $('input[name="recipient_postalCode"]').val();
-  let recipientCountryCode = $('select[name="recipient_countryCode"]').val();
+  let recipientPostalCode = $('input[name="recipientPostalCode"]').val();
+  let recipientCountryCode = $('select[name="recipientCountryCode"]').val();
   //package
   let totalPackageCount = $('input[name="totalPackages"]').val();
   let unitOfMeasurement = $('select[name="unitOfMeasurement"]').val();

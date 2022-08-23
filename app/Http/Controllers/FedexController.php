@@ -614,6 +614,24 @@ class FedexController extends Controller
             ]
         ]);
     }
+    public function rateAndServices(Request $request)
+    {
+        $requestJson = json_decode($request->post('json'));
+        $requestJson->fedex->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+        //                  FEDEX
+        $responseFedex = $this->makeFedexJsonPostRequest(
+            env('RATE_AND_TRANSIT_TIMES_URL'), 
+            env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+             $requestJson->fedex
+            );
+
+        return response()->json([
+            'fedexResponse' => [
+                'response' => $responseFedex ->json(),
+                'statusCode' => $responseFedex->status()
+            ]
+        ]);
+    }
     //API VALIDATE POSTAL CODE 
     public function validatePostalCodeRequest(Request $request)
     {
