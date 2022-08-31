@@ -516,8 +516,7 @@ body {font-family: Arial;}
 </div>
 
 <div id="ups" class="tabcontent">
-  <h3>Tokyo</h3>
-  <p>Tokyo is the capital of Japan.</p>
+  <h3>UPS</h3>
 </div>
 @endsection
 
