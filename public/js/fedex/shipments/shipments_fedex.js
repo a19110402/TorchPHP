@@ -1,7 +1,5 @@
 import ajax from '../ajax.js';
 import {recipientPostalCodeValidation, shipperPostalCodeValidation} from './rateAndTransitTimes/validations.js'
-import {dhlRecipientPostalCodeValidation, dhlShipperPostalCodeValidation} from '../dhl/validation.js'
-
 $(function(){
   // $("#shipFormFull").hide();
   $("#waitingMessage").hide();
@@ -74,7 +72,6 @@ $("#requestShip").on('click',function(){
   //let carrierCodes = $('select[name="carrierCodes"]').val();
   let url = "/fedex/rateAndServices"
   let input = JSON.stringify({
-    "delivery": "fedex",
     "fedex": {
       "accountNumber": {
         "value": ""
@@ -346,9 +343,8 @@ acc[1].addEventListener("click", function(){
     panel.style.display = "block";
     }
 });
-// var dhlBlock = document.getElementsByClassName("dhlBlock");
-// for (let i = 0; i < dhlBlock.length; i++) {
-//   dhlBlock[i].addEventListener("click", function() {
+// for (i = 0; i < acc.length; i++) {
+// acc[i].addEventListener("click", function() {
 //     this.classList.toggle("active");
 //     var panel = this.nextElementSibling;
 //     if (panel.style.display === "block") {

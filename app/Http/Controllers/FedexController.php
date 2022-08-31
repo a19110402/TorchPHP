@@ -617,18 +617,37 @@ class FedexController extends Controller
     public function rateAndServices(Request $request)
     {
         $requestJson = json_decode($request->post('json'));
-        $requestJson->fedex->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
-        //                  FEDEX
-        $responseFedex = $this->makeFedexJsonPostRequest(
-            env('RATE_AND_TRANSIT_TIMES_URL'), 
-            env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
-             $requestJson->fedex
-            );
-
+        switch($requestJson->delivery)
+        {
+            case 'fedex':
+                $requestJson->fedex->accountNumber->value = env('SHIPPER_ACCOUNT_TEST');
+                $response = $this->makeFedexJsonPostRequest(
+                    env('RATE_AND_TRANSIT_TIMES_URL'), 
+                    env('RATE_AND_TRANSIT_TIMES_PRODUCTION_URL'),
+                     $requestJson->fedex
+                    );
+                        
+                break;
+            case 'dhl':
+                $requestJson->dhl->RateRequest->RequestedShipment->Account= env('ACCOUNT_DHL_TEST');
+                $response = $this->makeDHLJsonPostRequest(
+                    env('RATE_REQUEST_TEST_URL_DHL'), 
+                    env('RATE_REQUEST_PRODUCTION_URL_DHL'),
+                    $requestJson->dhl
+                );
+                break;
+            case 'ups':
+                $response = $this->makeUPSJsonPostRequest(
+                    env('RATE_REQUEST_TEST_URL_UPS'), 
+                    env('RATE_REQUEST_PRODUCTION_URL_UPS'),
+                    $requestJson->ups
+                );
+                break;
+        }
         return response()->json([
             'fedexResponse' => [
-                'response' => $responseFedex ->json(),
-                'statusCode' => $responseFedex->status()
+                'response' => $response ->json(),
+                'statusCode' => $response->status()
             ]
         ]);
     }
