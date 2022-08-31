@@ -4,6 +4,7 @@ namespace Illuminate\Auth\Listeners;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Controllers\Auth\VerificationController;
 
 class SendEmailVerificationNotification
 {

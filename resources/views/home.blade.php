@@ -16,6 +16,26 @@
 
                     {{ __('You are logged not admin!') }}
                 </div>
+
+                @if (\Session::has('success'))
+                    <div class="alert alert-success text-green-500">
+                        <ul>
+                            <p>{!! \Session::get('success') !!}{!! \Session::get('account') !!}</p>
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{url('/upgrade-account')}}">Cambiar a cuenta corporativa</a>
+                </div>
+
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{route('create.account')}}">Creación de cuenta</a>
+                </div>
+
+                <div class="card-body hover:text-azul-primario hover:underline">
+                    <a href="{{route('watch.account')}}">Ver cuentas</a>
+                </div>
             </div>
         </div>
     </div>

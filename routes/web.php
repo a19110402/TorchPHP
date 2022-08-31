@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\Auth;
 use App\Http\Controllers\FedexController;
-// use GuzzleHttp\Middleware;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\ConfirmPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,41 +90,67 @@ Route::post('/fedex/ServiceAvailabilityRequest', 'FedexController@serviceAvailab
 //Route::post('/test', 'TestController@index');
 
 //Login
-// Auth::routes(); //Conjunto de rutas,  ya no funcionaba
+Auth::routes(); //Conjunto de rutas,  ya no funcionaba
 // Auth Routes...
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::post('login', 'Auth\LoginController@login');
+Route::post('/login', 'Auth\LoginController@login');
 Route::get('/logout', 'Auth\LogoutController@destroy')->name('login.destroy');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 
 // Registration Routes...
 // Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::get('/register', 'Auth\RegisterController@createNew')->name('register');
-Route::post('register', 'Auth\RegisterController@register');
+Route::post('/register', 'Auth\RegisterController@register');
 
 // Password Reset Routes...
-Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+Route::get('/password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('/password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('/password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+
+// Verificación de correo electrónico
+// Route::get('/email/verify', 'Auth\VerificationController@show')->name('verification.notice');
+// Route::get('/email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify')->middleware(['signed']);
+// Route::post('/email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
 //Homepage
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/home/admin', 'AdminController@index')->middleware('auth.admin')->name('admin.index');
+Route::get('/home/admin', 'AdminController@index')->name('admin.index');
 
-//Creación de usuario estando loggeado
+//Cambio a cuenta corporativa
+Route::get('/upgrade-account', 'Auth\UpgradeController@index')->name('corpAccount');
+// Route::get('/upgrade-account/{id}', 'UpgradeController@edit')->name('editAccount');
+Route::post('/upgrade-account', 'Auth\UpgradeController@upgrade')->name('upgradeAccount');
+
+//Confirmación de contraseña
+Route::get('/password/confirm', 'Auth\ConfirmPasswordController@show')->name('password.confirm');
+Route::post('/password/confirm', 'Auth\ConfirmPasswordController@store');
+
+//Creación de cuenta para usuario normal
+Route::get('/create-account', 'Auth\CreateAccountController@show')->name('create.account');
+Route::post('/create-account', 'Auth\CreateAccountController@store');
+//Visualización de cuenta para usuario normal
+Route::get('/accounts', 'Auth\CreateAccountController@watchAccount')->name('watch.account');
+//Edición de cuenta para usuario normal
+Route::get('/accounts/{id}', 'Auth\CreateAccountController@editAccount')->name('edit.account');
+//Actualizar cuenta para usuario normal
+Route::patch('/accounts/{id}', 'Auth\CreateAccountController@updateAccount')->name('update.account');
+//Eliminar una cuenta para usuario normal
+Route::delete('/accounts/{id}', 'Auth\CreateAccountController@deleteAccount')->name('delete.account');
+
+
+//Creación de usuario para corporativos
 Route::get('/registerUser', 'Auth\RegisterByUserController@userCreation')->name('registerUser');
-Route::post('registerUser', 'Auth\RegisterByUserController@register');
-
-//Visualización de usuarios creados
+Route::post('/registerUser', 'Auth\RegisterByUserController@register');
+//Visualización de usuarios para corporativos
 Route::get('/users','AdminController@watchUsers')->name('users');
-
-//Editar un usuario
+//Editar un usuario para corporativos
 Route::get('/users/{id}', 'AdminController@editUser')->name('editUser');
+//Actualizar usuario para corporativos
 Route::patch('/users/{id}', 'AdminController@updateUser')->name('updateUser');
-
-//Eliminar un usuario
+//Eliminar un usuario para corporativos
 Route::delete('/users/{id}', 'AdminController@deleteUser')->name('deleteUser');
+
 
 //Página nosotros
 Route::get('/nosotros', 'IndexController@nosotros')->name('nosotros');

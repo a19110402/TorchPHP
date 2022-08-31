@@ -27,28 +27,30 @@
                 </div>
             @else
                 <div class="cont-botones">
-                    <div class="cont-boton"> <a href="{{url('/login')}}" class="boton-inicia">Iniciar Sesión</a> </div>
+                    <div class="cont-boton"> <a href="{{url('/login')}}">Iniciar Sesión</a> </div>
 
-                    <div class="cont-boton-reg"> <a href="{{url('/register')}}" class="boton-registro">Regístrate</a> </div>
+                    <div class="cont-boton"> <a href="{{url('/register')}}">Regístrate</a> </div>
                 </div>
             @endif
             
         </div>
         <div class="imagen-formato"></div>
     </main>
-@endsection
 
-@section('footer')
     <div>
-        <p class="no-margin">Las mejores empresas que ya utilizan nuestra plataforma:</p>
-    </div>
-
-    <div class="contenedor">
-        <div class="flecha-contenedor flecha-formato">
-            <p><</p>
+        <div>
+            <p class="no-margin">Las mejores empresas que ya utilizan nuestra plataforma:</p>
         </div>
-        <div class="flecha-contenedor flecha-formato">
-            <p>></p>
+    
+        <div class="contenedor">
+            <div class="flecha-contenedor flecha-formato">
+                <p><</p>
+            </div>
+            <div class="flecha-contenedor flecha-formato">
+                <p>></p>
+            </div>
         </div>
-    </div>
+    </div> 
+    
 @endsection
+
