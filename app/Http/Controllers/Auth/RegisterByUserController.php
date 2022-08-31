@@ -86,10 +86,9 @@ class RegisterByUserController extends Controller
 
     public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
-        event(new Registered($user = $this->create($request->all())));
-        return $this->registered($request, $user)
-           // ?: redirect($this->redirectPath());
-          ?: redirect()->route('admin.index')->with('success', 'Registraste existosamente a ')->with('user',$user['name']);
+        // $this->validator($request->all())->validate();
+        // event(new Registered());
+        $user = $this->create($request->all());
+        return redirect()->route('admin.index')->with('success', 'Registraste existosamente a ')->with('user',$user['name']);
     }
 }

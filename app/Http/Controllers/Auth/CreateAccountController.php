@@ -68,11 +68,10 @@ class CreateAccountController extends Controller
 
     public function store(Request $request)
     {
-        $this->validator($request->all())->validate();
-        event(new Registered($account = $this->create($request->all())));
-        return $this->registered($request, $account)
-           // ?: redirect($this->redirectPath());
-          ?: redirect()->route('home')->with('success', 'Registraste existosamente a ')->with('account', $account['name']);
+        // $this->validator($request->all())->validate();
+        // event(new Registered());
+        $account = $this->create($request->all());
+        return redirect()->route('home')->with('success', 'Registraste existosamente a ')->with('account', $account['name']);
     }
 
     public function watchAccount(){
