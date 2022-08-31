@@ -70,7 +70,7 @@ Route::post('/validatePostalCode','FedexController@validatePostalCodeRequest')->
 Route::post('/fedex/serviceAvailability', 'FedexController@serviceAvailabilityRequest');
 //API SHIPMENTS
 Route::get('/shipments', 'FedexController@shipments')->name('shipments') -> middleware('auth');
-Route::get('/proveShipments', 'FedexController@proveShipments') -> middleware('auth');
+Route::get('/proveShipments', 'FedexController@proveShipments') -> name('proveShipments') -> middleware('auth');
 Route::post('/shipments', 'FedexController@shipmentsRequest');
 Route::put('/cancelShipments', 'FedexController@cancelShipmentRequest');
 Route::post('/validateShipment', 'FedexController@validateShipmentRequest');

@@ -35,13 +35,13 @@
                 @if(auth()->user() != null && auth()->user()->role =='admin')
                     <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
-                    <a href="{{ route('shipments')}}">Envío</a>
+                    <a href="{{ route('proveShipments')}}">Envío</a>
                     <a href="{{ route('tracking') }}">Rastrear</a>
                     <a href="{{ route('login.destroy') }}" >Log out</a>
                 @elseif(auth()->user() != null)
                     <a href="{{ route('admin.index') }}">Bienvenido <b>{{ auth()->user()->name }}</b></a>
                     <a href="{{ route('rateAndTransitTimes') }}">Cotización</a>
-                    <a href="{{ route('shipments')}}">Envío</a>
+                    <a href="{{ route('proveShipments')}}">Envío</a>
                     <a href="{{ route('tracking') }}">Rastrear</a>
                     <a href="{{ route('login.destroy') }}" >Log out</a>
                 @else
